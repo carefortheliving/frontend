@@ -6,7 +6,7 @@ export default function Footer() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       {new Date().getFullYear()}
-      {' Your Company.'}
+      {' careforliving'}
     </Typography>
   );
 }
