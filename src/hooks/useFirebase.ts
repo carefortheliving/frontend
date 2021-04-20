@@ -36,16 +36,18 @@ const useFirebase = () => {
   const { auth, db } = state;
 
   React.useEffect(() => {
-    // init(); // TODO: need to enable
+    init();
   }, []);
 
 
-  const init = () => {
-    app.initializeApp(config);
-    setState({
-      auth: app.auth(),
-      db: app.firestore()
-    });
+  const init = async () => {
+    if (!(await isInitialized())) {
+      app.initializeApp(config);
+      setState({
+        auth: app.auth(),
+        db: app.firestore()
+      });
+    }
   };
 
   const logout = () => {
