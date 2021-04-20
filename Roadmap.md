@@ -41,14 +41,19 @@
         * Category as label
         * State/District
         * Requestor's name
+          * Show First Name only
+          * Visible only if logged in
         * Contact number
+          * Visible only if logged in
         * Updated At
         * Different color scheme for Open/Close status
 * Create Request Form Page
   * Fields
-    * Title
+    * Title [disabled, must be auto generated]
+      * THIS thing needed at THIS location
+      * Field really needed though?
     * Image
-    * Category
+    * Category [to be disabled if editing]
     * Description
     * State/District
     * Requestor's name
@@ -67,7 +72,7 @@
     * Login with Google
     * Login with Facebook
     * Login with Twitter
-* Create/Edit Request Details Page
+* Request Details Page
   * `Edit Icon` if request by the logged in user
   * Title
   * Image
@@ -80,7 +85,10 @@
         * Hospital
   * State/District
   * Requestor's name
+    * Show First Name only
+    * Visible only if logged in
   * Contact number
+    * Visible only if logged in
   * Updated At
   * Different color scheme for Open/Close status
   * Description
