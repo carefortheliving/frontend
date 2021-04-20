@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { StylesProps } from '../../../types';
 import withStyles from 'react-jss';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, makeStyles } from '@material-ui/core';
 
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   loader: {
     position: 'fixed',
     top: 0,
@@ -14,20 +14,15 @@ const styles = theme => ({
     justifyContent: 'center',
     alignItems: 'center',
   }
-});
-
-interface LoginProps extends
-  StylesProps<ReturnType<typeof styles>> {
+}));
+interface LoginProps {
 }
 
-const AppLoader: React.FC<LoginProps> = ({
-  classes,
-}) => {
+const AppLoader: React.FC<LoginProps> = ({}) => {
+  const classes = useStyles();
   return <div className={classes.loader}>
     <CircularProgress />
   </div>;
 };
 
-export default React.memo(
-  withStyles(styles)(AppLoader)
-);
+export default AppLoader;
