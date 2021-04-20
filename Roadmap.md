@@ -71,14 +71,20 @@
   * `Edit Icon` if request by the logged in user
   * Title
   * Image
-  * Category as label
+  * Category
+    * Category specific fields
+      * Plasma
+        * Gender
+        * Age
+        * Blood Group
+        * Hospital
   * State/District
   * Requestor's name
   * Contact number
   * Updated At
   * Different color scheme for Open/Close status
   * Description
-  * `Disqus` comment thread
+  * [Low Priority] `Disqus` comment thread
 * My Requests Page
   * List of cards of the requests by the logged in User
   * If UI permits, display `edit icon` on the card
