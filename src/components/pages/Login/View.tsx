@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -35,14 +35,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LogIn() {
-  const firebase = useFirebase();
+  const { getAuthStatus, signInWithGoogle } = useFirebase();
   const classes = useStyles();
   let history = useHistory();
-
-  // if (firebase.getAuthStatus()) {
-  //   history.push("/");
-  //   return null;
-  // }
+  
+  
+  useEffect(() => {
+    if (getAuthStatus()) {
+      history.push("/");
+    }
+  }, [])
 
   return (
     <Container component="main" maxWidth="xs">
@@ -72,7 +74,7 @@ function LogIn() {
 
   async function login() {
     try {
-      await firebase.signInWithGoogle();
+      await signInWithGoogle();
       history.push("/");
     } catch (error) {
       alert(error.message);
