@@ -1,3 +1,81 @@
+* Home page
+  *  Nav Bar
+    *  Logo/Name of the website
+      *  on left
+    * `Create Request` Button
+      *  Right top
+      *  OnClick 
+        *  if logged out:
+          *  redirects to the `Login Page`
+          *  after login, redirects to `Create Request Form`
+        *  if logged in: 
+          *  redirects to `Create Request Form`
+   *  Profile Icon
+     *  Right of the `Create Request` button
+     *  Visible only if logged in
+     *  Menu items
+       *  My Requests
+         *  sets the `My Requests Checkbox` to enabled
+       *  Logout
+         *  after logging out, redirects to the original URL (or home page)
+   *  `Sign In` button
+     *  Visible only if logged out
+     *  OnClick redirects to `Login Page`
+     *  after logging in, redirects to the original URL
+  *  Open Requests List
+    * Filters
+      * On Side for Desktop View
+      * On Top for Mobile View
+      * Fields
+        * State
+        * District
+        * Category
+        * Status
+          * By default Open
+        * My Requests Checkbox
+    * Requests Cards
+      * OnClick redirects to `Request Details Page`
+      * Info to show
+        * Title
+        * Image
+        * Category as label
+        * State/District
+        * Requestor's name
+        * Contact number
+        * Updated At
+        * Different color scheme for Open/Close status
+* Create Request Form Page
+  * Fields
+    * Title
+    * Image
+    * Category
+    * Description
+    * State/District
+    * Requestor's name
+    * Contact number
+    * Updated At
+    * Different color scheme for Open/Close status
+  * Submit button
+    * OnClick redirects to `My Requests` Page
+* Login Page
+  * Buttons 
+    * Login with Google
+    * Login with Facebook
+    * Login with Twitter
+* Request Details Page
+  * Title
+  * Image
+  * Category as label
+  * State/District
+  * Requestor's name
+  * Contact number
+  * Updated At
+  * Different color scheme for Open/Close status
+  * Description
+  * `Disqus` comment thread
+
+---
+
 * Person in need asks for help in a form
   * Google form? (so that it's easily customisable?)
     * [Embed in the dashboard somehow?](https://support.google.com/a/users/answer/9308623?hl=en#:~:text=Add%20surveys%20and%20forms%20to,Google%20Forms%20in%20Google%20Sites.&text=Feedback%20survey%E2%80%93Get%20feedback%20from,to%20subscribe%20to%20your%20newsletter.)
