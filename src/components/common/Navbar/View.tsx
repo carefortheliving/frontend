@@ -161,13 +161,14 @@ function Navbar(props) {
             {props.title}
           </Typography>
           {!props.isLogged ? (
-            <Button
-              size="small"
-              color="secondary"
-              onClick={() => history.push("/login")}
-            >
-              Create Request
-            </Button>
+            <>
+              <Button variant="contained" onClick={() => history.push("/login")}>
+                Create Request
+              </Button>
+              <Button variant="contained" onClick={() => history.push("/login")}>
+                SignIn
+              </Button>
+            </>
           ) : (
               <IconButton color="inherit" onClick={handleProfileClick}>
                 <Badge color="secondary">
