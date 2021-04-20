@@ -22,7 +22,7 @@
      *  Visible only if logged out
      *  OnClick redirects to `Login Page`
      *  after logging in, redirects to the original URL
-  *  Map View
+  *  [Low Priority] Map View
     *  Alternate to `Open Requests List`
     *  **No filters**
     *  Category counts per state on hover
