@@ -55,6 +55,11 @@
     * Contact number
     * Updated At
     * Different color scheme for Open/Close status
+    * Status
+      * To be shown only if editing
+      * Two options
+        * Open
+        * Closed
   * Submit button
     * OnClick redirects to `My Requests` Page
 * Login Page
@@ -63,6 +68,7 @@
     * Login with Facebook
     * Login with Twitter
 * Request Details Page
+  * `Edit Icon` if request by the logged in user
   * Title
   * Image
   * Category as label
