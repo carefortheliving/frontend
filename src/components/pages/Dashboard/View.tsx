@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Dashboard() {
-  const firebase = useFirebase();
+  const { getAuthStatus } = useFirebase();
   const classes = useStyles();
 
   const cards = [
@@ -142,9 +142,9 @@ function Dashboard() {
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    setIsLogged(firebase.getAuthStatus());
-    console.log(firebase.getAuthStatus());
-  }, [firebase.getAuthStatus()]);
+    setIsLogged(getAuthStatus());
+    console.log(getAuthStatus());
+  }, [getAuthStatus()]);
 
   return (
     <div className={classes.root}>

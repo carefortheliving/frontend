@@ -3,9 +3,8 @@ import app from "firebase/app";
 import "firebase/auth";
 import "firebase/firebase-firestore";
 import firebase from "firebase";
-import { useGenericState } from './useGenericState';
-import { atom, selector, useRecoilState } from 'recoil';
 import useGenericRecoilState from './useGenericRecoilState';
+import firebaseStore from './initialState'
 
 const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -22,17 +21,8 @@ const config = {
 };
 //////////////////////////
 
-const firebaseStore = atom({
-  key: 'firebase',
-  default: {
-    auth: undefined as firebase.auth.Auth | undefined,
-    db: undefined as firebase.firestore.Firestore | undefined,
-  },
-  dangerouslyAllowMutability: true,
-});
-
 const useFirebase = () => {
-  const [state, setState] = useGenericRecoilState(firebaseStore);
+  const [state, setState]: [any, Function] = useGenericRecoilState<any>(firebaseStore);
   const { auth, db } = state;
 
   React.useEffect(() => {
@@ -40,13 +30,16 @@ const useFirebase = () => {
   }, []);
 
 
-  const init = async () => {
-    if (!(await isInitialized())) {
-      app.initializeApp(config);
-      setState({
-        auth: app.auth(),
-        db: app.firestore()
-      });
+  const init = () => {
+    const value = isInitialized();
+    if (!value) {
+      app.initializeApp(config)
+      setState((prev) => ({
+          ...prev,
+          auth: app.auth(),
+          db: app.firestore()
+        })
+      );
     }
   };
 
@@ -54,11 +47,7 @@ const useFirebase = () => {
     return auth?.signOut();
   }
 
-  const isInitialized = () => {
-    return new Promise((resolve) => {
-      auth?.onAuthStateChanged(resolve);
-    });
-  }
+  const isInitialized = () => auth && Object.keys(auth).length > 0 ? true : false;
 
   const getAuthStatus = () => {
     if (auth?.currentUser) {

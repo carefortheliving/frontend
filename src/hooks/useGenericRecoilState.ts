@@ -1,7 +1,7 @@
 import { RecoilState, useRecoilState } from 'recoil';
 
-type CB<T> = (updatedState: T) => void;
-type SetState<T> = (newState: Partial<T>, cb?: CB<T>) => void;
+export type CB<T> = (updatedState: T) => void;
+export type SetState<T> = (newState: Partial<T>, cb?: CB<T>) => void;
 
 function useGenericRecoilState<T>(
   recoilStateStore: RecoilState<T>
