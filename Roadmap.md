@@ -1,27 +1,27 @@
 * Home page
   *  Nav Bar
-    *  Logo/Name of the website
-      *  on left
-    * `Create Request` Button
-      *  Right top
-      *  OnClick 
-        *  if logged out:
-          *  redirects to the `Login Page`
-          *  after login, redirects to `Create Request Form`
-        *  if logged in: 
-          *  redirects to `Create Request Form`
-   *  Profile Icon
-     *  Right of the `Create Request` button
-     *  Visible only if logged in
-     *  Menu items
-       *  My Requests
-         *  redirects to `My Requests` page
-       *  Logout
-         *  after logging out, redirects to the original URL (or home page)
-   *  `Sign In` button
-     *  Visible only if logged out
-     *  OnClick redirects to `Login Page`
-     *  after logging in, redirects to the original URL
+     *  Logo/Name of the website
+       *  on left
+     * `Create Request` Button
+       *  Right top
+       *  OnClick 
+         *  if logged out:
+           *  redirects to the `Login Page`
+           *  after login, redirects to `Create Request Form`
+         *  if logged in: 
+           *  redirects to `Create Request Form`
+    *  Profile Icon
+      *  Right of the `Create Request` button
+      *  Visible only if logged in
+      *  Menu items
+        *  My Requests
+          *  redirects to `My Requests` page
+        *  Logout
+          *  after logging out, redirects to the original URL (or home page)
+    *  `Sign In` button
+      *  Visible only if logged out
+      *  OnClick redirects to `Login Page`
+      *  after logging in, redirects to the original URL
   *  [Low Priority] Map View
     *  Alternate to `Open Requests List`
     *  **No filters**
