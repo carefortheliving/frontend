@@ -11,7 +11,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
 import Typography from "@material-ui/core/Typography";
-import useFirebase from "../../../hooks/useFirebase";
+import { useAuth } from "src/hooks/useFirebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,8 +73,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Dashboard() {
-  const { getAuthStatus } = useFirebase();
   const classes = useStyles();
+  const { user } = useAuth();
 
   const cards = [
     {
@@ -139,18 +139,11 @@ function Dashboard() {
     },
   ];
 
-  const [isLogged, setIsLogged] = useState(false);
-
-  useEffect(() => {
-    setIsLogged(getAuthStatus());
-    console.log(getAuthStatus());
-  }, [getAuthStatus()]);
-
   return (
     <div className={classes.root}>
       <CssBaseline />
 
-      <Navbar title="Care for the Living" isLogged={isLogged} />
+      <Navbar title="Care for the Living" isLogged={user && user.email ? true : false} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
@@ -162,7 +155,7 @@ function Dashboard() {
               color="textPrimary"
               gutterBottom
             >
-              Care for the Living test {isLogged}
+              Care for the Living test {user && user.email ? user.email : ''}
             </Typography>
             <Typography
               variant="h6"
