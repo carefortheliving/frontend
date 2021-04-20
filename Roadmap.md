@@ -15,7 +15,7 @@
      *  Visible only if logged in
      *  Menu items
        *  My Requests
-         *  sets the `My Requests Checkbox` to enabled
+         *  redirects to `My Requests` page
        *  Logout
          *  after logging out, redirects to the original URL (or home page)
    *  `Sign In` button
@@ -67,7 +67,7 @@
     * Login with Google
     * Login with Facebook
     * Login with Twitter
-* Request Details Page
+* Create/Edit Request Details Page
   * `Edit Icon` if request by the logged in user
   * Title
   * Image
@@ -79,6 +79,11 @@
   * Different color scheme for Open/Close status
   * Description
   * `Disqus` comment thread
+* My Requests Page
+  * List of cards of the requests by the logged in User
+  * If UI permits, display `edit icon` on the card
+    * OnClick redirects to `Edit Request Details` Page
+  * OnClick (anywhere on the card) redirects to `Request Details` Page
 
 ---
 
