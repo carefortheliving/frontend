@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Footer from "src/components/common/Footer/View";
 import { useHistory } from "react-router-dom";
-import useFirebase from "src/hooks/useFirebase";
+import { useAuth } from "src/hooks/useFirebase";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LogIn() {
-  const { getAuthStatus, signInWithGoogle } = useFirebase();
+  const { user, signInWithGoogle } = useAuth();
   const classes = useStyles();
   let history = useHistory();
   
   
   useEffect(() => {
-    if (getAuthStatus()) {
+    if (user && user.email) {
       history.push("/");
     }
   }, [])

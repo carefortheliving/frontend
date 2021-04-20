@@ -11,7 +11,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
-import useFirebase from "../../../hooks/useFirebase";
+import { useAuth } from "src/hooks/useFirebase";
 
 const drawerWidth = 240;
 
@@ -134,10 +134,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Navbar(props) {
-  const firebase = useFirebase();
+  const { logout } = useAuth();
   const classes = useStyles();
   let history = useHistory();
-  console.log(props.isLogged, "alok");
   const [profileBtn, setProfileBtn] = React.useState(null);
   const handleProfileClick = (event) => {
     setProfileBtn(event.currentTarget);
@@ -192,10 +191,6 @@ function Navbar(props) {
     </div>
   );
 
-  async function logout() {
-    await firebase.logout();
-    window.location.reload(false);
-  }
 }
 
 export default Navbar;
