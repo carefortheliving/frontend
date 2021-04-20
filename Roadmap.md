@@ -22,6 +22,11 @@
      *  Visible only if logged out
      *  OnClick redirects to `Login Page`
      *  after logging in, redirects to the original URL
+  *  Map View
+    *  Alternate to `Open Requests List`
+    *  **No filters**
+    *  Category counts per state on hover
+    *  Clicking on a district redirects to `Open Requests List` with `district` filter selected
   *  Open Requests List
     * Filters
       * On Side for Desktop View
