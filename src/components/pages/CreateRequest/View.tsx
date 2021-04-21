@@ -7,6 +7,7 @@ import { TextField, TextareaAutosize } from "@material-ui/core";
 import Navbar from "src/components/common/Navbar/View";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MuiPhoneNumber from "material-ui-phone-number";
+import useGeo from 'src/hooks/useGeo';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,11 +40,21 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     category: { value: 'plasma', label: 'Plasma'},
     gender: { value: 'male', label: 'Male'},
     bloodGroup: { value: 'a+', label: 'A+' },
-    state: { value: 'plasma', label: 'Plasma'},
-    district: { value: 'plasma', label: 'Plasma'},
+    state: { value: 'Uttar Pradesh', label: 'Uttar Pradesh'},
+    district: { value: 'Muzaffarnagar', label: 'Muzaffarnagar'},
     contactNumber: '9823784323'
   };
-  const { handleSubmit, control, reset, register, setValue } = useForm({ defaultValues });
+  const { handleSubmit, control, reset, register, setValue, getValues } = useForm({ defaultValues });
+  const { states } = useGeo();
+  const [districts, setDistricts] = React.useState([]);
+
+  const handleStateChange = (state: string) => {
+    // getValues().state.value
+    const newDistricts = states[state]?.map(el => ({ key: el.city, label: el.city })) || [];
+    setDistricts(newDistricts);
+    setValue('district', newDistricts[0]);
+  };
+
   const onSubmit = data => console.log(data);
 
   const renderDescription = () => {
@@ -72,7 +83,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       name="category"
       control={control}
       render={({ field }) => {
-      console.log({ field });
       return <Select
         {...field}
         placeholder="Select Category"
@@ -144,11 +154,11 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       render={({ field }) => <Select
         {...field}
         placeholder="Select State"
-        options={[
-          { value: "plasma", label: "Plasma" },
-          { value: "blood", label: "Blood" },
-          { value: "other", label: "Other" },
-        ]}
+        onChange={(option) => {
+          handleStateChange(option.key);
+          field?.onChange(option);
+        }}
+        options={Object.keys(states).map(key => ({ key, label: key }))}
       />}
     />;
   };
@@ -160,10 +170,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       render={({ field }) => <Select
         {...field}
         placeholder="Select District"
-        options={[
-          { value: "plasma", label: "plasma" },
-          { value: "blood", label: "blood" },
-        ]}
+        options={districts}
       />}
     />;
   };
@@ -297,6 +304,4 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     ;
 };
 
-export default React.memo(
-  withAuth(CreateRequest)
-);
+export default withAuth(CreateRequest);
