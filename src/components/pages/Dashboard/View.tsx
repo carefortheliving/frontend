@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Footer from "src/components/common/Footer/View";
 import Box from "@material-ui/core/Box";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
-import Typography from "@material-ui/core/Typography";
 import { useAuth } from "src/hooks/useFirebase";
 import firebase from "firebase";
+import * as React from 'react';
 
+import Filter from "./Filters"
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -31,20 +32,14 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
-  paper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column",
-  },
   fixedHeight: {
     height: 240,
   },
   greet: {
-    marginLeft: "auto",
-    marginRight: "auto",
+    // marginLeft: "auto",
+    // marginRight: "auto",
     textAlign: "center",
-    paddingTop: "2em",
+    paddingTop: "1em",
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
@@ -66,17 +61,29 @@ const useStyles = makeStyles((theme) => ({
     background: "#efefef",
   },
   cardMedia: {
-    paddingTop: "56.25%", // 16:9
+    paddingTop: "56.25%",
   },
   cardContent: {
     flexGrow: 1,
   },
+  filter_Heading: {
+    textAlign:"center",
+    margin:"3.5rem 0 1rem 0"
+  },
+  filter_Container: {
+    position:"relative"
+  },
+  filter:{
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center"
+  }
 }));
 
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
-
+  
   React.useEffect(() => {
     // const db = firebase.firestore();
     // db.collection('requests').get().then((docRef) => {
@@ -154,10 +161,7 @@ function Dashboard() {
     <div className={classes.root}>
       <CssBaseline />
 
-      <Navbar
-        title="Care for the Living"
-        isLogged={user && user.email ? true : false}
-      />
+      <Navbar title="Care for the Living" />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
@@ -184,47 +188,54 @@ function Dashboard() {
             </Typography>
           </Container>
         </div>
-
-        <div className={classes.greet}>
-          <Typography component="h1" variant="h5">
-            Filter Goes Here
-          </Typography>
-        </div>
-        <Container className={classes.cardGrid} maxWidth="lg">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card.id} xs={12} sm={6} md={4}>
-                <Card
-                  className={`${
-                    card.status === "open"
-                      ? classes.openCard
-                      : classes.closedCard
-                  }`}
-                >
-                  <CardMedia
-                    className={classes.cardMedia}
-                    image={card.image}
-                    title="Image title"
-                  />
-                  <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {card.title}
-                    </Typography>
-                    <Typography>Requested By: {card.requestor}</Typography>
-                    <Typography>
-                      Address: {card.district}, {card.state}
-                    </Typography>
-                    <Typography>Mobile: {card.contact}</Typography>
-                    <br />
-                    <Chip label={card.category} variant="outlined" />
-                    <Chip label={card.updated} variant="outlined" />
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+            <Grid container>
+                      <Grid item  md={3} >
+                        <div className={classes.filter_Container}>
+                          <Typography component="h1" variant="h5" className={classes.filter_Heading}>
+                            Filter Requests
+                          </Typography>
+                          <div className={classes.filter}>
+                                <Filter/>
+                          </div> 
+                      </div>
+                      </Grid>
+                      <Grid item md={9}>
+                          <Container className={classes.cardGrid} maxWidth="lg">
+                          <Grid container spacing={4}>
+                            {cards.map((card) => (
+                              <Grid item key={card.id} xs={12} sm={6} md={4}>
+                                <Card
+                                  className={`${
+                                    card.status === "open"
+                                      ? classes.openCard
+                                      : classes.closedCard
+                                  }`}
+                                >
+                                  <CardMedia
+                                    className={classes.cardMedia}
+                                    image={card.image}
+                                    title="Image title"
+                                  />
+                                  <CardContent className={classes.cardContent}>
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                      {card.title}
+                                    </Typography>
+                                    <Typography>Requested By: {card.requestor}</Typography>
+                                    <Typography>
+                                      Address: {card.district}, {card.state}
+                                    </Typography>
+                                    <Typography>Mobile: {card.contact}</Typography>
+                                    <br />
+                                    <Chip label={card.category} variant="outlined" />
+                                    <Chip label={card.updated} variant="outlined" />
+                                  </CardContent>
+                                </Card>
+                              </Grid>
+                            ))}
+                          </Grid>
+                      </Container>
+                  </Grid>  
+            </Grid>      
         <Box pt={4}>
           <Footer />
         </Box>

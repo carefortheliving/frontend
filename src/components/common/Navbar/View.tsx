@@ -13,7 +13,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
 import useFirebase from "../../../hooks/useFirebase";
-import { getCreateRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
+import { getCreateRequestRoute, getMyRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/hooks/useFirebase";
 
 const drawerWidth = 240;
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
+    paddingRight: 24,
   },
   toolbarIcon: {
     display: "flex",
@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    cursor: "pointer",
   },
   drawerPaper: {
     position: "relative",
@@ -102,15 +103,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Navbar(props) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const classes = useStyles();
-  let history = useHistory();
+  const history = useHistory();
   const [profileBtn, setProfileBtn] = React.useState(null);
+
+  const isLogged = !!(user && user.email);
+
   const handleProfileClick = (event) => {
     setProfileBtn(event.currentTarget);
   };
   const handleProfileClose = () => {
     setProfileBtn(null);
+  };
+  const handleLogOut = () => {
+    logout();
+    history.push("/");
   };
 
   return (
@@ -125,6 +133,7 @@ function Navbar(props) {
             color="inherit"
             noWrap
             className={classes.title}
+            onClick={() => history.push("/")}
           >
             {props.title}
           </Typography>
@@ -137,14 +146,14 @@ function Navbar(props) {
           >
             Create Request
           </Button>
-          {!props.isLogged ? (
+          {isLogged ? (
             <>
               <Button
                 variant="contained"
                 size="small"
                 onClick={() => history.push(getLoginRoute())}
               >
-                SignIn
+                Sign In
               </Button>
             </>
           ) : (
@@ -161,8 +170,10 @@ function Navbar(props) {
             open={Boolean(profileBtn)}
             onClose={handleProfileClose}
           >
-            <MenuItem onClick={handleProfileClose}>My Requests</MenuItem>
-            <MenuItem onClick={logout}>Logout</MenuItem>
+            <MenuItem onClick={() => history.push(getMyRequestRoute())}>
+              My Requests
+            </MenuItem>
+            <MenuItem onClick={handleLogOut}>Logout</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>

@@ -1,6 +1,12 @@
-import * as React from 'react';
-import { Button, Container, Grid, makeStyles, Typography } from '@material-ui/core';
-import withAuth from 'src/components/common/withAuth/View';
+import React, { useEffect } from "react";
+import {
+  Button,
+  Container,
+  Grid,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
+import withAuth from "src/components/common/withAuth/View";
 import { useFormContext, Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import { TextField, TextareaAutosize } from "@material-ui/core";
@@ -14,7 +20,7 @@ import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
@@ -27,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(8, 0, 6),
   },
   buttons: {
-    marginTop: '50px'
-  }
+    marginTop: "50px",
+  },
 }));
 interface CreateRequestProps {
   isEdit?: boolean;
@@ -38,6 +44,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   isEdit
 }) => {
   const classes = useStyles();
+  // const { user } = useAuth();
   const defaultValues = {
     description: 'Manglam',
     requester: 'Koi toh',
@@ -50,17 +57,31 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     // status: { value: 'open', label: 'Open' },
     // donor: ''
   };
-  const { handleSubmit, control, reset, register, setValue, getValues } = useForm({ defaultValues });
+  const {
+    handleSubmit,
+    control,
+    reset,
+    register,
+    setValue,
+    getValues,
+  } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
   // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
   const history = useHistory();
 
+  // useEffect(() => {
+  //   if (!(user && user.email)) {
+  //     history.push("/login");
+  //   }
+  // }, []);
+
   const handleStateChange = (state: string) => {
     // getValues().state.value
-    const newDistricts = states[state]?.map(el => ({ key: el.city, label: el.city })) || [];
+    const newDistricts =
+      states[state]?.map((el) => ({ key: el.city, label: el.city })) || [];
     setDistricts(newDistricts);
-    setValue('district', newDistricts[0]);
+    setValue("district", newDistricts[0]);
   };
 
   // const handleStatusChange = (status: string) => {
@@ -117,39 +138,47 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   };
 
   const renderGender = () => {
-    return <Controller
-      name="gender"
-      control={control}
-      render={({ field }) => <Select
-        {...field}
-        placeholder="Select Blood Group of the patient"
-        options={[
-          { value: "male", label: "Male" },
-          { value: "femal", label: "Female" },
-        ]}
-      />}
-    />;
+    return (
+      <Controller
+        name="gender"
+        control={control}
+        render={({ field }) => (
+          <Select
+            {...field}
+            placeholder="Select Blood Group of the patient"
+            options={[
+              { value: "male", label: "Male" },
+              { value: "femal", label: "Female" },
+            ]}
+          />
+        )}
+      />
+    );
   };
 
   const renderBloodGroup = () => {
-    return <Controller
-      name="bloodGroup"
-      control={control}
-      render={({ field }) => <Select
-        {...field}
-        placeholder="Select Blood Group of the patient"
-        options={[
-          { value: "a+", label: "A+" },
-          { value: "a-", label: "A-" },
-          { value: "b+", label: "B+" },
-          { value: "b-", label: "B-" },
-          { value: "c+", label: "C+" },
-          { value: "c-", label: "C-" },
-          { value: "ab+", label: "AB+" },
-          { value: "ab+", label: "AB+" },
-        ]}
-      />}
-    />;
+    return (
+      <Controller
+        name="bloodGroup"
+        control={control}
+        render={({ field }) => (
+          <Select
+            {...field}
+            placeholder="Select Blood Group of the patient"
+            options={[
+              { value: "a+", label: "A+" },
+              { value: "a-", label: "A-" },
+              { value: "b+", label: "B+" },
+              { value: "b-", label: "B-" },
+              { value: "c+", label: "C+" },
+              { value: "c-", label: "C-" },
+              { value: "ab+", label: "AB+" },
+              { value: "ab+", label: "AB+" },
+            ]}
+          />
+        )}
+      />
+    );
   };
 
   const renderContactNumber = () => {
@@ -184,15 +213,19 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   };
 
   const renderDistrict = () => {
-    return <Controller
-      name="district"
-      control={control}
-      render={({ field }) => <Select
-        {...field}
-        placeholder="Select District"
-        options={districts}
-      />}
-    />;
+    return (
+      <Controller
+        name="district"
+        control={control}
+        render={({ field }) => (
+          <Select
+            {...field}
+            placeholder="Select District"
+            options={districts}
+          />
+        )}
+      />
+    );
   };
 
   // const renderStatus = () => {
@@ -271,12 +304,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={1}>
-
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    Requester's Name
-                  </Typography>
+                  <Typography variant="h5">Requester's Name</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderRequester()}
@@ -285,9 +315,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    Contact Number
-                  </Typography>
+                  <Typography variant="h5">Contact Number</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderContactNumber()}
@@ -296,9 +324,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    Category
-                  </Typography>
+                  <Typography variant="h5">Category</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderCategory()}
@@ -307,9 +333,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    Patient's Gender
-                  </Typography>
+                  <Typography variant="h5">Patient's Gender</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderGender()}
@@ -318,9 +342,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    Patient's Blood Group
-                  </Typography>
+                  <Typography variant="h5">Patient's Blood Group</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderBloodGroup()}
@@ -329,9 +351,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    State
-                  </Typography>
+                  <Typography variant="h5">State</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderState()}
@@ -340,9 +360,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    District
-                  </Typography>
+                  <Typography variant="h5">District</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderDistrict()}
@@ -351,9 +369,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
-                    Description
-                  </Typography>
+                  <Typography variant="h5">Description</Typography>
                 </Grid>
                 <Grid item xs>
                   {renderDescription()}
@@ -393,14 +409,12 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                   {renderResolve()}
                 </Grid> */}
               </Grid>
-
             </Grid>
           </form>
         </Container>
       </div>
     </main>
-  </div>
-    ;
+  </div>;
 };
 
 export default withAuth(CreateRequest);
