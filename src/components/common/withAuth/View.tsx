@@ -1,31 +1,31 @@
 import * as React from "react";
 import { getLoginRoute } from "../RouterOutlet/routerUtils";
+import { useAuth } from "src/hooks/useFirebase";
+import { useHistory } from "react-router-dom";
 
 const withAuth = <T extends React.FC>(Component: T) => {
-  const WithAuthHOC: React.FC<any> = ({
-    ...props
-  }) => {
-    const [loading, setLoading] = React.useState(true);
+  const WithAuthHOC: React.FC<any> = ({ ...props }) => {
+    // const [loading, setLoading] = React.useState(true);
+    const { user } = useAuth();
+    const history = useHistory();
 
     React.useEffect(() => {
       init();
     }, []);
 
     const init = async () => {
-      setLoading(true);
-      const authenticated = true;
-      // TODO: Check if authenticated
-      setLoading(false);
+      // setLoading(true);
+      const authenticated = user && user.email;
+      // setLoading(false);
       if (!authenticated) {
         // TODO: Somehow store original route and redirect back to it after login?
-        return (window.location.href = getLoginRoute());
+        history.push(getLoginRoute());
       }
-      return;
-    }
+    };
 
-    if (loading) {
-      return null;
-    }
+    // if (loading) {
+    //   return null;
+    // }
     return <Component {...props} />;
   };
 

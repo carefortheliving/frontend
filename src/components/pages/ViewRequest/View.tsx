@@ -26,10 +26,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-interface ViewRequestProps {
-}
+interface ViewRequestProps {}
 
-const ViewRequest: React.FC<ViewRequestProps> = ({ }) => {
+const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -67,6 +66,4 @@ const ViewRequest: React.FC<ViewRequestProps> = ({ }) => {
   </div>;
 };
 
-export default React.memo(
-  withAuth(ViewRequest)
-);
+export default React.memo(withAuth(ViewRequest));
