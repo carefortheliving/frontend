@@ -143,7 +143,10 @@ function Dashboard() {
     <div className={classes.root}>
       <CssBaseline />
 
-      <Navbar title="Care for the Living" isLogged={user && user.email ? true : false} />
+      <Navbar
+        title="Care for the Living"
+        isLogged={user && user.email ? true : false}
+      />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
@@ -155,7 +158,8 @@ function Dashboard() {
               color="textPrimary"
               gutterBottom
             >
-              Care for the Living test {user && user.email ? user.email : ''}
+              Care for the Living <br></br>
+              Hello, {user && user.email ? user.email : "Guest"}
             </Typography>
             <Typography
               variant="h6"
