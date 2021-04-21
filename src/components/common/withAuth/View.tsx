@@ -2,9 +2,7 @@ import * as React from "react";
 import { getLoginRoute } from "../RouterOutlet/routerUtils";
 
 const withAuth = <T extends React.FC>(Component: T) => {
-  const WithAuthHOC: React.FC<any> = ({
-    ...props
-  }) => {
+  const WithAuthHOC: React.FC<any> = ({ ...props }) => {
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
@@ -21,7 +19,7 @@ const withAuth = <T extends React.FC>(Component: T) => {
         return (window.location.href = getLoginRoute());
       }
       return;
-    }
+    };
 
     if (loading) {
       return null;
