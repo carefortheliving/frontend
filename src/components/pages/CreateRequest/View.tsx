@@ -1,22 +1,21 @@
-import React, { useEffect } from "react";
 import {
   Button,
   Container,
   Grid,
-  makeStyles,
-  Typography,
+  makeStyles, TextareaAutosize, TextField, Typography
 } from "@material-ui/core";
-import withAuth from "src/components/common/withAuth/View";
-import { useFormContext, Controller, useForm } from "react-hook-form";
-import Select from "react-select";
-import { TextField, TextareaAutosize } from "@material-ui/core";
-import Navbar from "src/components/common/Navbar/View";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MuiPhoneNumber from "material-ui-phone-number";
-import useGeo from 'src/hooks/useGeo';
-import { useHistory } from "react-router-dom";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import Select from "react-select";
+import Navbar from "src/components/common/Navbar/View";
 import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { useSnackbar } from "src/components/common/SnackbarProvider/View";
+import withAuth from "src/components/common/withAuth/View";
 import useFirestore from "src/hooks/useFirestore";
+import useGeo from 'src/hooks/useGeo';
 import { RequestType } from "src/types";
 
 const useStyles = makeStyles((theme) => ({
@@ -48,15 +47,14 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const classes = useStyles();
   // const { user } = useAuth();
   const defaultValues = { 
-    requestDescription: 'Manglam',
-    requesterName: 'Koi toh',
+    requestDescription: '',
+    requesterName: '',
     requestCategory: { value: 'plasma', label: 'Plasma' },
     patientGender: { value: 'male', label: 'Male' },
     patientBloodGroup: { value: 'a+', label: 'A+' },
     patientState: { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
     patientDistrict: { value: 'Muzaffarnagar', label: 'Muzaffarnagar' },
-    requesterContactNumber: '9823784323',
-    requestStatus: { value: 'open', label: 'Open' },
+    requesterContactNumber: '',
     // donor: ''
   } as RequestType;
   const {
@@ -71,13 +69,26 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const [districts, setDistricts] = React.useState([]);
   // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
   const history = useHistory();
-  const { addRequest } = useFirestore();
+  const params = useParams();
+  // const match = useRouteMatch();
+  const { addRequest, updateRequest, getRequest } = useFirestore();
+  const snackbar = useSnackbar();
 
-  // useEffect(() => {
-  //   if (!(user && user.email)) {
-  //     history.push("/login");
-  //   }
-  // }, []);
+  React.useEffect(() => {
+    prefillData();
+  }, []);
+
+  const prefillData = async () => {
+    // if (!(user && user.email)) {
+    //   history.push("/login");
+    // }
+    const existingRequest = isEdit ? await getRequest(params?.docId) : undefined;
+    if (typeof existingRequest === 'object') {
+      Object.keys(existingRequest).forEach((key) => {
+        setValue(key as any, existingRequest?.[key]);
+      });
+    }
+  };
 
   const handleStateChange = (state: string) => {
     // getValues().state.value
@@ -94,9 +105,20 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   const onSubmit = async (data: RequestType) => {
     console.log(data);
-    const res = await addRequest(data);
-    console.log({ res });
-    history.push(getHomeRoute());
+    try {
+      const res = isEdit ? await updateRequest(params?.docId, data) : await addRequest({
+        ...data,
+        requestStatus: { value: 'open', label: 'Open' },
+      });
+      // console.log({ newId: res.id });
+      snackbar.show('success', `Request ${isEdit ? 'updated' : 'created'} successfully!`);
+      // message.success('Request created successfully!')
+      history.push(getHomeRoute());
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      snackbar.show('error', `Couldn't create request!`);
+      // message.error(`Couldn't create request!`);
+    }
   };
 
   const handleCancel = async () => {

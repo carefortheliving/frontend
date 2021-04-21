@@ -17,7 +17,7 @@ const RouterOutlet = (props) => {
       <Route path="/" exact component={Dashboard} />
       <Route path="/login" component={Login} />
       <Route path="/request/create" component={CreateRequest} />
-      <Route path="/request/edit" component={() => <CreateRequest isEdit={true}/>} />
+      <Route path="/request/edit/:docId" exact component={(props) => <CreateRequest isEdit={true} {...props}/>} />
       <Route path="/request/view" component={ViewRequest} />
       <Route path="/thank" component={SayThanks} />
       <Route path="/request/me" component={MyRequest} />
