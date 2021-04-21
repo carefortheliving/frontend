@@ -9,6 +9,7 @@ const CreateRequest = React.lazy(
   () => import("../../pages/CreateRequest/View")
 );
 const ViewRequest = React.lazy(() => import("../../pages/ViewRequest/View"));
+const MyRequest = React.lazy(() => import("../../pages/MyRequest/View"));
 
 const RouterOutlet = (props) => {
   return (
@@ -18,6 +19,7 @@ const RouterOutlet = (props) => {
         <Route path="/login" component={Login} />
         <Route path="/request/create" component={CreateRequest} />
         <Route path="/request/view" component={ViewRequest} />
+        <Route path="/request/me" component={MyRequest} />
       </Switch>
     </Suspense>
   );

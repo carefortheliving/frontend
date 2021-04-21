@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Footer from "src/components/common/Footer/View";
 import Box from "@material-ui/core/Box";
+import CardActions from "@material-ui/core/CardActions";
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
@@ -11,6 +14,7 @@ import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
 import Typography from "@material-ui/core/Typography";
 import { useAuth } from "src/hooks/useFirebase";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 24, // keep right padding when drawer closed
   },
   appBarSpacer: theme.mixins.toolbar,
+  greet: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    textAlign: "center",
+    paddingTop: "2em",
+  },
   content: {
     flexGrow: 1,
     height: "100vh",
@@ -31,16 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
   fixedHeight: {
     height: 240,
-  },
-  greet: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    textAlign: "center",
-    paddingTop: "2em",
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
   },
   cardGrid: {
     paddingTop: theme.spacing(8),
@@ -58,16 +58,26 @@ const useStyles = makeStyles((theme) => ({
     background: "#efefef",
   },
   cardMedia: {
-    paddingTop: "56.25%",
+    paddingTop: "56.25%", // 16:9
   },
   cardContent: {
     flexGrow: 1,
   },
 }));
 
-function Dashboard() {
+function MyRequest() {
   const classes = useStyles();
   const { user } = useAuth();
+
+  const history = useHistory();
+  useEffect(() => {
+    if (!(user && user.email)) {
+      history.push("/login");
+    }
+  }, []);
+  useEffect(() => {
+    // TODO: Call firebase to fetch records
+  }, []);
 
   const cards = [
     {
@@ -94,42 +104,6 @@ function Dashboard() {
       updated: "6:00pm",
       status: "open",
     },
-    {
-      id: 3,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "closed",
-    },
-    {
-      id: 4,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "open",
-    },
-    {
-      id: 5,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "open",
-    },
   ];
 
   return (
@@ -142,37 +116,13 @@ function Dashboard() {
       />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          <Container maxWidth="md">
-            <Typography
-              component="h2"
-              variant="h3"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Care for the Living <br></br>
-              Hello, {user && user.email ? user.email : "Guest"}
-            </Typography>
-            <Typography
-              variant="h6"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
-            </Typography>
-          </Container>
-        </div>
-
         <div className={classes.greet}>
           <Typography component="h1" variant="h5">
-            Filter Goes Here
+            My Requests
           </Typography>
         </div>
         <Container className={classes.cardGrid} maxWidth="lg">
+          {/* End hero unit */}
           <Grid container spacing={4}>
             {cards.map((card) => (
               <Grid item key={card.id} xs={12} sm={6} md={4}>
@@ -201,6 +151,11 @@ function Dashboard() {
                     <Chip label={card.category} variant="outlined" />
                     <Chip label={card.updated} variant="outlined" />
                   </CardContent>
+                  <CardActions>
+                    <Button size="small" color="secondary" variant="outlined">
+                      Edit
+                    </Button>
+                  </CardActions>
                 </Card>
               </Grid>
             ))}
@@ -214,4 +169,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default MyRequest;

@@ -12,8 +12,10 @@ import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
-import useFirebase from "../../../hooks/useFirebase";
-import { getCreateRequestRoute } from "../RouterOutlet/routerUtils";
+import {
+  getCreateRequestRoute,
+  getMyRequestRoute,
+} from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/hooks/useFirebase";
 
 const drawerWidth = 240;
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
+    paddingRight: 24,
   },
   toolbarIcon: {
     display: "flex",
@@ -104,13 +106,17 @@ const useStyles = makeStyles((theme) => ({
 function Navbar(props) {
   const { logout } = useAuth();
   const classes = useStyles();
-  let history = useHistory();
+  const history = useHistory();
   const [profileBtn, setProfileBtn] = React.useState(null);
   const handleProfileClick = (event) => {
     setProfileBtn(event.currentTarget);
   };
   const handleProfileClose = () => {
     setProfileBtn(null);
+  };
+  const handleLogOut = () => {
+    logout();
+    history.push("/");
   };
 
   return (
@@ -145,7 +151,7 @@ function Navbar(props) {
                 size="small"
                 onClick={() => history.push("/login")}
               >
-                SignIn
+                Sign In
               </Button>
             </>
           ) : (
@@ -162,8 +168,10 @@ function Navbar(props) {
             open={Boolean(profileBtn)}
             onClose={handleProfileClose}
           >
-            <MenuItem onClick={handleProfileClose}>My Requests</MenuItem>
-            <MenuItem onClick={logout}>Logout</MenuItem>
+            <MenuItem onClick={() => history.push(getMyRequestRoute())}>
+              My Requests
+            </MenuItem>
+            <MenuItem onClick={handleLogOut}>Logout</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>

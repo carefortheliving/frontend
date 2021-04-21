@@ -9,3 +9,7 @@ export const getCreateRequestRoute = () => {
 export const getViewRequestRoute = () => {
   return `/request/view`;
 };
+
+export const getMyRequestRoute = () => {
+  return `/request/me`;
+};
