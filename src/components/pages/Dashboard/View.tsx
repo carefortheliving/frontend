@@ -173,7 +173,7 @@ function Dashboard() {
               gutterBottom
             >
               Care for the Living <br></br>
-              Hello, {user.displayName || "Guest"}
+              Hello, {user?.displayName || "Guest"}
             </Typography>
             <Typography
               variant="h6"
