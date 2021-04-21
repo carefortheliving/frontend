@@ -47,13 +47,13 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     state: { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
     district: { value: 'Muzaffarnagar', label: 'Muzaffarnagar' },
     contactNumber: '9823784323',
-    status: { value: 'open', label: 'Open' },
-    donor: ''
+    // status: { value: 'open', label: 'Open' },
+    // donor: ''
   };
   const { handleSubmit, control, reset, register, setValue, getValues } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
-  const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
+  // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
   const history = useHistory();
 
   const handleStateChange = (state: string) => {
@@ -63,10 +63,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     setValue('district', newDistricts[0]);
   };
 
-  const handleStatusChange = (status: string) => {
-    console.log({ status });
-    setIsDonorVisible(status === 'closed');
-  };
+  // const handleStatusChange = (status: string) => {
+  //   console.log({ status });
+  //   setIsDonorVisible(status === 'closed');
+  // };
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -195,38 +195,38 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     />;
   };
 
-  const renderStatus = () => {
-    return <Controller
-      name="status"
-      control={control}
-      render={({ field }) => {
-        return <Select
-          {...field}
-          isDisabled={!isEdit}
-          placeholder="Select Status"
-          options={[
-            { value: "open", label: "Open" },
-            { value: "closed", label: "Closed" },
-          ]}
-          onChange={(option) => {
-            handleStatusChange(option.value);
-            field?.onChange(option);
-          }}
-        />;
-      }}
-    />;
-  };
+  // const renderStatus = () => {
+  //   return <Controller
+  //     name="status"
+  //     control={control}
+  //     render={({ field }) => {
+  //       return <Select
+  //         {...field}
+  //         isDisabled={!isEdit}
+  //         placeholder="Select Status"
+  //         options={[
+  //           { value: "open", label: "Open" },
+  //           { value: "closed", label: "Closed" },
+  //         ]}
+  //         onChange={(option) => {
+  //           handleStatusChange(option.value);
+  //           field?.onChange(option);
+  //         }}
+  //       />;
+  //     }}
+  //   />;
+  // };
 
-  const renderDonor = () => {
-    return <Controller
-      name={'donor'}
-      control={control}
-      defaultValue=""
-      render={({ field }) => <TextareaAutosize {...field}
-        placeholder="Donor details"
-        style={{ width: '100%', height: '100px' }} />}
-    />;
-  };
+  // const renderDonor = () => {
+  //   return <Controller
+  //     name={'donor'}
+  //     control={control}
+  //     defaultValue=""
+  //     render={({ field }) => <TextareaAutosize {...field}
+  //       placeholder="Donor details"
+  //       style={{ width: '100%', height: '100px' }} />}
+  //   />;
+  // };
 
   const renderSubmit = () => {
     return <Button
@@ -360,7 +360,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                 </Grid>
               </Grid>
 
-              <Grid container xs={12} sm={12}>
+              {/* <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">
                     Status
@@ -369,9 +369,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                 <Grid item xs>
                   {renderStatus()}
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              {isDonorVisible ? <Grid container xs={12} sm={12}>
+              {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">
                     Donor Details
@@ -380,7 +380,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                 <Grid item xs>
                   {renderDonor()}
                 </Grid>
-              </Grid> : null}
+              </Grid> : null} */}
 
               <Grid container xs={12} sm={12} md={12}
                 // justify="flex-end"

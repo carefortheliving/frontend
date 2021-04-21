@@ -12,6 +12,7 @@ import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
 import Typography from "@material-ui/core/Typography";
 import { useAuth } from "src/hooks/useFirebase";
+import firebase from "firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,6 +76,16 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
+
+  React.useEffect(() => {
+    // const db = firebase.firestore();
+    // db.collection('requests').get().then((docRef) => {
+    //   console.log("Document written with ID: ", docRef.docs);
+    // })
+    // .catch((error) => {
+    //   console.error("Error adding document: ", error);
+    // });
+  }, []);
 
   const cards = [
     {
