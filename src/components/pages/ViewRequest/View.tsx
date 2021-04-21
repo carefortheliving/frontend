@@ -6,9 +6,11 @@ import { useHistory, useParams } from "react-router-dom";
 import { getEditRequestRoute, getHomeRoute, getMyRequestRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import Navbar from "src/components/common/Navbar/View";
 import useFirestore from "src/hooks/useFirestore";
+import useFirebase from 'src/hooks/useFirebase';
 import { RequestType } from 'src/types';
 import moment from 'moment';
 import { parseTime } from 'src/utils/commonUtils';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,6 +40,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   const params = useParams();
   const { addRequest, updateRequest, getRequest } = useFirestore();
   const [data, setData] = React.useState(undefined as undefined | RequestType);
+  const { auth } = useFirebase();
 
   React.useEffect(() => {
     prefillData();
@@ -222,7 +225,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                 </Grid>
               </Grid> : null} */}
 
-              {data?.requestStatus?.value === 'open' ? <Grid container xs={12} sm={12} md={12}
+              {data?.requestStatus?.value === 'open' ? (data?.requesterEmail === auth?.user?.email ? <Grid container xs={12} sm={12} md={12}
                 // justify="flex-end"
                 className={classes.buttons}>
                 <Grid item xs={6} sm={6} md={4} spacing={2}>
@@ -236,15 +239,18 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                 {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}
-              </Grid> : <>
+              </Grid> : null) : <>
                 <Grid container xs={12} sm={12}>
                   <Grid item xs>
                     <Typography variant="h5">Donor Name</Typography>
                   </Grid>
                   <Grid item xs>
-                    {renderFieldValue(data?.donorName, {
-                      fontWeight: 600
-                    })}
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      {renderFieldValue(data?.donorName, {
+                        fontWeight: 600
+                      })}
+                      <FavoriteIcon color="secondary" fontSize="small" style={{ marginLeft: '5px' }}/>
+                    </span>
                   </Grid>
                 </Grid>
 
