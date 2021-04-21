@@ -3,10 +3,12 @@ import { Button, Container, Grid, makeStyles, Typography } from '@material-ui/co
 import CssBaseline from "@material-ui/core/CssBaseline";
 import withAuth from 'src/components/common/withAuth/View';
 import { useHistory, useParams } from "react-router-dom";
-import { getEditRequestRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { getEditRequestRoute, getHomeRoute, getMyRequestRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import Navbar from "src/components/common/Navbar/View";
 import useFirestore from "src/hooks/useFirestore";
 import { RequestType } from 'src/types';
+import moment from 'moment';
+import { parseTime } from 'src/utils/commonUtils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +59,10 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
     history.push(getEditRequestRoute(params?.docId));
   };
 
+  const handleCancel = async () => {
+    history.push(getMyRequestRoute());
+  };
+
   const renderCloseButton = () => {
     return <Button
       variant="contained"
@@ -65,6 +71,15 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
       style={{ marginRight: '10px' }}
     >
       Close
+    </Button>;
+  };
+
+  const renderCancelButton = () => {
+    return <Button
+      variant="contained"
+      onClick={handleCancel}
+    >
+      Cancel
     </Button>;
   };
 
@@ -167,6 +182,24 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                 </Grid>
               </Grid>
 
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
+                  <Typography variant="h5">Created At</Typography>
+                </Grid>
+                <Grid item xs>
+                  {renderFieldValue(parseTime(data?.createdAt))}
+                </Grid>
+              </Grid>
+
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
+                  <Typography variant="h5">Updated At</Typography>
+                </Grid>
+                <Grid item xs>
+                  {renderFieldValue(parseTime(data?.updatedAt))}
+                </Grid>
+              </Grid>
+
               {/* <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">
@@ -192,9 +225,13 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
               {data?.requestStatus?.value === 'open' ? <Grid container xs={12} sm={12} md={12}
                 // justify="flex-end"
                 className={classes.buttons}>
-                <Grid item xs={12} sm={6} md={4} spacing={2}>
+                <Grid item xs={6} sm={6} md={4} spacing={2}>
                   {renderEditButton()}
                   {renderCloseButton()}
+                </Grid>
+
+                <Grid item xs={6} sm={6} md={4} spacing={2} justify="flex-end">
+                  {renderCancelButton()}
                 </Grid>
                 {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
@@ -217,6 +254,17 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                   </Grid>
                   <Grid item xs>
                     {renderFieldValue(data?.donorEmail, {
+                      fontWeight: 600
+                    })}
+                  </Grid>
+                </Grid>
+
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">Status</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderFieldValue('Closed', {
                       fontWeight: 600
                     })}
                   </Grid>

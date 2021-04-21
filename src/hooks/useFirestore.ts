@@ -1,16 +1,25 @@
 import { RequestType } from 'src/types';
 import useFirebase from './useFirebase';
+// import firebase from "firebase";
+import { getCurrentTime } from 'src/utils/commonUtils';
 
 const useFirestore = () => {
   const { db, auth } = useFirebase();
   
   const addRequest = async (request: RequestType) => {
-    const requests = await db.collection("requests").add(request);
+    const requests = await db.collection("requests").add({
+      ...request,
+      createdAt: getCurrentTime(),
+      updatedAt: getCurrentTime(),
+    });
     return requests;
   };
 
   const updateRequest = async (docId: string, request: RequestType) => {
-    const res = await db.collection("requests").doc(docId)?.update(request);
+    const res = await db.collection("requests").doc(docId)?.update({
+      ...request,
+      updatedAt: getCurrentTime(),
+    });
     return res;
   };
 

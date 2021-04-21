@@ -11,7 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import Select from "react-select";
 import Navbar from "src/components/common/Navbar/View";
-import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { getHomeRoute, getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import withAuth from "src/components/common/withAuth/View";
 import useFirestore from "src/hooks/useFirestore";
@@ -119,10 +119,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       // console.log({ newId: res.id });
       snackbar.show('success', `Request ${isEdit ? 'updated' : 'created'} successfully!`);
       // message.success('Request created successfully!')
-      history.push(getHomeRoute());
+      history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
     } catch (e) {
-      // console.error("Error adding document: ", e);
-      snackbar.show('error', `Couldn't create request!`);
+      console.error("Error adding document: ", e);
+      snackbar.show('error', `Couldn't ${isEdit ? 'update' : 'create'} request!`);
       // message.error(`Couldn't create request!`);
     }
   };
