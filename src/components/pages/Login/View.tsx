@@ -29,22 +29,18 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  inLink: {
-    // textDecoration: 'none',
-  },
 }));
 
 function LogIn() {
   const { user, signInWithGoogle } = useAuth();
   const classes = useStyles();
   let history = useHistory();
-  
-  
+
   useEffect(() => {
     if (user && user.email) {
       history.push("/");
     }
-  }, [])
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Container,
@@ -13,6 +13,7 @@ import { TextField, TextareaAutosize } from "@material-ui/core";
 import Navbar from "src/components/common/Navbar/View";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MuiPhoneNumber from "material-ui-phone-number";
+import { useHistory } from "react-router-dom";
 import useGeo from "src/hooks/useGeo";
 import { useAuth } from "src/hooks/useFirebase";
 
@@ -60,6 +61,13 @@ const CreateRequest: React.FC<CreateRequestProps> = ({}) => {
   } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
+
+  const history = useHistory();
+  useEffect(() => {
+    if (!(user && user.email)) {
+      history.push("/login");
+    }
+  }, []);
 
   const handleStateChange = (state: string) => {
     // getValues().state.value
