@@ -3,16 +3,18 @@ import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
 import useFirebase from "../../../hooks/useFirebase";
 import { getCreateRequestRoute } from "../RouterOutlet/routerUtils";
+import { useAuth } from "src/hooks/useFirebase";
 
 const drawerWidth = 240;
 
@@ -93,52 +95,15 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
-  search: {
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
-      width: "auto",
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inputRoot: {
-    color: "inherit",
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
+  btnStyle: {
+    margin: theme.spacing(1),
   },
 }));
 
 function Navbar(props) {
-  const firebase = useFirebase();
+  const { logout } = useAuth();
   const classes = useStyles();
   let history = useHistory();
-  console.log(props.isLogged, "alok");
   const [profileBtn, setProfileBtn] = React.useState(null);
   const handleProfileClick = (event) => {
     setProfileBtn(event.currentTarget);
@@ -152,6 +117,7 @@ function Navbar(props) {
       <CssBaseline />
       <AppBar position="absolute">
         <Toolbar className={classes.toolbar}>
+          <LocalHospitalIcon className={classes.btnStyle} />
           <Typography
             component="h1"
             variant="h6"
@@ -161,21 +127,32 @@ function Navbar(props) {
           >
             {props.title}
           </Typography>
+          <Button
+            variant="contained"
+            className={classes.btnStyle}
+            size="small"
+            color="secondary"
+            onClick={() => history.push(getCreateRequestRoute())}
+          >
+            Create Request
+          </Button>
           {!props.isLogged ? (
-            <Button
-              size="small"
-              color="secondary"
-              onClick={() => history.push(getCreateRequestRoute())}
-            >
-              Create Request
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => history.push("/login")}
+              >
+                SignIn
+              </Button>
+            </>
           ) : (
-              <IconButton color="inherit" onClick={handleProfileClick}>
-                <Badge color="secondary">
-                  <AccountCircleIcon />
-                </Badge>
-              </IconButton>
-            )}
+            <IconButton color="inherit" onClick={handleProfileClick}>
+              <Badge color="secondary">
+                <AccountCircleIcon />
+              </Badge>
+            </IconButton>
+          )}
           <Menu
             id="simple-menu"
             anchorEl={profileBtn}
@@ -183,19 +160,13 @@ function Navbar(props) {
             open={Boolean(profileBtn)}
             onClose={handleProfileClose}
           >
-            <MenuItem onClick={handleProfileClose}>Profile</MenuItem>
-            <MenuItem onClick={handleProfileClose}>Create Request</MenuItem>
+            <MenuItem onClick={handleProfileClose}>My Requests</MenuItem>
             <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
     </div>
   );
-
-  async function logout() {
-    await firebase.logout();
-    window.location.reload(false);
-  }
 }
 
 export default Navbar;
