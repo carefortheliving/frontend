@@ -6,6 +6,8 @@ import AppLoader from '../AppLoader/View';
 
 const Login = React.lazy(() => import('../../pages/Login/View'));
 const Dashboard = React.lazy(() => import('../../pages/Dashboard/View'));
+const CreateRequest = React.lazy(() => import('../../pages/CreateRequest/View'));
+const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
 
 const RouterOutlet = (props) => {
   return (
@@ -13,6 +15,8 @@ const RouterOutlet = (props) => {
     <Switch>
       <Route path="/" exact component={Dashboard} />
       <Route path="/login" component={Login} />
+      <Route path="/request/create" component={CreateRequest} />
+      <Route path="/request/view" component={ViewRequest} />
     </Switch>
   </Suspense>);
 };
