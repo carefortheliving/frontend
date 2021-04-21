@@ -25,7 +25,10 @@ const useFirestore = () => {
 
   const getRequests = async () => {
     const requests = await db.collection("requests").get();
-    return requests;
+    return requests.docs?.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as unknown as (RequestType & { id: string })[];
   };
 
   const getRequest = async (docId: string) => {
