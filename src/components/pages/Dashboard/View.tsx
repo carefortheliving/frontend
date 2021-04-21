@@ -10,9 +10,9 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
-import { useAuth } from "src/hooks/useFirebase";
-import firebase from "firebase";
+import { useAuth } from "src/components/common/AuthProvider/View";
 import * as React from 'react';
+import useFirestore from 'src/hooks/useFirestore';
 
 import Filter from "./Filters"
 const useStyles = makeStyles((theme) => ({
@@ -83,15 +83,14 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
+  const { getRequests } = useFirestore();
   
   React.useEffect(() => {
-    // const db = firebase.firestore();
-    // db.collection('requests').get().then((docRef) => {
-    //   console.log("Document written with ID: ", docRef.docs);
-    // })
-    // .catch((error) => {
-    //   console.error("Error adding document: ", error);
-    // });
+    getRequests().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data(), doc.id);
+      });
+    });
   }, []);
 
   const cards = [
@@ -174,7 +173,7 @@ function Dashboard() {
               gutterBottom
             >
               Care for the Living <br></br>
-              Hello, {user && user.email ? user.email : "Guest"}
+              Hello, {user.displayName || "Guest"}
             </Typography>
             <Typography
               variant="h6"

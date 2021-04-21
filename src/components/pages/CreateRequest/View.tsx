@@ -16,6 +16,8 @@ import MuiPhoneNumber from "material-ui-phone-number";
 import useGeo from 'src/hooks/useGeo';
 import { useHistory } from "react-router-dom";
 import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import useFirestore from "src/hooks/useFirestore";
+import { RequestType } from "src/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,18 +47,18 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 }) => {
   const classes = useStyles();
   // const { user } = useAuth();
-  const defaultValues = {
-    description: 'Manglam',
-    requester: 'Koi toh',
-    category: { value: 'plasma', label: 'Plasma' },
-    gender: { value: 'male', label: 'Male' },
-    bloodGroup: { value: 'a+', label: 'A+' },
-    state: { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
-    district: { value: 'Muzaffarnagar', label: 'Muzaffarnagar' },
-    contactNumber: '9823784323',
-    // status: { value: 'open', label: 'Open' },
+  const defaultValues = { 
+    requestDescription: 'Manglam',
+    requesterName: 'Koi toh',
+    requestCategory: { value: 'plasma', label: 'Plasma' },
+    patientGender: { value: 'male', label: 'Male' },
+    patientBloodGroup: { value: 'a+', label: 'A+' },
+    patientState: { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+    patientDistrict: { value: 'Muzaffarnagar', label: 'Muzaffarnagar' },
+    requesterContactNumber: '9823784323',
+    requestStatus: { value: 'open', label: 'Open' },
     // donor: ''
-  };
+  } as RequestType;
   const {
     handleSubmit,
     control,
@@ -69,6 +71,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const [districts, setDistricts] = React.useState([]);
   // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
   const history = useHistory();
+  const { addRequest } = useFirestore();
 
   // useEffect(() => {
   //   if (!(user && user.email)) {
@@ -81,7 +84,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     const newDistricts =
       states[state]?.map((el) => ({ key: el.city, label: el.city })) || [];
     setDistricts(newDistricts);
-    setValue("district", newDistricts[0]);
+    setValue("patientDistrict", newDistricts[0]);
   };
 
   // const handleStatusChange = (status: string) => {
@@ -89,8 +92,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   //   setIsDonorVisible(status === 'closed');
   // };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: RequestType) => {
     console.log(data);
+    const res = await addRequest(data);
+    console.log({ res });
     history.push(getHomeRoute());
   };
 
@@ -100,7 +105,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   const renderDescription = () => {
     return <Controller
-      name={'description'}
+      name={'requestDescription'}
       control={control}
       defaultValue=""
       render={({ field }) => <TextareaAutosize {...field}
@@ -111,7 +116,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   const renderRequester = () => {
     return <Controller
-      name={'requester'}
+      name={'requesterName'}
       control={control}
       defaultValue=""
       render={({ field }) => <TextField {...field}
@@ -121,7 +126,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   const renderCategory = () => {
     return <Controller
-      name="category"
+      name="requestCategory"
       control={control}
       render={({ field }) => {
         return <Select
@@ -140,7 +145,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const renderGender = () => {
     return (
       <Controller
-        name="gender"
+        name="patientGender"
         control={control}
         render={({ field }) => (
           <Select
@@ -159,7 +164,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const renderBloodGroup = () => {
     return (
       <Controller
-        name="bloodGroup"
+        name="patientBloodGroup"
         control={control}
         render={({ field }) => (
           <Select
@@ -183,7 +188,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   const renderContactNumber = () => {
     return <Controller
-      name={'contactNumber'}
+      name={'requesterContactNumber'}
       control={control}
       defaultValue=""
       render={({ field }) => <MuiPhoneNumber {...field}
@@ -198,7 +203,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   const renderState = () => {
     return <Controller
-      name="state"
+      name="patientState"
       control={control}
       render={({ field }) => <Select
         {...field}
@@ -215,7 +220,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const renderDistrict = () => {
     return (
       <Controller
-        name="district"
+        name="patientDistrict"
         control={control}
         render={({ field }) => (
           <Select

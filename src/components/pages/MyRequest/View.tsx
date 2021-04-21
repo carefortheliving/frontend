@@ -13,7 +13,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
 import Typography from "@material-ui/core/Typography";
-import { useAuth } from "src/hooks/useFirebase";
+import { useAuth } from "src/components/common/AuthProvider/View";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
