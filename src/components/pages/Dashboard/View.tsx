@@ -20,6 +20,7 @@ import { RequestType } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -119,8 +120,8 @@ function Dashboard() {
       <Grid item key={card.id} xs={12} sm={6} md={4}>
         <Card
           className={`${card.requestStatus?.value === "open"
-              ? classes.openCard
-              : classes.closedCard
+            ? classes.openCard
+            : classes.closedCard
             }`}
           onClick={() => handleCardClick(card.id)}
         >
@@ -138,6 +139,11 @@ function Dashboard() {
               Address: {card.patientDistrict?.label}, {card.patientState?.label}
             </Typography>
             <Typography>Mobile: {card.requesterContactNumber}</Typography>
+            {card.requestStatus?.value === "closed" ?
+              <Typography style={{ display: 'flex', alignItems: 'center' }}>
+                Donor: {card.donorName}
+                <FavoriteIcon color="secondary" fontSize="small" style={{ marginLeft: '5px' }}/>
+              </Typography> : null}
             <br />
             <Chip label={card.requestCategory?.label} variant="outlined" />
             <Chip label={parseTime(card.updatedAt)} variant="outlined" />

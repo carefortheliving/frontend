@@ -74,25 +74,45 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   // const match = useRouteMatch();
   const { addRequest, updateRequest, getRequest } = useFirestore();
   const snackbar = useSnackbar();
+  const [data, setData] = React.useState(undefined as undefined | RequestType);
 
   React.useEffect(() => {
-    prefillData();
+    loadData();
   }, []);
 
   React.useEffect(() => {
     setValue('requesterName', auth?.user?.displayName);
   }, [auth?.user?.displayName]);
 
-  const prefillData = async () => {
-    // if (!(user && user.email)) {
-    //   history.push("/login");
-    // }
+  React.useEffect(() => {
+    ensurePermissions();
+  }, [data?.requesterEmail]);
+
+  React.useEffect(() => {
+    prefillData();
+  }, [data]);
+
+  const isOriginalUser = () => {
+    return data?.requesterEmail ? data?.requesterEmail === auth?.user?.email : true;
+  };
+
+  const ensurePermissions = () => {
+    if (!isOriginalUser()) {
+      history.push(getHomeRoute());
+    }
+  };
+
+  const loadData = async () => {
     const existingRequest = isEdit ? await getRequest(params?.docId) : undefined;
     if (typeof existingRequest === 'object') {
-      Object.keys(existingRequest).forEach((key) => {
-        setValue(key as any, existingRequest?.[key]);
-      });
+      setData(existingRequest as any);
     }
+  };
+
+  const prefillData = async () => {
+    data && Object.keys(data).forEach((key) => {
+      setValue(key as any, data?.[key]);
+    });
   };
 
   const handleStateChange = (state: string) => {
@@ -110,6 +130,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   const onSubmit = async (data: RequestType) => {
     // console.log(data);
+    if (!isOriginalUser()) {
+      snackbar.show('error', `You're not authorized for the action!`);
+      return;
+    }
     try {
       const res = isEdit ? await updateRequest(params?.docId, data) : await addRequest({
         ...data,
@@ -343,7 +367,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                   <Typography variant="h5">Requester's Email</Typography>
                 </Grid>
                 <Grid item xs>
-                <Typography variant="h6">{auth?.user?.email}</Typography>
+                <Typography variant="h6">{data?.requesterEmail}</Typography>
                 </Grid>
               </Grid>
 
