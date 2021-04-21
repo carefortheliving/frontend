@@ -1,3 +1,7 @@
+export const getHomeRoute = () => {
+  return `/`;
+};
+
 export const getLoginRoute = () => {
   return `/login`;
 };

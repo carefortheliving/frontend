@@ -16,6 +16,7 @@ const RouterOutlet = (props) => {
       <Route path="/" exact component={Dashboard} />
       <Route path="/login" component={Login} />
       <Route path="/request/create" component={CreateRequest} />
+      <Route path="/request/edit" component={() => <CreateRequest isEdit={true}/>} />
       <Route path="/request/view" component={ViewRequest} />
     </Switch>
   </Suspense>);

@@ -8,6 +8,8 @@ import Navbar from "src/components/common/Navbar/View";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MuiPhoneNumber from "material-ui-phone-number";
 import useGeo from 'src/hooks/useGeo';
+import { useHistory } from "react-router-dom";
+import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,24 +31,30 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 interface CreateRequestProps {
+  isEdit?: boolean;
 }
 
 const CreateRequest: React.FC<CreateRequestProps> = ({
+  isEdit
 }) => {
   const classes = useStyles();
   const defaultValues = {
     description: 'Manglam',
     requester: 'Koi toh',
-    category: { value: 'plasma', label: 'Plasma'},
-    gender: { value: 'male', label: 'Male'},
+    category: { value: 'plasma', label: 'Plasma' },
+    gender: { value: 'male', label: 'Male' },
     bloodGroup: { value: 'a+', label: 'A+' },
-    state: { value: 'Uttar Pradesh', label: 'Uttar Pradesh'},
-    district: { value: 'Muzaffarnagar', label: 'Muzaffarnagar'},
-    contactNumber: '9823784323'
+    state: { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+    district: { value: 'Muzaffarnagar', label: 'Muzaffarnagar' },
+    contactNumber: '9823784323',
+    status: { value: 'open', label: 'Open' },
+    donor: ''
   };
   const { handleSubmit, control, reset, register, setValue, getValues } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
+  const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
+  const history = useHistory();
 
   const handleStateChange = (state: string) => {
     // getValues().state.value
@@ -55,16 +63,28 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     setValue('district', newDistricts[0]);
   };
 
-  const onSubmit = data => console.log(data);
+  const handleStatusChange = (status: string) => {
+    console.log({ status });
+    setIsDonorVisible(status === 'closed');
+  };
+
+  const onSubmit = async (data) => {
+    console.log(data);
+    history.push(getHomeRoute());
+  };
+
+  const handleCancel = async () => {
+    history.push(getHomeRoute());
+  };
 
   const renderDescription = () => {
     return <Controller
       name={'description'}
       control={control}
       defaultValue=""
-      render={({ field }) => <TextareaAutosize {...field} 
-      placeholder="Description goes here ..."
-      style={{ width: '100%', height: '100px' }} />}
+      render={({ field }) => <TextareaAutosize {...field}
+        placeholder="Description goes here ..."
+        style={{ width: '100%', height: '100px' }} />}
     />;
   };
 
@@ -73,8 +93,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       name={'requester'}
       control={control}
       defaultValue=""
-      render={({ field }) => <TextField {...field} 
-      style={{ width: '100%' }} placeholder="Requester's Name" />}
+      render={({ field }) => <TextField {...field}
+        style={{ width: '100%' }} placeholder="Requester's Name" />}
     />;
   };
 
@@ -83,16 +103,16 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       name="category"
       control={control}
       render={({ field }) => {
-      return <Select
-        {...field}
-        placeholder="Select Category"
-        options={[
-          { value: "plasma", label: "Plasma" },
-          { value: "blood", label: "Blood" },
-          { value: "other", label: "Other" },
-        ]}
-      />;
-    }}
+        return <Select
+          {...field}
+          placeholder="Select Category"
+          options={[
+            { value: "plasma", label: "Plasma" },
+            { value: "blood", label: "Blood" },
+            { value: "other", label: "Other" },
+          ]}
+        />;
+      }}
     />;
   };
 
@@ -139,11 +159,11 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       defaultValue=""
       render={({ field }) => <MuiPhoneNumber {...field}
         defaultCountry={'in'}
-        onlyCountries={['in']} 
+        onlyCountries={['in']}
         disableCountryCode
         disableDropdown
-        style={{ width: '100%' }} 
-        placeholder="Contact Number"/>}
+        style={{ width: '100%' }}
+        placeholder="Contact Number" />}
     />;
   };
 
@@ -155,10 +175,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
         {...field}
         placeholder="Select State"
         onChange={(option) => {
-          handleStateChange(option.key);
+          handleStateChange(option.value);
           field?.onChange(option);
         }}
-        options={Object.keys(states).map(key => ({ key, label: key }))}
+        options={Object.keys(states).map(key => ({ value: key, label: key }))}
       />}
     />;
   };
@@ -175,15 +195,68 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     />;
   };
 
+  const renderStatus = () => {
+    return <Controller
+      name="status"
+      control={control}
+      render={({ field }) => {
+        return <Select
+          {...field}
+          isDisabled={!isEdit}
+          placeholder="Select Status"
+          options={[
+            { value: "open", label: "Open" },
+            { value: "closed", label: "Closed" },
+          ]}
+          onChange={(option) => {
+            handleStatusChange(option.value);
+            field?.onChange(option);
+          }}
+        />;
+      }}
+    />;
+  };
+
+  const renderDonor = () => {
+    return <Controller
+      name={'donor'}
+      control={control}
+      defaultValue=""
+      render={({ field }) => <TextareaAutosize {...field}
+        placeholder="Donor details"
+        style={{ width: '100%', height: '100px' }} />}
+    />;
+  };
+
   const renderSubmit = () => {
     return <Button
       variant="contained"
       color="primary"
       onClick={handleSubmit(onSubmit)}
+      style={{ marginRight: '10px' }}
     >
-      SUBMIT
+      Submit
   </Button>;
   };
+
+  const renderCancel = () => {
+    return <Button
+      variant="contained"
+      onClick={handleCancel}
+    >
+      Cancel
+    </Button>;
+  };
+
+  // const renderResolve = () => {
+  //   return <Button
+  //     variant="contained"
+  //     onClick={handleCancel}
+  //     color="secondary"
+  //   >
+  //     Close Request
+  //   </Button>;
+  // };
 
   return <div className={classes.root}>
     <CssBaseline />
@@ -194,7 +267,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       <div className={classes.heroContent}>
         <Container maxWidth="md">
           <Typography variant="h3" style={{ marginBottom: '50px' }}>
-            Request Registration
+            {isEdit ? 'Edit Request' : 'Create Request'}
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={1}>
@@ -287,12 +360,38 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                 </Grid>
               </Grid>
 
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
+                  <Typography variant="h5">
+                    Status
+                  </Typography>
+                </Grid>
+                <Grid item xs>
+                  {renderStatus()}
+                </Grid>
+              </Grid>
+
+              {isDonorVisible ? <Grid container xs={12} sm={12}>
+                <Grid item xs>
+                  <Typography variant="h5">
+                    Donor Details
+                  </Typography>
+                </Grid>
+                <Grid item xs>
+                  {renderDonor()}
+                </Grid>
+              </Grid> : null}
+
               <Grid container xs={12} sm={12} md={12}
                 // justify="flex-end"
                 className={classes.buttons}>
-                <Grid item xs={6} sm={6} md={4}>
+                <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderSubmit()}
+                  {renderCancel()}
                 </Grid>
+                {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
+                  {renderResolve()}
+                </Grid> */}
               </Grid>
 
             </Grid>

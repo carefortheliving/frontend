@@ -13,7 +13,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
 import useFirebase from "../../../hooks/useFirebase";
-import { getCreateRequestRoute } from "../RouterOutlet/routerUtils";
+import { getCreateRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/hooks/useFirebase";
 
 const drawerWidth = 240;
@@ -97,6 +97,7 @@ const useStyles = makeStyles((theme) => ({
   },
   btnStyle: {
     margin: theme.spacing(1),
+    fontWeight: 600
   },
 }));
 
@@ -130,7 +131,7 @@ function Navbar(props) {
           <Button
             variant="contained"
             className={classes.btnStyle}
-            size="small"
+            size="medium"
             color="secondary"
             onClick={() => history.push(getCreateRequestRoute())}
           >
@@ -141,7 +142,7 @@ function Navbar(props) {
               <Button
                 variant="contained"
                 size="small"
-                onClick={() => history.push("/login")}
+                onClick={() => history.push(getLoginRoute())}
               >
                 SignIn
               </Button>
