@@ -70,6 +70,7 @@
       * Two options
         * Open
         * Closed
+          * OnClick redirects to `Say Thanks` page
   * Submit button
     * OnClick redirects to `My Requests` Page
 * Login Page
@@ -103,6 +104,10 @@
   * If UI permits, display `edit icon` on the card
     * OnClick redirects to `Edit Request Details` Page
   * OnClick (anywhere on the card) redirects to `Request Details` Page
+* Say Thanks Page
+  * Fields
+    * Donor's name
+    * A few kind words
 
 ---
 
