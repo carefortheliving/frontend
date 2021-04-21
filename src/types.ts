@@ -16,4 +16,5 @@ export interface RequestType {
   requestStatus?: { value: string, label: string };
   requesterContactNumber: string;
   requesterName: string;
+  requesterEmail: string;
 }
