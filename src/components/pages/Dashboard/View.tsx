@@ -173,7 +173,7 @@ function Dashboard() {
               gutterBottom
             >
               Care for the Living <br></br>
-              Hello, {user?.displayName || "Guest"}
+              {/* Hello, {user?.displayName || "Guest"} */}
             </Typography>
             <Typography
               variant="h6"
@@ -181,9 +181,9 @@ function Dashboard() {
               color="textSecondary"
               paragraph
             >
-              Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
+              The world suffers & always has, but doesn't have to.
+              <br/>
+              You have the potential to change. Just keep going!
             </Typography>
           </Container>
         </div>

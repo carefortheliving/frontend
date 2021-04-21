@@ -15,6 +15,7 @@ import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import withAuth from "src/components/common/withAuth/View";
 import useFirestore from "src/hooks/useFirestore";
+import useFirebase from 'src/hooks/useFirebase';
 import useGeo from 'src/hooks/useGeo';
 import { RequestType } from "src/types";
 
@@ -45,7 +46,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   isEdit
 }) => {
   const classes = useStyles();
-  // const { user } = useAuth();
+  const { auth } = useFirebase();
   const defaultValues = { 
     requestDescription: '',
     requesterName: '',
@@ -78,6 +79,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
     prefillData();
   }, []);
 
+  React.useEffect(() => {
+    setValue('requesterName', auth?.user?.displayName);
+  }, [auth?.user?.displayName]);
+
   const prefillData = async () => {
     // if (!(user && user.email)) {
     //   history.push("/login");
@@ -109,6 +114,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       const res = isEdit ? await updateRequest(params?.docId, data) : await addRequest({
         ...data,
         requestStatus: { value: 'open', label: 'Open' },
+        requesterEmail: auth?.user?.email,
       });
       // console.log({ newId: res.id });
       snackbar.show('success', `Request ${isEdit ? 'updated' : 'created'} successfully!`);
@@ -331,6 +337,16 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={1}>
+
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
+                  <Typography variant="h5">Requester's Email</Typography>
+                </Grid>
+                <Grid item xs>
+                <Typography variant="h6">{auth?.user?.email}</Typography>
+                </Grid>
+              </Grid>
+
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">Requester's Name</Typography>
