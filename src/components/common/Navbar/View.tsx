@@ -12,9 +12,8 @@ import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
-import useFirebase from "../../../hooks/useFirebase";
 import { getCreateRequestRoute, getMyRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
-import { useAuth } from "src/hooks/useFirebase";
+import { useAuth } from "src/components/common/AuthProvider/View";
 
 const drawerWidth = 240;
 
@@ -147,6 +146,12 @@ function Navbar(props) {
             Create Request
           </Button>
           {isLogged ? (
+            <IconButton color="inherit" onClick={handleProfileClick}>
+              <Badge color="secondary">
+                <AccountCircleIcon />
+              </Badge>
+            </IconButton>
+          ) : (
             <>
               <Button
                 variant="contained"
@@ -156,12 +161,6 @@ function Navbar(props) {
                 Sign In
               </Button>
             </>
-          ) : (
-            <IconButton color="inherit" onClick={handleProfileClick}>
-              <Badge color="secondary">
-                <AccountCircleIcon />
-              </Badge>
-            </IconButton>
           )}
           <Menu
             id="simple-menu"

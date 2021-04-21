@@ -1,6 +1,6 @@
 import * as React from "react";
 import { getLoginRoute } from "../RouterOutlet/routerUtils";
-import { useAuth } from "src/hooks/useFirebase";
+import { useAuth } from "src/components/common/AuthProvider/View";
 import { useHistory } from "react-router-dom";
 
 const withAuth = <T extends React.FC>(Component: T) => {

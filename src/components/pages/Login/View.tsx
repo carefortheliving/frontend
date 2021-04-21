@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Footer from "src/components/common/Footer/View";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "src/hooks/useFirebase";
+import { useAuth } from "src/components/common/AuthProvider/View";
 import { getHomeRoute } from "src/components/common/RouterOutlet/routerUtils";
 
 const useStyles = makeStyles((theme) => ({
