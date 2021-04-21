@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { useState, useEffect, useContext, createContext } from "react";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 // Initialize Firebase
 firebase.initializeApp({
@@ -28,7 +28,6 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({} as any);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
 
- 
   const signInWithGoogle = async () => {
     return await firebase.auth().signInWithPopup(provider);
   };
@@ -47,7 +46,7 @@ const AuthProvider = ({ children }) => {
   // ... component that utilizes this hook to re-render with the ...
   // ... latest auth object.
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       setUser(user);
       setIsAuthenticating(false);
     });
@@ -68,6 +67,6 @@ const AuthProvider = ({ children }) => {
       {!isAuthenticating && children}
     </AuthContext.Provider>
   );
-}
+};
 
 export default AuthProvider;
