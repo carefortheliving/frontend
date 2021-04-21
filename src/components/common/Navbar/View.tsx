@@ -12,6 +12,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
 import useFirebase from "../../../hooks/useFirebase";
+import { getCreateRequestRoute } from "../RouterOutlet/routerUtils";
 
 const drawerWidth = 240;
 
@@ -164,7 +165,7 @@ function Navbar(props) {
             <Button
               size="small"
               color="secondary"
-              onClick={() => history.push("/login")}
+              onClick={() => history.push(getCreateRequestRoute())}
             >
               Create Request
             </Button>
