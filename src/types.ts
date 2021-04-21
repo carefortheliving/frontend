@@ -17,4 +17,6 @@ export interface RequestType {
   requesterContactNumber: string;
   requesterName: string;
   requesterEmail: string;
+  createdAt: number;
+  updatedAt: number;
 }
