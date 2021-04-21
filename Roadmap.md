@@ -70,6 +70,7 @@
       * Two options
         * Open
         * Closed
+          * OnClick redirects to `Say Thanks` page
   * Submit button
     * OnClick redirects to `My Requests` Page
 * Login Page
@@ -79,6 +80,7 @@
     * Login with Twitter
 * Request Details Page
   * `Edit Icon` if request by the logged in user
+    * OnClick redirects to `Edit Request` page
   * Title
   * Image
   * Category
@@ -103,6 +105,10 @@
   * If UI permits, display `edit icon` on the card
     * OnClick redirects to `Edit Request Details` Page
   * OnClick (anywhere on the card) redirects to `Request Details` Page
+* Say Thanks Page
+  * Fields
+    * Donor's name
+    * A few kind words
 
 ---
 
