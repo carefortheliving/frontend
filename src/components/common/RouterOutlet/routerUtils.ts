@@ -10,16 +10,16 @@ export const getCreateRequestRoute = () => {
   return `/request/create`;
 };
 
-export const getEditRequestRoute = () => {
-  return `/request/edit`;
+export const getEditRequestRoute = (docId: string) => {
+  return `/request/edit/${docId}`;
 };
 
-export const getViewRequestRoute = () => {
-  return `/request/view`;
+export const getViewRequestRoute = (docId: string) => {
+  return `/request/view/${docId}`;
 };
 
-export const getSayThanksRoute = () => {
-  return `/thank`;
+export const getSayThanksRoute = (docId: string) => {
+  return `/thank/${docId}`;
 };
 
 export const getMyRequestRoute = () => {

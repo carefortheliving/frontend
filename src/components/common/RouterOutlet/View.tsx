@@ -18,8 +18,8 @@ const RouterOutlet = (props) => {
       <Route path="/login" component={Login} />
       <Route path="/request/create" component={CreateRequest} />
       <Route path="/request/edit/:docId" exact component={(props) => <CreateRequest isEdit={true} {...props}/>} />
-      <Route path="/request/view" component={ViewRequest} />
-      <Route path="/thank" component={SayThanks} />
+      <Route path="/request/view/:docId" exact component={ViewRequest} />
+      <Route path="/thank/:docId" exact component={SayThanks} />
       <Route path="/request/me" component={MyRequest} />
     </Switch>
   </Suspense>);

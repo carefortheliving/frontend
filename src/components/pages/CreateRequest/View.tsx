@@ -104,7 +104,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   // };
 
   const onSubmit = async (data: RequestType) => {
-    console.log(data);
+    // console.log(data);
     try {
       const res = isEdit ? await updateRequest(params?.docId, data) : await addRequest({
         ...data,
@@ -115,7 +115,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
       // message.success('Request created successfully!')
       history.push(getHomeRoute());
     } catch (e) {
-      console.error("Error adding document: ", e);
+      // console.error("Error adding document: ", e);
       snackbar.show('error', `Couldn't create request!`);
       // message.error(`Couldn't create request!`);
     }

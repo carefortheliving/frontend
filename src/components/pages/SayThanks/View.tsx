@@ -3,10 +3,13 @@ import { Button, Container, Grid, makeStyles, Typography } from '@material-ui/co
 import { TextField, TextareaAutosize } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import withAuth from 'src/components/common/withAuth/View';
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { getHomeRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import Navbar from "src/components/common/Navbar/View";
 import { useFormContext, Controller, useForm } from "react-hook-form";
+import useFirestore from "src/hooks/useFirestore";
+import { useSnackbar } from "src/components/common/SnackbarProvider/View";
+import { RequestType } from 'src/types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,14 +38,39 @@ const SayThanks: React.FC<SayThanksProps> = ({ }) => {
   const classes = useStyles();
   const history = useHistory();
   const defaultValues = {
-    email: 'some@one.com',
-    donor: 'Someone good'
-  };
+    donorEmail: '',
+    donorName: ''
+  } as Pick<RequestType, 'donorEmail' | 'donorName'>;
   const { handleSubmit, control, reset, register, setValue, getValues } = useForm({ defaultValues });
+  const params = useParams();
+  const { addRequest, updateRequest, getRequest } = useFirestore();
+  const snackbar = useSnackbar();
+
+  React.useEffect(() => {
+    prefillData();
+  }, []);
+
+  const prefillData = async () => {
+    const existingRequest = await getRequest(params?.docId);
+    if (typeof existingRequest === 'object') {
+      Object.keys(existingRequest).forEach((key) => {
+        setValue(key as any, existingRequest?.[key]);
+      });
+    }
+  };
 
   const onSubmit = async (data) => {
     console.log(data);
-    history.push(getHomeRoute());
+    try {
+      const res = await updateRequest(params?.docId, {
+        ...data,
+        requestStatus: { value: 'closed', label: 'Closed' },
+      })
+      snackbar.show('success', `Request closed successfully!`);
+      history.push(getHomeRoute());
+    } catch (e) {
+      snackbar.show('error', `Couldn't close request!`);
+    }
   };
 
   const handleCancel = async () => {
@@ -51,7 +79,7 @@ const SayThanks: React.FC<SayThanksProps> = ({ }) => {
 
   const renderEmail = () => {
     return <Controller
-      name={'email'}
+      name={'donorEmail'}
       control={control}
       defaultValue=""
       render={({ field }) => <TextField {...field}
@@ -62,7 +90,7 @@ const SayThanks: React.FC<SayThanksProps> = ({ }) => {
 
   const renderDonor = () => {
     return <Controller
-      name={'donor'}
+      name={'donorName'}
       control={control}
       defaultValue=""
       render={({ field }) => <TextField {...field}
