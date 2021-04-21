@@ -283,4 +283,5 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   </div>;
 };
 
-export default React.memo(withAuth(ViewRequest));
+// export default React.memo(withAuth(ViewRequest));
+export default React.memo(ViewRequest);
