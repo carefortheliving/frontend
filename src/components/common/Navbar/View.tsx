@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    cursor: "pointer",
   },
   drawerPaper: {
     position: "relative",
@@ -124,6 +125,7 @@ function Navbar(props) {
             color="inherit"
             noWrap
             className={classes.title}
+            onClick={() => history.push("/")}
           >
             {props.title}
           </Typography>
