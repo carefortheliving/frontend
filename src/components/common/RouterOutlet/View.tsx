@@ -8,6 +8,7 @@ const Login = React.lazy(() => import('../../pages/Login/View'));
 const Dashboard = React.lazy(() => import('../../pages/Dashboard/View'));
 const CreateRequest = React.lazy(() => import('../../pages/CreateRequest/View'));
 const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
+const SayThanks = React.lazy(() => import('../../pages/SayThanks/View'));
 
 const RouterOutlet = (props) => {
   return (
@@ -18,6 +19,7 @@ const RouterOutlet = (props) => {
       <Route path="/request/create" component={CreateRequest} />
       <Route path="/request/edit" component={() => <CreateRequest isEdit={true}/>} />
       <Route path="/request/view" component={ViewRequest} />
+      <Route path="/thank" component={SayThanks} />
     </Switch>
   </Suspense>);
 };

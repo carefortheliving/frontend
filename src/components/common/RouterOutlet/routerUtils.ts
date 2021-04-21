@@ -13,3 +13,8 @@ export const getCreateRequestRoute = () => {
 export const getViewRequestRoute = () => {
   return `/request/view`;
 };
+
+export const getSayThanksRoute = () => {
+  return `/thank`;
+};
+
