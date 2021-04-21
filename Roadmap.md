@@ -80,6 +80,7 @@
     * Login with Twitter
 * Request Details Page
   * `Edit Icon` if request by the logged in user
+    * OnClick redirects to `Edit Request` page
   * Title
   * Image
   * Category
