@@ -3,57 +3,54 @@ import { Tree } from 'antd';
 import { makeStyles } from "@material-ui/core/styles";
 import FilterData from '../../../Constants/FilterData'
 
-const {categories , status , state:indianStates} = FilterData();
+const { categories, status, state: indianStates } = FilterData();
 
 
-const useStyles = makeStyles(()=>({
-    style:{
-        backgroundColor:"inherit"
-    }
+const useStyles = makeStyles(() => ({
+  style: {
+    backgroundColor: "inherit"
+  }
 }))
 const treeData = [
 
-    {
-        title : 'Status',
-        key: 'status',
-        children:[
-            ...status.map(item =>({title:item , key:item}) )
-        ]
-    },
+  {
+    title: 'Status',
+    key: 'status',
+    children: [
+      ...status.map(item => ({ title: item, key: item }))
+    ]
+  },
 
   {
-    title : 'Category',
+    title: 'Category',
     key: 'category',
-    children:[
-        ...categories.map(item =>({title:item , key:item}) )
+    children: [
+      ...categories.map(item => ({ title: item, key: item }))
     ]
   },
 
 
 
   {
-    title : 'Location',
+    title: 'Location',
     key: 'location',
-    children:[
-        ...Object.keys(indianStates).map(state => {
-            return ({title:state , key:state , children:[
-                ...indianStates[state].map(val =>{
-                    return ({title:val.city||val , key:val.city||val})
-                })
-            ]})
+    children: [
+      ...Object.keys(indianStates).map(state => {
+        return ({
+          title: state, key: state, children: [
+            ...indianStates[state].map(val => {
+              return ({ title: val.city || val, key: val.city || val })
+            })
+          ]
         })
+      })
     ]
-  },
-
-  {
-    title : 'My Requests',
-    key: 'My Requests',
   },
 ];
 
 const Demo = () => {
   const classes = useStyles();
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['status','category']);
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['status', 'category']);
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['Active']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -69,7 +66,7 @@ const Demo = () => {
   const onCheck = (checkedKeysValue) => {
     // console.log('onCheck', checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
-    
+
   };
 
   const onSelect = (selectedKeysValue: React.Key[], info: any) => {
@@ -78,39 +75,28 @@ const Demo = () => {
     // console.log('onCheck', checkedKeys);
     // console.log(selectedKeysValue)
 
-    if( !checkedKeys.includes(selectedKeysValue[0]) )
-        setCheckedKeys([...checkedKeys , selectedKeysValue[0]])
-    else 
-      setCheckedKeys(checkedKeys.filter( val => val!=selectedKeysValue[0]))
+    if (!checkedKeys.includes(selectedKeysValue[0]))
+      setCheckedKeys([...checkedKeys, selectedKeysValue[0]])
+    else
+      setCheckedKeys(checkedKeys.filter(val => val != selectedKeysValue[0]))
 
-};
-
-
-      React.useEffect(() => {
-        if(checkedKeys.includes("My Requests"))
-          { 
-            setExpandedKeys([])
-          }
-
-      }, [checkedKeys])
-
+  };
 
   return (
     <>
-
-    <Tree
-      checkable
-      onExpand={onExpand}
-      expandedKeys={expandedKeys}
-      autoExpandParent={autoExpandParent}
-      onCheck={onCheck}
-      checkedKeys={checkedKeys}
-      onSelect={onSelect}
-      selectedKeys={selectedKeys}
-      treeData={treeData}
-      className={classes.style}
-    />
-  </>
+      <Tree
+        checkable
+        onExpand={onExpand}
+        expandedKeys={expandedKeys}
+        autoExpandParent={autoExpandParent}
+        onCheck={onCheck}
+        checkedKeys={checkedKeys}
+        onSelect={onSelect}
+        selectedKeys={selectedKeys}
+        treeData={treeData}
+        className={classes.style}
+      />
+    </>
 
   );
 };

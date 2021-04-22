@@ -3,7 +3,7 @@ import { Button, Container, Grid, makeStyles, Typography } from '@material-ui/co
 import CssBaseline from "@material-ui/core/CssBaseline";
 import withAuth from 'src/components/common/withAuth/View';
 import { useHistory, useParams } from "react-router-dom";
-import { getEditRequestRoute, getHomeRoute, getMyRequestRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { getEditRequestRoute, getHomeRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import Navbar from "src/components/common/Navbar/View";
 import useFirestore from "src/hooks/useFirestore";
 import useFirebase from 'src/hooks/useFirebase';
@@ -48,7 +48,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
-    console.log({ existingRequest });
+    // console.log({ existingRequest });
     if (typeof existingRequest === 'object') {
       setData(existingRequest as any);
     }
@@ -63,7 +63,10 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   };
 
   const handleCancel = async () => {
-    history.push(getMyRequestRoute());
+    history.push({
+      pathname: getHomeRoute(),
+      search: '?tab=1'
+    });
   };
 
   const renderCloseButton = () => {
@@ -104,7 +107,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   return <div className={classes.root}>
     <CssBaseline />
 
-    <Navbar title="Care for the Living" />
+    <Navbar showBack title="Request Details"/>
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <div className={classes.heroContent}>
@@ -233,9 +236,9 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                   {renderCloseButton()}
                 </Grid>
 
-                <Grid item xs={6} sm={6} md={4} spacing={2} justify="flex-end">
+                {/* <Grid item xs={6} sm={6} md={4} spacing={2} justify="flex-end">
                   {renderCancelButton()}
-                </Grid>
+                </Grid> */}
                 {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}

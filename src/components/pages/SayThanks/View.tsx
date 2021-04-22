@@ -60,7 +60,7 @@ const SayThanks: React.FC<SayThanksProps> = ({ }) => {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       const res = await updateRequest(params?.docId, {
         ...data,
@@ -122,7 +122,7 @@ const SayThanks: React.FC<SayThanksProps> = ({ }) => {
   return <div className={classes.root}>
     <CssBaseline />
 
-    <Navbar title="Care for the Living" />
+    <Navbar showBack />
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <div className={classes.heroContent}>
