@@ -2,21 +2,29 @@ import {
   Button,
   Container,
   Grid,
-  makeStyles, TextareaAutosize, TextField, Typography
+  makeStyles,
+  TextareaAutosize,
+  TextField,
+  Typography,
 } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MuiPhoneNumber from "material-ui-phone-number";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
 import Navbar from "src/components/common/Navbar/View";
-import { getHomeRoute, getLoginRoute, getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import Box from "@material-ui/core/Box";
+import {
+  getHomeRoute,
+  getLoginRoute,
+  getViewRequestRoute,
+} from "src/components/common/RouterOutlet/routerUtils";
+import Footer from "src/components/common/Footer/View";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import withAuth from "src/components/common/withAuth/View";
 import useFirestore from "src/hooks/useFirestore";
-import useFirebase from 'src/hooks/useFirebase';
-import useGeo from 'src/hooks/useGeo';
+import useFirebase from "src/hooks/useFirebase";
+import useGeo from "src/hooks/useGeo";
 import { RequestType } from "src/types";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,20 +50,18 @@ interface CreateRequestProps {
   isEdit?: boolean;
 }
 
-const CreateRequest: React.FC<CreateRequestProps> = ({
-  isEdit
-}) => {
+const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const classes = useStyles();
   const { auth } = useFirebase();
-  const defaultValues = { 
-    requestDescription: '',
-    requesterName: '',
-    requestCategory: { value: 'plasma', label: 'Plasma' },
-    patientGender: { value: 'male', label: 'Male' },
-    patientBloodGroup: { value: 'a+', label: 'A+' },
-    patientState: { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
-    patientDistrict: { value: 'Muzaffarnagar', label: 'Muzaffarnagar' },
-    requesterContactNumber: '',
+  const defaultValues = {
+    requestDescription: "",
+    requesterName: "",
+    requestCategory: { value: "plasma", label: "Plasma" },
+    patientGender: { value: "male", label: "Male" },
+    patientBloodGroup: { value: "a+", label: "A+" },
+    patientState: { value: "Uttar Pradesh", label: "Uttar Pradesh" },
+    patientDistrict: { value: "Muzaffarnagar", label: "Muzaffarnagar" },
+    requesterContactNumber: "",
     // donor: ''
   } as RequestType;
   const {
@@ -82,7 +88,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   }, []);
 
   React.useEffect(() => {
-    setValue('requesterName', auth?.user?.displayName);
+    setValue("requesterName", auth?.user?.displayName);
   }, [auth?.user?.displayName]);
 
   React.useEffect(() => {
@@ -100,7 +106,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   };
 
   const isOriginalUser = () => {
-    return data?.requesterEmail ? data?.requesterEmail === auth?.user?.email : true;
+    return data?.requesterEmail
+      ? data?.requesterEmail === auth?.user?.email
+      : true;
   };
 
   const ensurePermissions = () => {
@@ -110,16 +118,19 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   };
 
   const loadData = async () => {
-    const existingRequest = isEdit ? await getRequest(params?.docId) : undefined;
-    if (typeof existingRequest === 'object') {
+    const existingRequest = isEdit
+      ? await getRequest(params?.docId)
+      : undefined;
+    if (typeof existingRequest === "object") {
       setData(existingRequest as any);
     }
   };
 
   const prefillData = async () => {
-    data && Object.keys(data).forEach((key) => {
-      setValue(key as any, data?.[key]);
-    });
+    data &&
+      Object.keys(data).forEach((key) => {
+        setValue(key as any, data?.[key]);
+      });
   };
 
   const handleStateChange = (state: string) => {
@@ -138,22 +149,30 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const onSubmit = async (data: RequestType) => {
     // console.log(data);
     if (!isOriginalUser()) {
-      snackbar.show('error', `You're not authorized for the action!`);
+      snackbar.show("error", `You're not authorized for the action!`);
       return;
     }
     try {
-      const res = isEdit ? await updateRequest(params?.docId, data) : await addRequest({
-        ...data,
-        requestStatus: { value: 'open', label: 'Open' },
-        requesterEmail: auth?.user?.email,
-      });
+      const res = isEdit
+        ? await updateRequest(params?.docId, data)
+        : await addRequest({
+            ...data,
+            requestStatus: { value: "open", label: "Open" },
+            requesterEmail: auth?.user?.email,
+          });
       // console.log({ newId: res.id });
-      snackbar.show('success', `Request ${isEdit ? 'updated' : 'created'} successfully!`);
+      snackbar.show(
+        "success",
+        `Request ${isEdit ? "updated" : "created"} successfully!`
+      );
       // message.success('Request created successfully!')
       history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
     } catch (e) {
       console.error("Error adding document: ", e);
-      snackbar.show('error', `Couldn't ${isEdit ? 'update' : 'create'} request!`);
+      snackbar.show(
+        "error",
+        `Couldn't ${isEdit ? "update" : "create"} request!`
+      );
       // message.error(`Couldn't create request!`);
     }
   };
@@ -163,42 +182,59 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   };
 
   const renderDescription = () => {
-    return <Controller
-      name={'requestDescription'}
-      control={control}
-      defaultValue=""
-      render={({ field }) => <TextareaAutosize {...field}
-        placeholder="Description goes here ..."
-        style={{ width: '100%', height: '100px' }} />}
-    />;
+    return (
+      <Controller
+        name={"requestDescription"}
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextareaAutosize
+            {...field}
+            placeholder="Description goes here ..."
+            style={{ width: "100%", height: "100px" }}
+          />
+        )}
+      />
+    );
   };
 
   const renderRequester = () => {
-    return <Controller
-      name={'requesterName'}
-      control={control}
-      defaultValue=""
-      render={({ field }) => <TextField {...field}
-        style={{ width: '100%' }} placeholder="Requester's Name" />}
-    />;
+    return (
+      <Controller
+        name={"requesterName"}
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            style={{ width: "100%" }}
+            placeholder="Requester's Name"
+          />
+        )}
+      />
+    );
   };
 
   const renderCategory = () => {
-    return <Controller
-      name="requestCategory"
-      control={control}
-      render={({ field }) => {
-        return <Select
-          {...field}
-          placeholder="Select Category"
-          options={[
-            { value: "plasma", label: "Plasma" },
-            { value: "blood", label: "Blood" },
-            { value: "other", label: "Other" },
-          ]}
-        />;
-      }}
-    />;
+    return (
+      <Controller
+        name="requestCategory"
+        control={control}
+        render={({ field }) => {
+          return (
+            <Select
+              {...field}
+              placeholder="Select Category"
+              options={[
+                { value: "plasma", label: "Plasma" },
+                { value: "blood", label: "Blood" },
+                { value: "other", label: "Other" },
+              ]}
+            />
+          );
+        }}
+      />
+    );
   };
 
   const renderGender = () => {
@@ -246,34 +282,47 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   };
 
   const renderContactNumber = () => {
-    return <Controller
-      name={'requesterContactNumber'}
-      control={control}
-      defaultValue=""
-      render={({ field }) => <MuiPhoneNumber {...field}
-        defaultCountry={'in'}
-        onlyCountries={['in']}
-        disableCountryCode
-        disableDropdown
-        style={{ width: '100%' }}
-        placeholder="Contact Number" />}
-    />;
+    return (
+      <Controller
+        name={"requesterContactNumber"}
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <MuiPhoneNumber
+            {...field}
+            defaultCountry={"in"}
+            onlyCountries={["in"]}
+            disableCountryCode
+            disableDropdown
+            style={{ width: "100%" }}
+            placeholder="Contact Number"
+          />
+        )}
+      />
+    );
   };
 
   const renderState = () => {
-    return <Controller
-      name="patientState"
-      control={control}
-      render={({ field }) => <Select
-        {...field}
-        placeholder="Select State"
-        onChange={(option) => {
-          handleStateChange(option.value);
-          field?.onChange(option);
-        }}
-        options={Object.keys(states).map(key => ({ value: key, label: key }))}
-      />}
-    />;
+    return (
+      <Controller
+        name="patientState"
+        control={control}
+        render={({ field }) => (
+          <Select
+            {...field}
+            placeholder="Select State"
+            onChange={(option) => {
+              handleStateChange(option.value);
+              field?.onChange(option);
+            }}
+            options={Object.keys(states).map((key) => ({
+              value: key,
+              label: key,
+            }))}
+          />
+        )}
+      />
+    );
   };
 
   const renderDistrict = () => {
@@ -326,23 +375,24 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   // };
 
   const renderSubmit = () => {
-    return <Button
-      variant="contained"
-      color="primary"
-      onClick={handleSubmit(onSubmit)}
-      style={{ marginRight: '10px' }}
-    >
-      Submit
-  </Button>;
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit(onSubmit)}
+        style={{ marginRight: "10px" }}
+      >
+        Submit
+      </Button>
+    );
   };
 
   const renderCancel = () => {
-    return <Button
-      variant="contained"
-      onClick={handleCancel}
-    >
-      Cancel
-    </Button>;
+    return (
+      <Button variant="contained" onClick={handleCancel}>
+        Cancel
+      </Button>
+    );
   };
 
   // const renderResolve = () => {
@@ -357,7 +407,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
 
   return <div className={classes.root}>
     <CssBaseline />
-
     <Navbar showBack title="Create Request"/>
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
@@ -376,81 +425,80 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                 <Grid item xs>
                 <Typography variant="h6">{data?.requesterEmail || auth?.user?.email}</Typography>
                 </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Requester's Name</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">Requester's Name</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderRequester()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderRequester()}
-                </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Contact Number</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">Contact Number</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderContactNumber()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderContactNumber()}
-                </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Category</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">Category</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderCategory()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderCategory()}
-                </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Gender</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">Patient's Gender</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderGender()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderGender()}
-                </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Blood Group</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">Patient's Blood Group</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderBloodGroup()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderBloodGroup()}
-                </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">State</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">State</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderState()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderState()}
-                </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">District</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">District</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderDistrict()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderDistrict()}
-                </Grid>
-              </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Description</Typography>
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Typography variant="h5">Description</Typography>
+                  </Grid>
+                  <Grid item xs>
+                    {renderDescription()}
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  {renderDescription()}
-                </Grid>
-              </Grid>
 
-              {/* <Grid container xs={12} sm={12}>
+                {/* <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">
                     Status
@@ -461,7 +509,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                 </Grid>
               </Grid> */}
 
-              {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
+                {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">
                     Donor Details
@@ -472,23 +520,32 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                 </Grid>
               </Grid> : null} */}
 
-              <Grid container xs={12} sm={12} md={12}
-                // justify="flex-end"
-                className={classes.buttons}>
-                <Grid item xs={12} sm={6} md={4} spacing={2}>
-                  {renderSubmit()}
-                  {renderCancel()}
-                </Grid>
-                {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
+                <Grid
+                  container
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  // justify="flex-end"
+                  className={classes.buttons}
+                >
+                  <Grid item xs={12} sm={6} md={4} spacing={2}>
+                    {renderSubmit()}
+                    {renderCancel()}
+                  </Grid>
+                  {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        </Container>
-      </div>
-    </main>
-  </div>;
+              </Grid>
+            </form>
+          </Container>
+        </div>
+        <Box pt={4}>
+          <Footer />
+        </Box>
+      </main>
+    </div>;
 };
 
 // export default withAuth(CreateRequest);

@@ -8,13 +8,16 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
-import { getCreateRequestRoute, getHomeRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
+import {
+  getCreateRequestRoute,
+  getHomeRoute,
+  getLoginRoute,
+} from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/components/common/AuthProvider/View";
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 const drawerWidth = 240;
 
@@ -55,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    // cursor: "pointer",
   },
   drawerPaper: {
     position: "relative",
@@ -98,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   },
   btnStyle: {
     margin: theme.spacing(1),
-    fontWeight: 600
+    fontWeight: 600,
   },
 }));
 
@@ -135,21 +137,24 @@ function Navbar(props: NavbarProps) {
       <CssBaseline />
       <AppBar position="absolute">
         <Toolbar className={classes.toolbar}>
-          {showBack ?
-            <ArrowBackIosIcon className={classes.btnStyle}
-              onClick={handleRedirectHome} style={{ cursor: 'pointer' }} />
-            : <div/>}
-            {/* <LocalHospitalIcon className={classes.btnStyle}
-              onClick={handleRedirectHome} style={{ cursor: 'pointer' }} /> */}
+          {showBack ? (
+            <ArrowBackIosIcon
+              className={classes.btnStyle}
+              onClick={handleRedirectHome}
+              style={{ cursor: "pointer" }}
+            />
+          ) : (
+            <div />
+          )}
           <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-              // onClick={handleRedirectHome}
-            >
-              {title || 'Care for the Living'}
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+            // onClick={handleRedirectHome}
+          >
+            {title || "Care for the Living"}
           </Typography>
           <Button
             variant="contained"
@@ -184,15 +189,13 @@ function Navbar(props: NavbarProps) {
             open={Boolean(profileBtn)}
             onClose={handleProfileClose}
           >
-            <MenuItem disabled>
-              {user?.displayName}
-            </MenuItem>
             <MenuItem>
               <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOIDnLsN0YSgsZTPsk09X95yde_1lE-9qS9YR5g4Y5sStCwA/viewform?usp=sf_link"
               target="blank">
                 Send Feedback
               </a>
             </MenuItem>
+            <MenuItem disabled>{user?.displayName}</MenuItem>
             <MenuItem onClick={handleLogOut}>Logout</MenuItem>
           </Menu>
         </Toolbar>
