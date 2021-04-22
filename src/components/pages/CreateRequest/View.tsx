@@ -113,7 +113,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const ensurePermissions = () => {
     if (!isValidUser()) {
-      history.push(getHomeRoute());
+      history.push(getLoginRoute());
     }
   };
 
