@@ -1,3 +1,4 @@
+import React from 'react'
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Footer from "src/components/common/Footer/View";
@@ -6,6 +7,8 @@ import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
+import FilterListIcon from '@material-ui/icons/FilterList';
+import { Button, Modal } from 'antd';
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
@@ -70,20 +73,38 @@ const useStyles = makeStyles((theme) => ({
     margin:"3.5rem 0 1rem 0"
   },
   filter_Container: {
-    position:"relative"
+    position:"relative",
+    height:"auto"
   },
   filter:{
     display:"flex",
     justifyContent:"center",
-    alignItems:"center"
-  }
+    alignItems:"center",
+    position:"sticky",
+    top:"200px"
+  },
+  cards:{
+    height:"auto",
+  },
+  mobile_filter_button:{
+    padding:"0.5rem 0.5rem 2.5rem 0.5rem",
+    float:"right",
+    right:"1.5rem",
+    position:"sticky"
+  },
+  mobile_cardGrid:{
+    marginTop:"2rem"
+  },
 }));
 
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
-  
-
+  const isMobile = window.innerWidth<768;
+  const [modal , setModalstate] = React.useState(false)
+  const setModalVisible = () =>{
+      setModalstate(!modal)
+  }
   const cards = [
     {
       id: 1,
@@ -146,7 +167,7 @@ function Dashboard() {
       status: "open",
     },
   ];
-
+// console.log(window.innerWidth)
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -165,6 +186,7 @@ function Dashboard() {
               align="center"
               color="textPrimary"
               gutterBottom
+          
             >
               Care for the Living <br></br>
               Hello, {user && user.email ? user.email : "Guest"}
@@ -181,7 +203,7 @@ function Dashboard() {
             </Typography>
           </Container>
         </div>
-            <Grid container>
+           { !isMobile ?<Grid container>
                       <Grid item  md={3} >
                         <div className={classes.filter_Container}>
                           <Typography component="h1" variant="h5" className={classes.filter_Heading}>
@@ -192,7 +214,7 @@ function Dashboard() {
                           </div> 
                       </div>
                       </Grid>
-                      <Grid item md={9}>
+                      <Grid item md={9} className={classes.cards}>
                           <Container className={classes.cardGrid} maxWidth="lg">
                           <Grid container spacing={4}>
                             {cards.map((card) => (
@@ -228,7 +250,54 @@ function Dashboard() {
                           </Grid>
                       </Container>
                   </Grid>  
-            </Grid>      
+            </Grid> 
+            
+            :
+            <>
+          <Button
+          type="primary"
+          icon={<FilterListIcon />}
+          className={classes.mobile_filter_button}
+          onClick={() => setModalVisible()}
+        >
+          Filter Results
+        </Button>
+            <Container className={classes.mobile_cardGrid} maxWidth="lg">
+            <Grid container spacing={4}>
+              {cards.map((card) => (
+                <Grid item key={card.id} xs={12} sm={6} md={4}>
+                  <Card
+                    className={`${
+                      card.status === "open"
+                        ? classes.openCard
+                        : classes.closedCard
+                    }`}
+                  >
+                    <CardMedia
+                      className={classes.cardMedia}
+                      image={card.image}
+                      title="Image title"
+                    />
+                    <CardContent className={classes.cardContent}>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        {card.title}
+                      </Typography>
+                      <Typography>Requested By: {card.requestor}</Typography>
+                      <Typography>
+                        Address: {card.district}, {card.state}
+                      </Typography>
+                      <Typography>Mobile: {card.contact}</Typography>
+                      <br />
+                      <Chip label={card.category} variant="outlined" />
+                      <Chip label={card.updated} variant="outlined" />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+        </Container>
+      </>
+            }  
         <Box pt={4}>
           <Footer />
         </Box>
