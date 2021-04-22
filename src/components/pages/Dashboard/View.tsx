@@ -116,9 +116,9 @@ function Dashboard() {
     try {
       const requests = getCurrentTabFromUrl() === 0 ?  await getRequests({
         requestStatus: "open"
-      }) : await getRequests({
+      }) : (user?.email && await getRequests({
         requesterEmail: user?.email,
-      });
+      }));
       // console.log({ requests });
       setRequests(requests);
     } catch (e) {
