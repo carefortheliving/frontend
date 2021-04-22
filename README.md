@@ -44,3 +44,15 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Firebase deploy
+```sh
+npm install -g firebase-tools@8
+firebase login
+npm run build
+firebase deploy --only hosting
+```
+
+## Godaddy - Firebase DNS
+https://firebase.google.com/docs/hosting/custom-domain
+https://stackoverflow.com/a/56310934/973425
