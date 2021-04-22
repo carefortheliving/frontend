@@ -19,7 +19,6 @@ import Filter from "./Filters";
 import { RequestType, UsefulLink } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import { useHistory, useLocation } from "react-router-dom";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
@@ -33,6 +32,13 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import PanToolIcon from "@material-ui/icons/PanTool";
+import {
+  useHistory,
+  useParams,
+  useLocation,
+  useRouteMatch,
+} from "react-router-dom";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,6 +119,7 @@ function Dashboard() {
     [] as (RequestType & { id: string })[]
   );
   const [usefulLinks, setUsefulLinks] = React.useState([] as UsefulLink[]);
+  const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
 
@@ -127,12 +134,15 @@ function Dashboard() {
   }, [getCurrentTabFromUrl()]);
 
   const loadLinks = async () => {
+    setLoading(true);
     const links = await getUsefulLinks();
+    setLoading(false);
     setUsefulLinks(links);
   };
 
   const loadData = async () => {
     try {
+      setLoading(true);
       const requests = await (async () => {
         switch (getCurrentTabFromUrl()) {
           case 0:
@@ -150,6 +160,7 @@ function Dashboard() {
             return;
         }
       })();
+      setLoading(false);
       // console.log({ requests });
       setRequests(requests);
     } catch (e) {
@@ -254,9 +265,9 @@ function Dashboard() {
           Care for the Living <br></br>
         </Typography>
         <Typography variant="h6" align="center" color="textSecondary" paragraph>
-          The world suffers & always has, but doesn't have to.
+          "If you truly loved yourself, you could never hurt another."
           <br />
-          You have the potential to change. Just keep going!
+          {/* - Buddha */}
         </Typography>
       </Container>
     );
@@ -316,17 +327,23 @@ function Dashboard() {
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {renderTabs()}
-            {(() => {
-              switch (getCurrentTabFromUrl()) {
-                case 0:
-                case 1:
-                  return requests?.length
-                    ? requests.map((card) => renderSingleCard(card))
-                    : renderNoRequests();
-                default:
-                  return renderLinks();
-              }
-            })()}
+            {loading ? (
+              <CircularProgress
+                style={{ margin: "auto", marginTop: "100px" }}
+              />
+            ) : (
+              (() => {
+                switch (getCurrentTabFromUrl()) {
+                  case 0:
+                  case 1:
+                    return requests?.length
+                      ? requests.map((card) => renderSingleCard(card))
+                      : renderNoRequests();
+                  default:
+                    return renderLinks();
+                }
+              })()
+            )}
           </Grid>
         </Container>
       </Grid>
