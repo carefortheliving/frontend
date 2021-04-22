@@ -18,6 +18,11 @@ import {
 } from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/components/common/AuthProvider/View";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const drawerWidth = 240;
 
@@ -116,6 +121,15 @@ function Navbar(props: NavbarProps) {
   const history = useHistory();
   const [profileBtn, setProfileBtn] = React.useState(null);
 
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const isLogged = !!(user && user.email);
 
   const handleProfileClick = (event) => {
@@ -159,11 +173,18 @@ function Navbar(props: NavbarProps) {
           <Button
             variant="contained"
             className={classes.btnStyle}
-            size="medium"
+            size="small"
             color="secondary"
             onClick={() => history.push(getCreateRequestRoute())}
           >
             Create Request
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => handleClickOpen()}
+          >
+            Info
           </Button>
           {isLogged ? (
             <IconButton color="inherit" onClick={handleProfileClick}>
@@ -172,15 +193,7 @@ function Navbar(props: NavbarProps) {
               </Badge>
             </IconButton>
           ) : (
-            <>
-              <Button
-                variant="contained"
-                size="small"
-                onClick={() => history.push(getLoginRoute())}
-              >
-                Sign In
-              </Button>
-            </>
+            <></>
           )}
           <Menu
             id="simple-menu"
@@ -190,8 +203,10 @@ function Navbar(props: NavbarProps) {
             onClose={handleProfileClose}
           >
             <MenuItem>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOIDnLsN0YSgsZTPsk09X95yde_1lE-9qS9YR5g4Y5sStCwA/viewform?usp=sf_link"
-              target="blank">
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdOIDnLsN0YSgsZTPsk09X95yde_1lE-9qS9YR5g4Y5sStCwA/viewform?usp=sf_link"
+                target="blank"
+              >
                 Send Feedback
               </a>
             </MenuItem>
@@ -200,6 +215,27 @@ function Navbar(props: NavbarProps) {
           </Menu>
         </Toolbar>
       </AppBar>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Care for the Living"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Let Google help apps determine location. This means sending
+            anonymous location data to Google, even when no apps are running.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

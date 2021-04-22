@@ -59,6 +59,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     requestCategory: { value: "plasma", label: "Plasma" },
     patientGender: { value: "male", label: "Male" },
     patientBloodGroup: { value: "a+", label: "A+" },
+    patientAge: "",
     patientState: { value: "Uttar Pradesh", label: "Uttar Pradesh" },
     patientDistrict: { value: "Muzaffarnagar", label: "Muzaffarnagar" },
     requesterContactNumber: "",
@@ -190,7 +191,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <TextareaAutosize
             {...field}
-            placeholder="Description goes here ..."
+            placeholder="Situation description goes here ..."
             style={{ width: "100%", height: "100px" }}
           />
         )}
@@ -215,6 +216,23 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     );
   };
 
+  const renderAge = () => {
+    return (
+      <Controller
+        name={"patientAge"}
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            style={{ width: "100%" }}
+            placeholder="Patient's Age"
+          />
+        )}
+      />
+    );
+  };
+
   const renderCategory = () => {
     return (
       <Controller
@@ -227,7 +245,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
               placeholder="Select Category"
               options={[
                 { value: "plasma", label: "Plasma" },
+                { value: "oxygen", label: "Oxygen" },
+                { value: "medicine", label: "Medicine" },
                 { value: "blood", label: "Blood" },
+                { value: "money", label: "Monetary" },
                 { value: "other", label: "Other" },
               ]}
             />
@@ -405,100 +426,113 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   //   </Button>;
   // };
 
-  return <div className={classes.root}>
-    <CssBaseline />
-    <Navbar showBack title="Create Request"/>
-    <main className={classes.content}>
-      <div className={classes.appBarSpacer} />
-      <div className={classes.heroContent}>
-        <Container maxWidth="md">
-          <Typography variant="h3" style={{ marginBottom: '50px' }}>
-            {isEdit ? 'Edit Request' : 'Create Request'}
-          </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={1}>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Requester's Email</Typography>
-                </Grid>
-                <Grid item xs>
-                <Typography variant="h6">{data?.requesterEmail || auth?.user?.email}</Typography>
-                </Grid>
-
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <Navbar showBack title="Create Request" />
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <div className={classes.heroContent}>
+          <Container maxWidth="md">
+            <Typography variant="h3" style={{ marginBottom: "50px" }}>
+              {isEdit ? "Edit Request" : "Create Request"}
+            </Typography>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={1}>
                 <Grid container xs={12} sm={12}>
                   <Grid item xs>
-                    <Typography variant="h5">Requester's Name</Typography>
+                    <Typography variant="h5">Requester's Email</Typography>
                   </Grid>
                   <Grid item xs>
-                    {renderRequester()}
+                    <Typography variant="h6">
+                      {data?.requesterEmail || auth?.user?.email}
+                    </Typography>
                   </Grid>
-                </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Contact Number</Typography>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">Requester's Name</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderRequester()}
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    {renderContactNumber()}
-                  </Grid>
-                </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Category</Typography>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">Contact Number</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderContactNumber()}
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    {renderCategory()}
-                  </Grid>
-                </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Patient's Gender</Typography>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">Category</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderCategory()}
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    {renderGender()}
-                  </Grid>
-                </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Patient's Blood Group</Typography>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">Patient's Gender</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderGender()}
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    {renderBloodGroup()}
-                  </Grid>
-                </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">State</Typography>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">
+                        Patient's Blood Group
+                      </Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderBloodGroup()}
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    {renderState()}
-                  </Grid>
-                </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">District</Typography>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">Patient's Age</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderAge()}
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    {renderDistrict()}
-                  </Grid>
-                </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Description</Typography>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">State</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderState()}
+                    </Grid>
                   </Grid>
-                  <Grid item xs>
-                    {renderDescription()}
-                  </Grid>
-                </Grid>
 
-                {/* <Grid container xs={12} sm={12}>
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">District</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderDistrict()}
+                    </Grid>
+                  </Grid>
+
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">Description</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderDescription()}
+                    </Grid>
+                  </Grid>
+
+                  {/* <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">
                     Status
@@ -509,7 +543,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
                 </Grid>
               </Grid> */}
 
-                {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
+                  {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
                 <Grid item xs>
                   <Typography variant="h5">
                     Donor Details
@@ -520,23 +554,23 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
                 </Grid>
               </Grid> : null} */}
 
-                <Grid
-                  container
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  // justify="flex-end"
-                  className={classes.buttons}
-                >
-                  <Grid item xs={12} sm={6} md={4} spacing={2}>
-                    {renderSubmit()}
-                    {renderCancel()}
-                  </Grid>
-                  {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
+                  <Grid
+                    container
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    // justify="flex-end"
+                    className={classes.buttons}
+                  >
+                    <Grid item xs={12} sm={6} md={4} spacing={2}>
+                      {renderSubmit()}
+                      {renderCancel()}
+                    </Grid>
+                    {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}
+                  </Grid>
                 </Grid>
-              </Grid>
               </Grid>
             </form>
           </Container>
@@ -545,7 +579,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           <Footer />
         </Box>
       </main>
-    </div>;
+    </div>
+  );
 };
 
 // export default withAuth(CreateRequest);
