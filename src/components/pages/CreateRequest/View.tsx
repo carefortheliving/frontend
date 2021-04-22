@@ -105,14 +105,14 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     }
   };
 
-  const isOriginalUser = () => {
+  const isValidUser = () => {
     return data?.requesterEmail
       ? data?.requesterEmail === auth?.user?.email
-      : true;
+      : (!!(auth?.user?.email));
   };
 
   const ensurePermissions = () => {
-    if (!isOriginalUser()) {
+    if (!isValidUser()) {
       history.push(getHomeRoute());
     }
   };
@@ -148,7 +148,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const onSubmit = async (data: RequestType) => {
     // console.log(data);
-    if (!isOriginalUser()) {
+    if (!isValidUser()) {
       snackbar.show("error", `You're not authorized for the action!`);
       return;
     }
@@ -425,7 +425,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
                   <Typography variant="h5">Requester's Email</Typography>
                 </Grid>
                 <Grid item xs>
-                <Typography variant="h6">{data?.requesterEmail || auth?.user?.email}</Typography>
+                  <Typography variant="h6">
+                    {isEdit ? data?.requesterEmail : auth?.user?.email}
+                  </Typography>
                 </Grid>
 
                 <Grid container xs={12} sm={12}>
