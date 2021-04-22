@@ -1,4 +1,4 @@
-import { RequestType } from 'src/types';
+import { FiltersType, RequestType } from 'src/types';
 import useFirebase from './useFirebase';
 // import firebase from "firebase";
 import { getCurrentTime } from 'src/utils/commonUtils';
@@ -23,12 +23,24 @@ const useFirestore = () => {
     return res;
   };
 
-  const getRequests = async () => {
-    const requests = await db.collection("requests").get();
-    return requests.docs?.map(doc => ({
+  const getRequests = async ({
+    requesterEmail,
+    requestStatus
+  } : FiltersType) => {
+    let requestsRef: any = db.collection("requests");
+    if (requesterEmail) {
+      requestsRef = await requestsRef.where('requesterEmail', '==', requesterEmail);
+    }
+    if (requestStatus) {
+      requestsRef = await requestsRef.where('requestStatus.value', '==', requestStatus);
+    }
+    const requests = await requestsRef.get();
+    const ret = requests.docs?.map(doc => ({
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
+    console.log({ ret });
+    return ret;
   };
 
   const getRequest = async (docId: string) => {
