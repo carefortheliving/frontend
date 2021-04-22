@@ -53,12 +53,28 @@ const useFirestore = () => {
     return ret.docs.map(el => el.data()) as unknown as UsefulLink[];
   };
 
+  const getFilteredRequests = async({requestStatus}) => {
+
+  
+      let requestsRef: any = db.collection("requests");
+        requestsRef = await requestsRef.where('requestStatus', 'in' , requestStatus);
+        const requests = await requestsRef.get();
+        const ret = requests.docs?.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as unknown as (RequestType & { id: string })[];
+        return ret;
+
+      return null;
+  }
+
   return {
     getRequest,
     getRequests,
     addRequest,
     updateRequest,
     getUsefulLinks,
+    getFilteredRequests
   };
 };
 

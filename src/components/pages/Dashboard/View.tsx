@@ -109,12 +109,13 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
-  const { getRequests, getUsefulLinks } = useFirestore();
+  const { getRequests, getUsefulLinks, getFilteredRequests } = useFirestore();
   const snackbar = useSnackbar();
   const [requests, setRequests] = React.useState([] as (RequestType & { id: string })[]);
   const [usefulLinks, setUsefulLinks] = React.useState([] as UsefulLink[]);
   const history = useHistory();
   const location = useLocation();
+  const [filterResults , setFilterResults] = React.useState([] as Array<String>)
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -122,7 +123,7 @@ function Dashboard() {
   };
 
   React.useEffect(() => {
-    loadData();
+    // loadData();
     loadLinks();
   }, [getCurrentTabFromUrl()]);
 
@@ -131,28 +132,69 @@ function Dashboard() {
     setUsefulLinks(links);
   };
 
-  const loadData = async () => {
-    try {
-      const requests = await (async () => {
-        switch(getCurrentTabFromUrl()) {
-          case 0:
-            return await getRequests({
-              requestStatus: "open"
-            });
-          case 1:
-            return user?.email && await getRequests({
-              requesterEmail: user?.email,
-            });
-          default:
-            return;
-        }
-      })();
-      // console.log({ requests });
-      setRequests(requests);
-    } catch (e) {
-      snackbar.show("error", `Something went wrong, try reloading!`);
-    }
-  };
+  // const loadData = async () => {
+  //   try {
+  //     const requests = await (async () => {
+  //       switch(getCurrentTabFromUrl()) {
+  //         case 0:
+  //           return await getRequests({
+  //             requestStatus: "open"
+  //           });
+  //         case 1:
+  //           return user?.email && await getRequests({
+  //             requesterEmail: user?.email,
+  //           });
+  //         default:
+  //           return;
+  //       }
+  //     })();
+  //     // console.log({ requests });
+  //     setRequests(requests);
+  //   } catch (e) {
+  //     snackbar.show("error", `Something went wrong, try reloading!`);
+  //   }
+  // };
+
+  //   const loadData = async () => {
+  //   try {
+  //     const requests = await (async()=>{
+  //             return await getRequests({
+  //             requestStatus: "open"
+  //           });
+  //     })()
+  //     console.log(requests)
+  //     setRequests(requests);
+  //   } catch (e) {
+  //     snackbar.show("error", `Something went wrong, try reloading!`);
+  //   }
+  // };
+  // console.log(filterResults)
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        let status:String[]= []
+        let location:String[] = []
+        let category:String[] = []
+        const keys = [...filterResults]
+        keys.includes("Active")&&status.push("open")
+        keys.includes("Completed")&&status.push("closed")
+        console.log(keys)
+        // filterResults.includes("Completed") && status.push("closed")
+
+        const requests = await (async()=>{
+                return await getRequests({
+                  requestStatus : "open"
+              });
+        })()
+        console.log(requests)
+        // setRequests(requests);
+      } catch (e) {
+        snackbar.show("error", `Something went wrong, try reloading!`);
+      }
+    };
+    loadData()
+   
+  }, [filterResults])
 
   const handleCardClick = (docId: string) => {
     history.push(getViewRequestRoute(docId));
@@ -246,14 +288,14 @@ function Dashboard() {
   const renderFilters = () => {
     return (
       <Grid item md={3}>
-        {/* {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
+        {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
         <Typography component="h1" variant="h5" className={classes.filter_Heading}>
           Filter Requests
                   </Typography>
         <div className={classes.filter}>
-          <Filter />
+          <Filter getFilters={(keys)=>setFilterResults(keys)} />
         </div>
-      </div> : null} */}
+      </div> : null}
       </Grid>
     );
   };
