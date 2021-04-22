@@ -216,7 +216,9 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                   <Typography variant="h5">Description</Typography>
                 </Grid>
                 <Grid item xs>
-                  {renderFieldValue(data?.requestDescription)}
+                  <pre>
+                    {renderFieldValue(data?.requestDescription)}
+                  </pre>
                 </Grid>
               </Grid>
 
