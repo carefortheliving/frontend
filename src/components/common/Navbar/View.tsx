@@ -12,7 +12,7 @@ import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
-import { getCreateRequestRoute, getMyRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
+import { getCreateRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/components/common/AuthProvider/View";
 
 const drawerWidth = 240;
@@ -169,8 +169,8 @@ function Navbar(props) {
             open={Boolean(profileBtn)}
             onClose={handleProfileClose}
           >
-            <MenuItem onClick={() => history.push(getMyRequestRoute())}>
-              My Requests
+            <MenuItem disabled>
+              {user?.displayName}
             </MenuItem>
             <MenuItem onClick={handleLogOut}>Logout</MenuItem>
           </Menu>

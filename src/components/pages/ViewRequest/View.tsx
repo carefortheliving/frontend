@@ -3,7 +3,7 @@ import { Button, Container, Grid, makeStyles, Typography } from '@material-ui/co
 import CssBaseline from "@material-ui/core/CssBaseline";
 import withAuth from 'src/components/common/withAuth/View';
 import { useHistory, useParams } from "react-router-dom";
-import { getEditRequestRoute, getHomeRoute, getMyRequestRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { getEditRequestRoute, getHomeRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import Navbar from "src/components/common/Navbar/View";
 import useFirestore from "src/hooks/useFirestore";
 import useFirebase from 'src/hooks/useFirebase';
@@ -63,7 +63,10 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   };
 
   const handleCancel = async () => {
-    history.push(getMyRequestRoute());
+    history.push({
+      pathname: getHomeRoute(),
+      search: '?tab=1'
+    });
   };
 
   const renderCloseButton = () => {

@@ -19,8 +19,13 @@ import Filter from "./Filters"
 import { RequestType } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams, useLocation, useRouteMatch } from "react-router-dom";
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Paper from '@material-ui/core/Paper';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,14 +101,20 @@ function Dashboard() {
   const snackbar = useSnackbar();
   const [requests, setRequests] = React.useState([] as (RequestType & { id: string })[]);
   const history = useHistory();
+  const location = useLocation();
+
+  const getCurrentTabFromUrl = () => {
+    const currentUrlParams = new URLSearchParams(location.search);
+    return Number(currentUrlParams.get('tab') || '0');
+  };
 
   React.useEffect(() => {
     loadData();
-  }, []);
+  }, [getCurrentTabFromUrl()]);
 
   const loadData = async () => {
     try {
-      const requests = await getRequests();
+      const requests = getCurrentTabFromUrl() === 0 ?  await getRequests() : [];
       console.log({ requests });
       setRequests(requests);
     } catch (e) {
@@ -115,7 +126,16 @@ function Dashboard() {
     history.push(getViewRequestRoute(docId));
   };
 
-  const renderCard = (card: typeof requests[0]) => {
+  const handleTabChange = (event, newValue: number) => {
+    const currentUrlParams = new URLSearchParams(location.search);
+    currentUrlParams.set('tab', newValue?.toString());
+    history.push({
+      pathname: location.pathname,
+      search: "?" + currentUrlParams.toString(),
+    });
+  };
+
+  const renderSingleCard = (card: typeof requests[0]) => {
     return (
       <Grid item key={card.id} xs={12} sm={6} md={4}>
         <Card
@@ -153,55 +173,94 @@ function Dashboard() {
     );
   };
 
+  const renderNoRequests = () => {
+    return <Container style={{ marginTop: '20px' }}>
+      <Alert severity="info" >
+        <AlertTitle>No requests created yet!</AlertTitle>
+        </Alert>
+    </Container>;
+  };
+
+  const renderHeader = () => {
+    return <Container maxWidth="md">
+      <Typography
+        component="h2"
+        variant="h3"
+        align="center"
+        color="textPrimary"
+        gutterBottom
+      >
+        Care for the Living <br></br>
+        {/* Hello, {user?.displayName || "Guest"} */}
+      </Typography>
+      <Typography
+        variant="h6"
+        align="center"
+        color="textSecondary"
+        paragraph
+      >
+        The world suffers & always has, but doesn't have to.
+        <br />
+        You have the potential to change. Just keep going!
+      </Typography>
+    </Container>;
+  };
+
+  const renderFilters = () => {
+    return <Grid item md={3} >
+      <div className={classes.filter_Container}>
+        <Typography component="h1" variant="h5" className={classes.filter_Heading}>
+          Filter Requests
+                  </Typography>
+        <div className={classes.filter}>
+          <Filter />
+        </div>
+      </div>
+    </Grid>;
+  };
+
+  const renderCards = () => {
+    return <Grid item md={9}>
+      <Container className={classes.cardGrid} maxWidth="lg">
+        <Grid container spacing={4}>
+          {renderTabs()}
+          {requests?.length ? requests.map(card => renderSingleCard(card)) : renderNoRequests()}
+        </Grid>
+      </Container>
+    </Grid>;
+  };
+
+  const renderTabs = () => {
+    return <div style={{ /*margin: '12px', */ width: '100%' }}>
+      <AppBar position="static" 
+      color="default" variant="outlined">
+        <Tabs
+          value={getCurrentTabFromUrl()}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleTabChange}
+          // aria-label="disabled tabs example"
+          // variant="fullWidth"
+        >
+          <Tab label="All Requests" />
+          <Tab label="My Requests" />
+        </Tabs>
+      </AppBar>
+    </div>;
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
-
       <Navbar title="Care for the Living" />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
-          <Container maxWidth="md">
-            <Typography
-              component="h2"
-              variant="h3"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Care for the Living <br></br>
-              {/* Hello, {user?.displayName || "Guest"} */}
-            </Typography>
-            <Typography
-              variant="h6"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              The world suffers & always has, but doesn't have to.
-              <br />
-              You have the potential to change. Just keep going!
-            </Typography>
-          </Container>
+          {renderHeader()}
         </div>
         <Grid container>
-          <Grid item md={3} >
-            <div className={classes.filter_Container}>
-              <Typography component="h1" variant="h5" className={classes.filter_Heading}>
-                Filter Requests
-                          </Typography>
-              <div className={classes.filter}>
-                <Filter />
-              </div>
-            </div>
-          </Grid>
-          <Grid item md={9}>
-            <Container className={classes.cardGrid} maxWidth="lg">
-              <Grid container spacing={4}>
-                {requests.map(card => renderCard(card))}
-              </Grid>
-            </Container>
-          </Grid>
+          {renderFilters()}
+          {renderCards()}
         </Grid>
         <Box pt={4}>
           <Footer />
