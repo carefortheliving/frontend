@@ -374,7 +374,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
                   <Typography variant="h5">Requester's Email</Typography>
                 </Grid>
                 <Grid item xs>
-                <Typography variant="h6">{data?.requesterEmail}</Typography>
+                <Typography variant="h6">{data?.requesterEmail || auth?.user?.email}</Typography>
                 </Grid>
               </Grid>
 
