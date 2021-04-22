@@ -48,7 +48,7 @@ const treeData = [
   },
 ];
 
-const Demo = () => {
+const Demo = (props:any) => {
   const classes = useStyles();
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['status', 'category']);
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['Active']);
@@ -81,6 +81,11 @@ const Demo = () => {
       setCheckedKeys(checkedKeys.filter(val => val != selectedKeysValue[0]))
 
   };
+  // console.log(checkedKeys)
+
+  React.useEffect(() => {
+      props.getFilters(checkedKeys)
+  }, [checkedKeys])
 
   return (
     <>
