@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Footer from "src/components/common/Footer/View";
@@ -13,10 +13,18 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
-import { useAuth } from "src/hooks/useFirebase";
-
+import { useAuth } from "src/components/common/AuthProvider/View";
+import * as React from 'react';
+import useFirestore from 'src/hooks/useFirestore';
+import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 
 import Filter from "./Filters"
+import { RequestType } from "src/types";
+import { parseTime } from "src/utils/commonUtils";
+import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
+import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import FavoriteIcon from '@material-ui/icons/Favorite';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -55,11 +63,13 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    cursor: 'pointer',
   },
   closedCard: {
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    cursor: 'pointer',
     background: "#efefef",
   },
   cardMedia: {
@@ -69,8 +79,8 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   filter_Heading: {
-    textAlign:"center",
-    margin:"3.5rem 0 1rem 0"
+    textAlign: "center",
+    margin: "3.5rem 0 1rem 0"
   },
   filter_Container: {
     position:"relative",
@@ -80,8 +90,6 @@ const useStyles = makeStyles((theme) => ({
     display:"flex",
     justifyContent:"center",
     alignItems:"center",
-    position:"sticky",
-    top:"200px"
   },
   cards:{
     height:"auto",
@@ -100,82 +108,72 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
-  const isMobile = window.innerWidth<768;
-  const [modal , setModalstate] = React.useState(false)
-  const setModalVisible = () =>{
-      setModalstate(!modal)
-  }
-  const cards = [
-    {
-      id: 1,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "closed",
-    },
-    {
-      id: 2,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "open",
-    },
-    {
-      id: 3,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "closed",
-    },
-    {
-      id: 4,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "open",
-    },
-    {
-      id: 5,
-      title: "Need Plasma Donor",
-      image: "https://source.unsplash.com/random",
-      category: "Donor",
-      state: "Bihar",
-      district: "East Champaran",
-      requestor: "Ramesh",
-      contact: "+91-8240159173",
-      updated: "6:00pm",
-      status: "open",
-    },
-  ];
-// console.log(window.innerWidth)
+  const { getRequests } = useFirestore();
+  const snackbar = useSnackbar();
+  const [requests, setRequests] = React.useState([] as (RequestType & { id: string })[]);
+  const history = useHistory();
+
+  React.useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const requests = await getRequests();
+      console.log({ requests });
+      setRequests(requests);
+    } catch (e) {
+      snackbar.show('error', `Something went wrong, try reloading!`);
+    }
+  };
+
+  const handleCardClick = (docId: string) => {
+    history.push(getViewRequestRoute(docId));
+  };
+
+  const renderCard = (card: typeof requests[0]) => {
+    return (
+      <Grid item key={card.id} xs={12} sm={6} md={4}>
+        <Card
+          className={`${card.requestStatus?.value === "open"
+            ? classes.openCard
+            : classes.closedCard
+            }`}
+          onClick={() => handleCardClick(card.id)}
+        >
+          {/* <CardMedia
+            className={classes.cardMedia}
+            image={card.image}
+            title="Image title"
+          /> */}
+          <CardContent className={classes.cardContent}>
+            <Typography gutterBottom variant="h5" component="h2">
+              Need {card.requestCategory?.label} Donor
+            </Typography>
+            <Typography>Requested By: {card.requesterName}</Typography>
+            <Typography>
+              Address: {card.patientDistrict?.label}, {card.patientState?.label}
+            </Typography>
+            <Typography>Mobile: {card.requesterContactNumber}</Typography>
+            {card.requestStatus?.value === "closed" ?
+              <Typography style={{ display: 'flex', alignItems: 'center' }}>
+                Donor: {card.donorName}
+                <FavoriteIcon color="secondary" fontSize="small" style={{ marginLeft: '5px' }}/>
+              </Typography> : null}
+            <br />
+            <Chip label={card.requestCategory?.label} variant="outlined" />
+            <Chip label={parseTime(card.updatedAt)} variant="outlined" />
+          </CardContent>
+        </Card>
+      </Grid>
+    );
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
 
-      <Navbar
-        title="Care for the Living"
-        isLogged={user && user.email ? true : false}
-      />
+      <Navbar title="Care for the Living" />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
@@ -189,7 +187,7 @@ function Dashboard() {
           
             >
               Care for the Living <br></br>
-              Hello, {user && user.email ? user.email : "Guest"}
+              {/* Hello, {user?.displayName || "Guest"} */}
             </Typography>
             <Typography
               variant="h6"
@@ -197,107 +195,31 @@ function Dashboard() {
               color="textSecondary"
               paragraph
             >
-              Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
+              The world suffers & always has, but doesn't have to.
+              <br />
+              You have the potential to change. Just keep going!
             </Typography>
           </Container>
         </div>
-           { !isMobile ?<Grid container>
-                      <Grid item  md={3} >
-                        <div className={classes.filter_Container}>
-                          <Typography component="h1" variant="h5" className={classes.filter_Heading}>
-                            Filter Requests
+        <Grid container>
+          <Grid item md={3} >
+            <div className={classes.filter_Container}>
+              <Typography component="h1" variant="h5" className={classes.filter_Heading}>
+                Filter Requests
                           </Typography>
-                          <div className={classes.filter}>
-                                <Filter/>
-                          </div> 
-                      </div>
-                      </Grid>
-                      <Grid item md={9} className={classes.cards}>
-                          <Container className={classes.cardGrid} maxWidth="lg">
-                          <Grid container spacing={4}>
-                            {cards.map((card) => (
-                              <Grid item key={card.id} xs={12} sm={6} md={4}>
-                                <Card
-                                  className={`${
-                                    card.status === "open"
-                                      ? classes.openCard
-                                      : classes.closedCard
-                                  }`}
-                                >
-                                  <CardMedia
-                                    className={classes.cardMedia}
-                                    image={card.image}
-                                    title="Image title"
-                                  />
-                                  <CardContent className={classes.cardContent}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                      {card.title}
-                                    </Typography>
-                                    <Typography>Requested By: {card.requestor}</Typography>
-                                    <Typography>
-                                      Address: {card.district}, {card.state}
-                                    </Typography>
-                                    <Typography>Mobile: {card.contact}</Typography>
-                                    <br />
-                                    <Chip label={card.category} variant="outlined" />
-                                    <Chip label={card.updated} variant="outlined" />
-                                  </CardContent>
-                                </Card>
-                              </Grid>
-                            ))}
-                          </Grid>
-                      </Container>
-                  </Grid>  
-            </Grid> 
-            
-            :
-            <>
-          <Button
-          type="primary"
-          icon={<FilterListIcon />}
-          className={classes.mobile_filter_button}
-          onClick={() => setModalVisible()}
-        >
-          Filter Results
-        </Button>
-            <Container className={classes.mobile_cardGrid} maxWidth="lg">
-            <Grid container spacing={4}>
-              {cards.map((card) => (
-                <Grid item key={card.id} xs={12} sm={6} md={4}>
-                  <Card
-                    className={`${
-                      card.status === "open"
-                        ? classes.openCard
-                        : classes.closedCard
-                    }`}
-                  >
-                    <CardMedia
-                      className={classes.cardMedia}
-                      image={card.image}
-                      title="Image title"
-                    />
-                    <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {card.title}
-                      </Typography>
-                      <Typography>Requested By: {card.requestor}</Typography>
-                      <Typography>
-                        Address: {card.district}, {card.state}
-                      </Typography>
-                      <Typography>Mobile: {card.contact}</Typography>
-                      <br />
-                      <Chip label={card.category} variant="outlined" />
-                      <Chip label={card.updated} variant="outlined" />
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-        </Container>
-      </>
-            }  
+              <div className={classes.filter}>
+                <Filter />
+              </div>
+            </div>
+          </Grid>
+          <Grid item md={9}>
+            <Container className={classes.cardGrid} maxWidth="lg">
+              <Grid container spacing={4}>
+                {requests.map(card => renderCard(card))}
+              </Grid>
+            </Container>
+          </Grid>
+        </Grid>
         <Box pt={4}>
           <Footer />
         </Box>

@@ -20,7 +20,12 @@ const provider = new firebase.auth.GoogleAuthProvider();
 // Hook for child components to get the auth object ...
 // ... and re-render when it changes.
 export const useAuth = () => {
-  return useContext(AuthContext);
+  return useContext(AuthContext) as {
+    user: any;
+    signInWithGoogle: () => Promise<void>,
+    isAuthenticating: boolean,
+    logout: () => Promise<void>,
+  };
 };
 
 // Provider hook that creates auth object and handles state

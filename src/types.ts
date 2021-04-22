@@ -4,3 +4,19 @@ export interface StylesProps<T> {
   };
   theme: Record<string, string>;
 }
+export interface RequestType {
+  donorEmail?: string;
+  donorName?: string;
+  patientBloodGroup?: { value: string, label: string };
+  patientDistrict?: { value: string, label: string };
+  patientGender?: { value: string, label: string };
+  patientState?: { value: string, label: string };
+  requestCategory?: { value: string, label: string };
+  requestDescription?: string;
+  requestStatus?: { value: string, label: string };
+  requesterContactNumber: string;
+  requesterName: string;
+  requesterEmail: string;
+  createdAt: number;
+  updatedAt: number;
+}
