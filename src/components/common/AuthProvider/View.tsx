@@ -1,16 +1,17 @@
 import { useState, useEffect, useContext, createContext } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
+import config from 'src/config'
 
 // Initialize Firebase
 firebase.initializeApp({
-  apiKey: "AIzaSyAD4x1JRK-yzlTnFlZBP8QkYb-gh7lZp_s",
-  authDomain: "care4living-f25bd.firebaseapp.com",
-  databaseURL: "https://care4living-f25bd-default-rtdb.firebaseio.com/",
-  projectId: "care4living-f25bd",
-  storageBucket: "care4living-f25bd.appspot.com",
-  messagingSenderId: 735333476786,
-  appId: "1:735333476786:web:f16111d742874ca7679cab",
+  apiKey: config.REACT_APP_firebase_apiKey,
+  authDomain: config.REACT_APP_firebase_authDomain,
+  databaseURL: config.REACT_APP_firebase_databaseURL,
+  projectId: config.REACT_APP_firebase_projectId,
+  storageBucket: config.REACT_APP_firebase_storageBucket,
+  messagingSenderId: config.REACT_APP_firebase_messagingSenderId,
+  appId: config.REACT_APP_firebase_appId,
 });
 
 const AuthContext = createContext({} as any);

@@ -8,6 +8,7 @@ export interface RequestType {
   donorEmail?: string;
   donorName?: string;
   patientBloodGroup?: { value: string, label: string };
+  patientAge?: string;
   patientDistrict?: { value: string, label: string };
   patientGender?: { value: string, label: string };
   patientState?: { value: string, label: string };
