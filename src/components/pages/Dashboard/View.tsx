@@ -14,24 +14,25 @@ import { useAuth } from "src/components/common/AuthProvider/View";
 import * as React from "react";
 import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-
-import Filter from "./Filters"
+import Button from "@material-ui/core/Button";
+import Filter from "./Filters";
 import { RequestType, UsefulLink } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import { useHistory, useParams, useLocation, useRouteMatch } from "react-router-dom";
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import { useHistory, useLocation } from "react-router-dom";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import { Alert, AlertTitle } from "@material-ui/lab";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import PanToolIcon from "@material-ui/icons/PanTool";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   filter: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   table: {
     // minWidth: 650,
@@ -108,7 +109,9 @@ function Dashboard() {
   const { user } = useAuth();
   const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
-  const [requests, setRequests] = React.useState([] as (RequestType & { id: string })[]);
+  const [requests, setRequests] = React.useState(
+    [] as (RequestType & { id: string })[]
+  );
   const [usefulLinks, setUsefulLinks] = React.useState([] as UsefulLink[]);
   const history = useHistory();
   const location = useLocation();
@@ -131,15 +134,18 @@ function Dashboard() {
   const loadData = async () => {
     try {
       const requests = await (async () => {
-        switch(getCurrentTabFromUrl()) {
+        switch (getCurrentTabFromUrl()) {
           case 0:
             return await getRequests({
-              requestStatus: "open"
+              requestStatus: "open",
             });
           case 1:
-            return user?.email && await getRequests({
-              requesterEmail: user?.email,
-            });
+            return (
+              user?.email &&
+              (await getRequests({
+                requesterEmail: user?.email,
+              }))
+            );
           default:
             return;
         }
@@ -184,12 +190,14 @@ function Dashboard() {
             <Typography gutterBottom variant="h5" component="h2">
               Need {card.requestCategory?.label} Donor
             </Typography>
+            <hr />
+            <Typography>{card.requestDescription}</Typography>
+            <br />
             <Typography>Requested By: {card.requesterName}</Typography>
             <Typography>
               Address: {card.patientDistrict?.label}, {card.patientState?.label}
             </Typography>
-            <Typography>Mobile: {card.requesterContactNumber}</Typography>
-            {card.requestStatus?.value === "closed" ? (
+            {/* {card.requestStatus?.value === "closed" ? (
               <Typography style={{ display: "flex", alignItems: "center" }}>
                 Donor: {card.donorName}
                 <FavoriteIcon
@@ -198,10 +206,24 @@ function Dashboard() {
                   style={{ marginLeft: "5px" }}
                 />
               </Typography>
-            ) : null}
+            ) : null} */}
             <br />
-            <Chip label={card.requestCategory?.label} variant="outlined" />
-            <Chip label={parseTime(card.updatedAt)} variant="outlined" />
+            <Chip
+              label={card.patientBloodGroup?.label}
+              variant="outlined"
+            />{" "}
+            <Chip label={card.requestCategory?.label} variant="outlined" />{" "}
+            <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
+            <br />
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              endIcon={<PanToolIcon />}
+              onClick={() => handleCardClick(card.id)}
+            >
+              I want to help
+            </Button>
           </CardContent>
         </Card>
       </Grid>
@@ -256,70 +278,80 @@ function Dashboard() {
   };
 
   const renderLinks = () => {
-    return <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        {/* <TableHead>
+    return (
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          {/* <TableHead>
           <TableRow>
             <TableCell>Link</TableCell>
             <TableCell>Description</TableCell>
           </TableRow>
         </TableHead> */}
-        <TableBody>
-          {usefulLinks?.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                <Typography gutterBottom variant="h6" component="h2">
-                  <a href={row.link} target="blank">{row.name}</a>
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography gutterBottom variant="h6" component="h2">
-                  {row.description}
-                </Typography>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>;
+          <TableBody>
+            {usefulLinks?.map((row) => (
+              <TableRow key={row.name}>
+                <TableCell component="th" scope="row">
+                  <Typography gutterBottom variant="h6" component="h2">
+                    <a href={row.link} target="blank">
+                      {row.name}
+                    </a>
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography gutterBottom variant="h6" component="h2">
+                    {row.description}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
   };
 
   const renderContent = () => {
-    return <Grid item md={9}>
-      <Container className={classes.cardGrid} maxWidth="lg">
-        <Grid container spacing={4}>
-          {renderTabs()}
-          {(() => {
-            switch(getCurrentTabFromUrl()) {
-              case 0:
-              case 1:
-                return requests?.length ? requests.map(card => renderSingleCard(card)) : renderNoRequests();
-              default:
-                return renderLinks();
-            }})()}
-        </Grid>
-      </Container>
-    </Grid>;
+    return (
+      <Grid item md={9}>
+        <Container className={classes.cardGrid} maxWidth="lg">
+          <Grid container spacing={4}>
+            {renderTabs()}
+            {(() => {
+              switch (getCurrentTabFromUrl()) {
+                case 0:
+                case 1:
+                  return requests?.length
+                    ? requests.map((card) => renderSingleCard(card))
+                    : renderNoRequests();
+                default:
+                  return renderLinks();
+              }
+            })()}
+          </Grid>
+        </Container>
+      </Grid>
+    );
   };
 
   const renderTabs = () => {
-    return <div style={{ /*margin: '12px', */ width: '100%' }}>
-      <AppBar position="static" 
-      color="default" variant="outlined">
-        <Tabs
-          value={getCurrentTabFromUrl()}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={handleTabChange}
-          // aria-label="disabled tabs example"
-          // variant="fullWidth"
-        >
-          <Tab label="All Requests" />
-          <Tab label="My Requests" />
-          <Tab label="Useful links" />
-        </Tabs>
-      </AppBar>
-    </div>;
+    return (
+      <div style={{ /*margin: '12px', */ width: "100%" }}>
+        <AppBar position="static" color="default" variant="outlined">
+          <Tabs
+            value={getCurrentTabFromUrl()}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={handleTabChange}
+            // aria-label="disabled tabs example"
+            // variant="fullWidth"
+          >
+            <Tab label="All Requests" />
+            <Tab label="My Requests" />
+            <Tab label="Useful links" />
+          </Tabs>
+        </AppBar>
+      </div>
+    );
   };
 
   return (
