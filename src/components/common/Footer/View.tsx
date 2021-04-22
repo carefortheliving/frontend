@@ -1,12 +1,33 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
+const useStyles = makeStyles((theme) => ({
+  footerStyle: {
+    position: "fixed",
+    bottom: "1%",
+    left: 0,
+    width: "100%",
+    textAlign: "center",
+  },
+}));
 
 export default function Footer() {
+  const classes = useStyles();
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+    <Typography
+      className={classes.footerStyle}
+      variant="body2"
+      color="textSecondary"
+    >
+      {"copyright © "}
       {new Date().getFullYear()}
-      {' careforliving'}
+      <a
+        href="https://github.com/carefortheliving"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <strong>{" carefortheliving"}</strong>
+      </a>
     </Typography>
   );
 }
