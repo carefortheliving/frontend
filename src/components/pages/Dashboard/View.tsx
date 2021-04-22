@@ -114,7 +114,11 @@ function Dashboard() {
 
   const loadData = async () => {
     try {
-      const requests = getCurrentTabFromUrl() === 0 ?  await getRequests() : [];
+      const requests = getCurrentTabFromUrl() === 0 ?  await getRequests({
+        requestStatus: "open"
+      }) : await getRequests({
+        requesterEmail: user?.email,
+      });
       // console.log({ requests });
       setRequests(requests);
     } catch (e) {
@@ -176,7 +180,8 @@ function Dashboard() {
   const renderNoRequests = () => {
     return <Container style={{ marginTop: '20px' }}>
       <Alert severity="info" >
-        <AlertTitle>No requests created yet!</AlertTitle>
+        <AlertTitle>No requests created yet</AlertTitle>
+        Click on the <strong>Create Request</strong> button to get started!
         </Alert>
     </Container>;
   };
@@ -208,14 +213,14 @@ function Dashboard() {
 
   const renderFilters = () => {
     return <Grid item md={3} >
-      <div className={classes.filter_Container}>
+      {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
         <Typography component="h1" variant="h5" className={classes.filter_Heading}>
           Filter Requests
                   </Typography>
         <div className={classes.filter}>
           <Filter />
         </div>
-      </div>
+      </div> : null}
     </Grid>;
   };
 
@@ -259,7 +264,7 @@ function Dashboard() {
           {renderHeader()}
         </div>
         <Grid container>
-          {renderFilters()}
+          {/* {renderFilters()} */}
           {renderCards()}
         </Grid>
         <Box pt={4}>

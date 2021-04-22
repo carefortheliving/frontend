@@ -236,9 +236,9 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                   {renderCloseButton()}
                 </Grid>
 
-                <Grid item xs={6} sm={6} md={4} spacing={2} justify="flex-end">
+                {/* <Grid item xs={6} sm={6} md={4} spacing={2} justify="flex-end">
                   {renderCancelButton()}
-                </Grid>
+                </Grid> */}
                 {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}
