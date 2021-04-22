@@ -42,7 +42,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
-
+import {AllLocations} from '../../../Constants/FilterData'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -116,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
-  const { getRequests, getUsefulLinks, getFilteredRequests } = useFirestore();
+  const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
   const [requests, setRequests] = React.useState(
     [] as (RequestType & { id: string })[]
@@ -126,6 +126,7 @@ function Dashboard() {
   const history = useHistory();
   const location = useLocation();
   const [filterResults , setFilterResults] = React.useState([] as Array<String>)
+  const allLocations = AllLocations()
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -184,22 +185,33 @@ function Dashboard() {
   React.useEffect(() => {
     const loadData = async () => {
       try {
+        if(filterResults.length == 0)
+          {
+            setRequests([])
+            return                                            
+          }
         let status:String[]= []
-        let location:String[] = []
-        let category:String[] = []
+        // let location:String[] = []
+        // let category:String[] = []
         const keys = [...filterResults]
         keys.includes("Active")&&status.push("open")
         keys.includes("Completed")&&status.push("closed")
-        console.log(keys)
         // filterResults.includes("Completed") && status.push("closed")
-
+        // keys.forEach(element => {
+        //   if(allLocations.includes(element))
+        //     {
+        //     location.push(element)
+        //     }
+        // });
+        // console.log(location)
         const requests = await (async()=>{
                 return await getRequests({
-                  requestStatus : "open"
+                  requestStatus : status,
+                  requestLocation:location
               });
         })()
         console.log(requests)
-        // setRequests(requests);
+        setRequests(requests);
       } catch (e) {
         snackbar.show("error", `Something went wrong, try reloading!`);
       }

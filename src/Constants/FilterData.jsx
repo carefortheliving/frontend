@@ -26,3 +26,13 @@ export const FilterData = ()=>{
 }
 
 export default FilterData;
+
+export const AllLocations = ()=>{
+  const {states } = useGeo();
+  let location = [];
+  Object.keys(states).map(state =>{
+    location.push(state)
+    states[state].map(city=>location.push(city.city))
+  })
+  return location
+}

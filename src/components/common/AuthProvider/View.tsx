@@ -5,13 +5,13 @@ import config from 'src/config'
 
 // Initialize Firebase
 firebase.initializeApp({
-  apiKey: config.REACT_APP_firebase_apiKey,
-  authDomain: config.REACT_APP_firebase_authDomain,
-  databaseURL: config.REACT_APP_firebase_databaseURL,
-  projectId: config.REACT_APP_firebase_projectId,
-  storageBucket: config.REACT_APP_firebase_storageBucket,
-  messagingSenderId: config.REACT_APP_firebase_messagingSenderId,
-  appId: config.REACT_APP_firebase_appId,
+  apiKey: "AIzaSyAoYq1sjF3LDHN6igw2PMb24aLerkiK3Is",
+  authDomain: "carefortheliving-bca71.firebaseapp.com",
+  projectId: "carefortheliving-bca71",
+  storageBucket: "carefortheliving-bca71.appspot.com",
+  messagingSenderId: "928599786532",
+  appId: "1:928599786532:web:37cc1825a132a755c204b1",
+  measurementId: "G-VQBEB3W0JD"
 });
 
 const AuthContext = createContext({} as any);

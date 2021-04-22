@@ -137,7 +137,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const handleStateChange = (state: string) => {
     // getValues().state.value
     const newDistricts =
-      states[state]?.map((el) => ({ key: el.city, label: el.city })) || [];
+      states[state]?.map((el) => ({ value: el.city, label: el.city })) || [];
     setDistricts(newDistricts);
     setValue("patientDistrict", newDistricts[0]);
   };
