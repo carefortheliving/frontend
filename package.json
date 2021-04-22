@@ -48,7 +48,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "firebase-token": "npm install -g firebase-tools@8 && firebase login:ci"
   },
   "eslintConfig": {
     "extends": [
