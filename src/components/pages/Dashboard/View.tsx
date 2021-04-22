@@ -309,7 +309,7 @@ function Dashboard() {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography gutterBottom variant="h6" component="h2">
+                  <Typography gutterBottom variant="subtitle1" component="h2">
                     {row.description}
                   </Typography>
                 </TableCell>
