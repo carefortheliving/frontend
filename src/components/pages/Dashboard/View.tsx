@@ -15,22 +15,23 @@ import * as React from "react";
 import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 
-import Filter from "./Filters";
-import { RequestType } from "src/types";
+import Filter from "./Filters"
+import { RequestType, UsefulLink } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import {
-  useHistory,
-  useParams,
-  useLocation,
-  useRouteMatch,
-} from "react-router-dom";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Paper from "@material-ui/core/Paper";
-import { Alert, AlertTitle } from "@material-ui/lab";
+import { useHistory, useParams, useLocation, useRouteMatch } from "react-router-dom";
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,18 +96,20 @@ const useStyles = makeStyles((theme) => ({
   filter: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
+  },
+  table: {
+    minWidth: 650,
   },
 }));
 
 function Dashboard() {
   const classes = useStyles();
   const { user } = useAuth();
-  const { getRequests } = useFirestore();
+  const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
-  const [requests, setRequests] = React.useState(
-    [] as (RequestType & { id: string })[]
-  );
+  const [requests, setRequests] = React.useState([] as (RequestType & { id: string })[]);
+  const [usefulLinks, setUsefulLinks] = React.useState([] as UsefulLink[]);
   const history = useHistory();
   const location = useLocation();
 
@@ -117,19 +120,31 @@ function Dashboard() {
 
   React.useEffect(() => {
     loadData();
+    loadLinks();
   }, [getCurrentTabFromUrl()]);
+
+  const loadLinks = async () => {
+    const links = await getUsefulLinks();
+    setUsefulLinks(links);
+  };
 
   const loadData = async () => {
     try {
-      const requests =
-        getCurrentTabFromUrl() === 0
-          ? await getRequests({
-              requestStatus: "open",
-            })
-          : user?.email &&
-            (await getRequests({
+      const requests = await (async () => {
+        switch(getCurrentTabFromUrl()) {
+          case 0:
+            return await getRequests({
+              requestStatus: "open"
+            });
+          case 1:
+            return user?.email && await getRequests({
               requesterEmail: user?.email,
-            }));
+            });
+          default:
+            return;
+        }
+      })();
+      // console.log({ requests });
       setRequests(requests);
     } catch (e) {
       snackbar.show("error", `Something went wrong, try reloading!`);
@@ -240,39 +255,71 @@ function Dashboard() {
     );
   };
 
-  const renderCards = () => {
-    return (
-      <Grid item md={9}>
-        <Container className={classes.cardGrid} maxWidth="lg">
-          <Grid container spacing={4}>
-            {renderTabs()}
-            {requests?.length
-              ? requests.map((card) => renderSingleCard(card))
-              : renderNoRequests()}
-          </Grid>
-        </Container>
-      </Grid>
-    );
+  const renderLinks = () => {
+    return <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        {/* <TableHead>
+          <TableRow>
+            <TableCell>Link</TableCell>
+            <TableCell>Description</TableCell>
+          </TableRow>
+        </TableHead> */}
+        <TableBody>
+          {usefulLinks?.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                <Typography gutterBottom variant="h5" component="h2">
+                  <a href={row.link} target="blank">{row.name}</a>
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {row.description}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>;
+  };
+
+  const renderContent = () => {
+    return <Grid item md={9}>
+      <Container className={classes.cardGrid} maxWidth="lg">
+        <Grid container spacing={4}>
+          {renderTabs()}
+          {(() => {
+            switch(getCurrentTabFromUrl()) {
+              case 0:
+              case 1:
+                return requests?.length ? requests.map(card => renderSingleCard(card)) : renderNoRequests();
+              default:
+                return renderLinks();
+            }})()}
+        </Grid>
+      </Container>
+    </Grid>;
   };
 
   const renderTabs = () => {
-    return (
-      <div style={{ /*margin: '12px', */ width: "100%" }}>
-        <AppBar position="static" color="default" variant="outlined">
-          <Tabs
-            value={getCurrentTabFromUrl()}
-            indicatorColor="primary"
-            textColor="primary"
-            onChange={handleTabChange}
-            // aria-label="disabled tabs example"
-            // variant="fullWidth"
-          >
-            <Tab label="All Requests" />
-            <Tab label="My Requests" />
-          </Tabs>
-        </AppBar>
-      </div>
-    );
+    return <div style={{ /*margin: '12px', */ width: '100%' }}>
+      <AppBar position="static" 
+      color="default" variant="outlined">
+        <Tabs
+          value={getCurrentTabFromUrl()}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleTabChange}
+          // aria-label="disabled tabs example"
+          // variant="fullWidth"
+        >
+          <Tab label="All Requests" />
+          <Tab label="My Requests" />
+          <Tab label="Useful links" />
+        </Tabs>
+      </AppBar>
+    </div>;
   };
 
   return (
@@ -284,7 +331,7 @@ function Dashboard() {
         <div className={classes.heroContent}>{renderHeader()}</div>
         <Grid container>
           {renderFilters()}
-          {renderCards()}
+          {renderContent()}
         </Grid>
         <Box pt={4}>
           <Footer />
