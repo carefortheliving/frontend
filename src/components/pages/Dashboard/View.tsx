@@ -252,19 +252,25 @@ function Dashboard() {
   const renderLinks = () => {
     return <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
-        <TableHead>
+        {/* <TableHead>
           <TableRow>
             <TableCell>Link</TableCell>
             <TableCell>Description</TableCell>
           </TableRow>
-        </TableHead>
+        </TableHead> */}
         <TableBody>
           {usefulLinks?.map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                <a href={row.link} target="blank">{row.name}</a>
+                <Typography gutterBottom variant="h5" component="h2">
+                  <a href={row.link} target="blank">{row.name}</a>
+                </Typography>
               </TableCell>
-              <TableCell>{row.description}</TableCell>
+              <TableCell>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {row.description}
+                </Typography>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
