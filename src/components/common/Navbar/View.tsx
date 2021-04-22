@@ -138,8 +138,9 @@ function Navbar(props: NavbarProps) {
           {showBack ?
             <ArrowBackIosIcon className={classes.btnStyle}
               onClick={handleRedirectHome} style={{ cursor: 'pointer' }} />
-            : <LocalHospitalIcon className={classes.btnStyle}
-              onClick={handleRedirectHome} style={{ cursor: 'pointer' }} />}
+            : <div/>}
+            {/* <LocalHospitalIcon className={classes.btnStyle}
+              onClick={handleRedirectHome} style={{ cursor: 'pointer' }} /> */}
           <Typography
               component="h1"
               variant="h6"
