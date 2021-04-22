@@ -32,6 +32,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -110,6 +111,7 @@ function Dashboard() {
   const snackbar = useSnackbar();
   const [requests, setRequests] = React.useState([] as (RequestType & { id: string })[]);
   const [usefulLinks, setUsefulLinks] = React.useState([] as UsefulLink[]);
+  const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
 
@@ -124,12 +126,15 @@ function Dashboard() {
   }, [getCurrentTabFromUrl()]);
 
   const loadLinks = async () => {
+    setLoading(true);
     const links = await getUsefulLinks();
+    setLoading(false);
     setUsefulLinks(links);
   };
 
   const loadData = async () => {
     try {
+      setLoading(true);
       const requests = await (async () => {
         switch(getCurrentTabFromUrl()) {
           case 0:
@@ -144,6 +149,7 @@ function Dashboard() {
             return;
         }
       })();
+      setLoading(false);
       // console.log({ requests });
       setRequests(requests);
     } catch (e) {
@@ -289,7 +295,7 @@ function Dashboard() {
       <Container className={classes.cardGrid} maxWidth="lg">
         <Grid container spacing={4}>
           {renderTabs()}
-          {(() => {
+          {loading ? <CircularProgress style={{ margin: 'auto', marginTop: '100px'}}/> : (() => {
             switch(getCurrentTabFromUrl()) {
               case 0:
               case 1:
