@@ -21,7 +21,3 @@ export const getViewRequestRoute = (docId: string) => {
 export const getSayThanksRoute = (docId: string) => {
   return `/thank/${docId}`;
 };
-
-export const getMyRequestRoute = () => {
-  return `/request/me`;
-};
