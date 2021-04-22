@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center"
   },
   table: {
-    minWidth: 650,
+    // minWidth: 650,
   },
 }));
 
@@ -268,12 +268,12 @@ function Dashboard() {
           {usefulLinks?.map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                <Typography gutterBottom variant="h5" component="h2">
+                <Typography gutterBottom variant="h6" component="h2">
                   <a href={row.link} target="blank">{row.name}</a>
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography gutterBottom variant="h5" component="h2">
+                <Typography gutterBottom variant="h6" component="h2">
                   {row.description}
                 </Typography>
               </TableCell>
