@@ -272,6 +272,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
               { value: "b-", label: "B-" },
               { value: "c+", label: "C+" },
               { value: "c-", label: "C-" },
+              { value: "o+", label: "O+" },
+              { value: "o-", label: "O-" },
               { value: "ab+", label: "AB+" },
               { value: "ab+", label: "AB+" },
             ]}
