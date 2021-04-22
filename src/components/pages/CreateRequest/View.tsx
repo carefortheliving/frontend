@@ -405,27 +405,25 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   //   </Button>;
   // };
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
+  return <div className={classes.root}>
+    <CssBaseline />
+    <Navbar showBack title="Create Request"/>
+    <main className={classes.content}>
+      <div className={classes.appBarSpacer} />
+      <div className={classes.heroContent}>
+        <Container maxWidth="md">
+          <Typography variant="h3" style={{ marginBottom: '50px' }}>
+            {isEdit ? 'Edit Request' : 'Create Request'}
+          </Typography>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={1}>
 
-      <Navbar showBack title="Create Request" />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: "50px" }}>
-              {isEdit ? "Edit Request" : "Create Request"}
-            </Typography>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={1}>
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Requester's Email</Typography>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography variant="h6">{data?.requesterEmail}</Typography>
-                  </Grid>
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
+                  <Typography variant="h5">Requester's Email</Typography>
+                </Grid>
+                <Grid item xs>
+                <Typography variant="h6">{data?.requesterEmail || auth?.user?.email}</Typography>
                 </Grid>
 
                 <Grid container xs={12} sm={12}>
@@ -539,6 +537,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
                 </Grid> */}
                 </Grid>
               </Grid>
+              </Grid>
             </form>
           </Container>
         </div>
@@ -546,8 +545,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           <Footer />
         </Box>
       </main>
-    </div>
-  );
+    </div>;
 };
 
 // export default withAuth(CreateRequest);

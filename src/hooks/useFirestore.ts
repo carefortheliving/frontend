@@ -1,4 +1,4 @@
-import { FiltersType, RequestType } from 'src/types';
+import { FiltersType, RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
 // import firebase from "firebase";
 import { getCurrentTime } from 'src/utils/commonUtils';
@@ -39,7 +39,7 @@ const useFirestore = () => {
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
-    console.log({ ret });
+    // console.log({ ret });
     return ret;
   };
 
@@ -48,11 +48,17 @@ const useFirestore = () => {
     return request;
   };
 
+  const getUsefulLinks = async () => {
+    const ret = await db.collection("usefulLinks").get();
+    return ret.docs.map(el => el.data()) as unknown as UsefulLink[];
+  };
+
   return {
     getRequest,
     getRequests,
     addRequest,
     updateRequest,
+    getUsefulLinks,
   };
 };
 
