@@ -12,8 +12,9 @@ import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
-import { getCreateRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
+import { getCreateRequestRoute, getHomeRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/components/common/AuthProvider/View";
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const drawerWidth = 240;
 
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    cursor: "pointer",
+    // cursor: "pointer",
   },
   drawerPaper: {
     position: "relative",
@@ -101,7 +102,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Navbar(props) {
+interface NavbarProps {
+  showBack?: boolean;
+  title?: string;
+}
+
+function Navbar(props: NavbarProps) {
+  const { showBack, title } = props;
   const { logout, user } = useAuth();
   const classes = useStyles();
   const history = useHistory();
@@ -117,7 +124,10 @@ function Navbar(props) {
   };
   const handleLogOut = () => {
     logout();
-    history.push("/");
+    history.push(getHomeRoute());
+  };
+  const handleRedirectHome = () => {
+    history.push(getHomeRoute());
   };
 
   return (
@@ -125,16 +135,20 @@ function Navbar(props) {
       <CssBaseline />
       <AppBar position="absolute">
         <Toolbar className={classes.toolbar}>
-          <LocalHospitalIcon className={classes.btnStyle} />
+          {showBack ?
+            <ArrowBackIosIcon className={classes.btnStyle}
+              onClick={handleRedirectHome} style={{ cursor: 'pointer' }} />
+            : <LocalHospitalIcon className={classes.btnStyle}
+              onClick={handleRedirectHome} style={{ cursor: 'pointer' }} />}
           <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-            onClick={() => history.push("/")}
-          >
-            {props.title}
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.title}
+              // onClick={handleRedirectHome}
+            >
+              {title || 'Care for the Living'}
           </Typography>
           <Button
             variant="contained"

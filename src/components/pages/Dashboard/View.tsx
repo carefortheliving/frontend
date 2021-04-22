@@ -115,7 +115,7 @@ function Dashboard() {
   const loadData = async () => {
     try {
       const requests = getCurrentTabFromUrl() === 0 ?  await getRequests() : [];
-      console.log({ requests });
+      // console.log({ requests });
       setRequests(requests);
     } catch (e) {
       snackbar.show('error', `Something went wrong, try reloading!`);
@@ -252,7 +252,7 @@ function Dashboard() {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Navbar title="Care for the Living" />
+      <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>

@@ -358,7 +358,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   return <div className={classes.root}>
     <CssBaseline />
 
-    <Navbar title="Care for the Living" />
+    <Navbar showBack title="Create Request"/>
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <div className={classes.heroContent}>
