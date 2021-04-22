@@ -213,14 +213,14 @@ function Dashboard() {
 
   const renderFilters = () => {
     return <Grid item md={3} >
-      {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
+      {/* {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
         <Typography component="h1" variant="h5" className={classes.filter_Heading}>
           Filter Requests
                   </Typography>
         <div className={classes.filter}>
           <Filter />
         </div>
-      </div> : null}
+      </div> : null} */}
     </Grid>;
   };
 
@@ -264,7 +264,7 @@ function Dashboard() {
           {renderHeader()}
         </div>
         <Grid container>
-          {/* {renderFilters()} */}
+          {renderFilters()}
           {renderCards()}
         </Grid>
         <Box pt={4}>
