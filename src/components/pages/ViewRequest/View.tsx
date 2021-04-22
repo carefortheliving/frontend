@@ -48,7 +48,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
-    console.log({ existingRequest });
+    // console.log({ existingRequest });
     if (typeof existingRequest === 'object') {
       setData(existingRequest as any);
     }
@@ -107,7 +107,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   return <div className={classes.root}>
     <CssBaseline />
 
-    <Navbar title="Care for the Living" />
+    <Navbar showBack title="Request Details"/>
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <div className={classes.heroContent}>
