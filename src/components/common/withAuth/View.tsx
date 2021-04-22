@@ -19,7 +19,7 @@ const withAuth = <T extends React.FC>(Component: T) => {
       // setLoading(false);
       if (!authenticated) {
         // TODO: Somehow store original route and redirect back to it after login?
-        history.push(getLoginRoute());
+        history.replace(getLoginRoute());
       }
     };
 

@@ -11,7 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import Select from "react-select";
 import Navbar from "src/components/common/Navbar/View";
-import { getHomeRoute, getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { getHomeRoute, getLoginRoute, getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import withAuth from "src/components/common/withAuth/View";
 import useFirestore from "src/hooks/useFirestore";
@@ -77,6 +77,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   const [data, setData] = React.useState(undefined as undefined | RequestType);
 
   React.useEffect(() => {
+    ensureLoggedIn();
     loadData();
   }, []);
 
@@ -91,6 +92,12 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   React.useEffect(() => {
     prefillData();
   }, [data]);
+
+  const ensureLoggedIn = async () => {
+    if (!auth?.user?.email) {
+      history.replace(getLoginRoute());
+    }
+  };
 
   const isOriginalUser = () => {
     return data?.requesterEmail ? data?.requesterEmail === auth?.user?.email : true;
@@ -484,4 +491,5 @@ const CreateRequest: React.FC<CreateRequestProps> = ({
   </div>;
 };
 
-export default withAuth(CreateRequest);
+// export default withAuth(CreateRequest);
+export default CreateRequest;
