@@ -12,11 +12,8 @@ import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
-import {
-  getCreateRequestRoute,
-  getMyRequestRoute,
-} from "../RouterOutlet/routerUtils";
-import { useAuth } from "src/hooks/useFirebase";
+import { getCreateRequestRoute, getMyRequestRoute, getLoginRoute } from "../RouterOutlet/routerUtils";
+import { useAuth } from "src/components/common/AuthProvider/View";
 
 const drawerWidth = 240;
 
@@ -100,14 +97,18 @@ const useStyles = makeStyles((theme) => ({
   },
   btnStyle: {
     margin: theme.spacing(1),
+    fontWeight: 600
   },
 }));
 
 function Navbar(props) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const classes = useStyles();
   const history = useHistory();
   const [profileBtn, setProfileBtn] = React.useState(null);
+
+  const isLogged = !!(user && user.email);
+
   const handleProfileClick = (event) => {
     setProfileBtn(event.currentTarget);
   };
@@ -138,28 +139,28 @@ function Navbar(props) {
           <Button
             variant="contained"
             className={classes.btnStyle}
-            size="small"
+            size="medium"
             color="secondary"
             onClick={() => history.push(getCreateRequestRoute())}
           >
             Create Request
           </Button>
-          {!props.isLogged ? (
-            <>
-              <Button
-                variant="contained"
-                size="small"
-                onClick={() => history.push("/login")}
-              >
-                Sign In
-              </Button>
-            </>
-          ) : (
+          {isLogged ? (
             <IconButton color="inherit" onClick={handleProfileClick}>
               <Badge color="secondary">
                 <AccountCircleIcon />
               </Badge>
             </IconButton>
+          ) : (
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => history.push(getLoginRoute())}
+              >
+                Sign In
+              </Button>
+            </>
           )}
           <Menu
             id="simple-menu"

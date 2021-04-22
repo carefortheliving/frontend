@@ -13,7 +13,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
 import Typography from "@material-ui/core/Typography";
-import { useAuth } from "src/hooks/useFirebase";
+import { useAuth } from "src/components/common/AuthProvider/View";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -110,10 +110,7 @@ function MyRequest() {
     <div className={classes.root}>
       <CssBaseline />
 
-      <Navbar
-        title="Care for the Living"
-        isLogged={user && user.email ? true : false}
-      />
+      <Navbar title="Care for the Living" />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.greet}>
