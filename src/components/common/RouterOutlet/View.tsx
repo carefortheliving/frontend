@@ -8,7 +8,6 @@ const Dashboard = React.lazy(() => import('../../pages/Dashboard/View'));
 const CreateRequest = React.lazy(() => import('../../pages/CreateRequest/View'));
 const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
 const SayThanks = React.lazy(() => import('../../pages/SayThanks/View'));
-const MyRequest = React.lazy(() => import("../../pages/MyRequest/View"));
 
 const RouterOutlet = (props) => {
   return (
@@ -20,7 +19,6 @@ const RouterOutlet = (props) => {
       <Route path="/request/edit/:docId" exact component={(props) => <CreateRequest isEdit={true} {...props}/>} />
       <Route path="/request/view/:docId" exact component={ViewRequest} />
       <Route path="/thank/:docId" exact component={SayThanks} />
-      <Route path="/request/me" component={MyRequest} />
     </Switch>
   </Suspense>);
 };
