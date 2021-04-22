@@ -21,5 +21,14 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
-          branch: ghpages # The branch the action should deploy to.
+          branch: gh-pages # The branch the action should deploy to.
           folder: build # The folder the action should deploy.
+        env:
+          REACT_APP_firebase_apiKey: ${{ secrets.REACT_APP_firebase_apiKey }}
+          REACT_APP_firebase_authDomain: ${{ secrets.REACT_APP_firebase_apiKey }}
+          REACT_APP_firebase_databaseURL: ${{ secrets.REACT_APP_firebase_apiKey }}
+          REACT_APP_firebase_projectId: ${{ secrets.REACT_APP_firebase_apiKey }}
+          REACT_APP_firebase_storageBucket: ${{ secrets.REACT_APP_firebase_apiKey }}
+          REACT_APP_firebase_messagingSenderId: ${{ secrets.REACT_APP_firebase_apiKey }}
+          REACT_APP_firebase_appId: ${{ secrets.REACT_APP_firebase_apiKey }}
+          REACT_APP_firebase_measurementId: ${{ secrets.REACT_APP_firebase_apiKey }}
