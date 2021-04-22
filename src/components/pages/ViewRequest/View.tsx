@@ -89,7 +89,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
         onClick={handleCloseClick}
         style={{ marginRight: "10px" }}
       >
-        Close
+        Mark as Resolved
       </Button>
     );
   };
@@ -186,6 +186,15 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
+                  <Typography variant="h5">Patient's Age</Typography>
+                </Grid>
+                <Grid item xs>
+                  {renderFieldValue(data?.patientAge)}
+                </Grid>
+              </Grid>
+
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
                   <Typography variant="h5">State</Typography>
                 </Grid>
                 <Grid item xs>
@@ -207,7 +216,9 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                   <Typography variant="h5">Description</Typography>
                 </Grid>
                 <Grid item xs>
-                  {renderFieldValue(data?.requestDescription)}
+                  <pre>
+                    {renderFieldValue(data?.requestDescription)}
+                  </pre>
                 </Grid>
               </Grid>
 
