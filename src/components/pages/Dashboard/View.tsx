@@ -238,9 +238,9 @@ function Dashboard() {
           Care for the Living <br></br>
         </Typography>
         <Typography variant="h6" align="center" color="textSecondary" paragraph>
-          The world suffers & always has, but doesn't have to.
+          "If you truly loved yourself, you could never hurt another."
           <br />
-          You have the potential to change. Just keep going!
+          {/* - Buddha */}
         </Typography>
       </Container>
     );
