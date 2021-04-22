@@ -11,8 +11,8 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
 import { useAuth } from "src/components/common/AuthProvider/View";
-import * as React from 'react';
-import useFirestore from 'src/hooks/useFirestore';
+import * as React from "react";
+import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 
 import Filter from "./Filters"
@@ -71,13 +71,13 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   closedCard: {
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    cursor: 'pointer',
+    cursor: "pointer",
     background: "#efefef",
   },
   cardMedia: {
@@ -88,10 +88,10 @@ const useStyles = makeStyles((theme) => ({
   },
   filter_Heading: {
     textAlign: "center",
-    margin: "3.5rem 0 1rem 0"
+    margin: "3.5rem 0 1rem 0",
   },
   filter_Container: {
-    position: "relative"
+    position: "relative",
   },
   filter: {
     display: "flex",
@@ -115,7 +115,7 @@ function Dashboard() {
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
-    return Number(currentUrlParams.get('tab') || '0');
+    return Number(currentUrlParams.get("tab") || "0");
   };
 
   React.useEffect(() => {
@@ -147,7 +147,7 @@ function Dashboard() {
       // console.log({ requests });
       setRequests(requests);
     } catch (e) {
-      snackbar.show('error', `Something went wrong, try reloading!`);
+      snackbar.show("error", `Something went wrong, try reloading!`);
     }
   };
 
@@ -157,7 +157,7 @@ function Dashboard() {
 
   const handleTabChange = (event, newValue: number) => {
     const currentUrlParams = new URLSearchParams(location.search);
-    currentUrlParams.set('tab', newValue?.toString());
+    currentUrlParams.set("tab", newValue?.toString());
     history.push({
       pathname: location.pathname,
       search: "?" + currentUrlParams.toString(),
@@ -168,10 +168,11 @@ function Dashboard() {
     return (
       <Grid item key={card.id} xs={12} sm={6} md={4}>
         <Card
-          className={`${card.requestStatus?.value === "open"
-            ? classes.openCard
-            : classes.closedCard
-            }`}
+          className={`${
+            card.requestStatus?.value === "open"
+              ? classes.openCard
+              : classes.closedCard
+          }`}
           onClick={() => handleCardClick(card.id)}
         >
           {/* <CardMedia
@@ -188,11 +189,16 @@ function Dashboard() {
               Address: {card.patientDistrict?.label}, {card.patientState?.label}
             </Typography>
             <Typography>Mobile: {card.requesterContactNumber}</Typography>
-            {card.requestStatus?.value === "closed" ?
-              <Typography style={{ display: 'flex', alignItems: 'center' }}>
+            {card.requestStatus?.value === "closed" ? (
+              <Typography style={{ display: "flex", alignItems: "center" }}>
                 Donor: {card.donorName}
-                <FavoriteIcon color="secondary" fontSize="small" style={{ marginLeft: '5px' }}/>
-              </Typography> : null}
+                <FavoriteIcon
+                  color="secondary"
+                  fontSize="small"
+                  style={{ marginLeft: "5px" }}
+                />
+              </Typography>
+            ) : null}
             <br />
             <Chip label={card.requestCategory?.label} variant="outlined" />
             <Chip label={parseTime(card.updatedAt)} variant="outlined" />
@@ -203,42 +209,41 @@ function Dashboard() {
   };
 
   const renderNoRequests = () => {
-    return <Container style={{ marginTop: '20px' }}>
-      <Alert severity="info" >
-        <AlertTitle>No requests created yet</AlertTitle>
-        Click on the <strong>Create Request</strong> button to get started!
+    return (
+      <Container style={{ marginTop: "20px" }}>
+        <Alert severity="info">
+          <AlertTitle>No requests created yet</AlertTitle>
+          Click on the <strong>Create Request</strong> button to get started!
         </Alert>
-    </Container>;
+      </Container>
+    );
   };
 
   const renderHeader = () => {
-    return <Container maxWidth="md">
-      <Typography
-        component="h2"
-        variant="h3"
-        align="center"
-        color="textPrimary"
-        gutterBottom
-      >
-        Care for the Living <br></br>
-        {/* Hello, {user?.displayName || "Guest"} */}
-      </Typography>
-      <Typography
-        variant="h6"
-        align="center"
-        color="textSecondary"
-        paragraph
-      >
-        The world suffers & always has, but doesn't have to.
-        <br />
-        You have the potential to change. Just keep going!
-      </Typography>
-    </Container>;
+    return (
+      <Container maxWidth="md">
+        <Typography
+          component="h2"
+          variant="h3"
+          align="center"
+          color="textPrimary"
+          gutterBottom
+        >
+          Care for the Living <br></br>
+        </Typography>
+        <Typography variant="h6" align="center" color="textSecondary" paragraph>
+          The world suffers & always has, but doesn't have to.
+          <br />
+          You have the potential to change. Just keep going!
+        </Typography>
+      </Container>
+    );
   };
 
   const renderFilters = () => {
-    return <Grid item md={3} >
-      {/* {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
+    return (
+      <Grid item md={3}>
+        {/* {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
         <Typography component="h1" variant="h5" className={classes.filter_Heading}>
           Filter Requests
                   </Typography>
@@ -246,7 +251,8 @@ function Dashboard() {
           <Filter />
         </div>
       </div> : null} */}
-    </Grid>;
+      </Grid>
+    );
   };
 
   const renderLinks = () => {
@@ -322,9 +328,7 @@ function Dashboard() {
       <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          {renderHeader()}
-        </div>
+        <div className={classes.heroContent}>{renderHeader()}</div>
         <Grid container>
           {renderFilters()}
           {renderContent()}
