@@ -25,21 +25,28 @@ const useFirestore = () => {
 
   const getRequests = async ({
     requesterEmail,
-    requestStatus
+    requestStatus,
+    requestLocation
   } : FiltersType) => {
-    let requestsRef: any = db.collection("requests");
-    if (requesterEmail) {
-      requestsRef = await requestsRef.where('requesterEmail', '==', requesterEmail);
-    }
-    if (requestStatus) {
-      requestsRef = await requestsRef.where('requestStatus.value', '==', requestStatus);
-    }
+    let requestsRef: any = await db.collection("requests").where('requestStatus.value', 'in', requestStatus)
+    // if(requestLocation.length>0)
+    //     requestsRef = await requestsRef.where('patientDistrict' , 'in' , requestLocation )
+
+
+        
+    // if (requesterEmail) {
+    //   requestsRef = await requestsRef.where('requesterEmail', '==', requesterEmail);
+    // }
+    // if (requestStatus) {
+    //   requestsRef = await requestsRef.where('requestStatus.value', '==', requestStatus);
+    // }
     const requests = await requestsRef.get();
+    console.log(requests)
     const ret = requests.docs?.map(doc => ({
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
-    // console.log({ ret });
+    console.log({ ret });
     return ret;
   };
 
@@ -53,28 +60,12 @@ const useFirestore = () => {
     return ret.docs.map(el => el.data()) as unknown as UsefulLink[];
   };
 
-  const getFilteredRequests = async({requestStatus}) => {
-
-  
-      let requestsRef: any = db.collection("requests");
-        requestsRef = await requestsRef.where('requestStatus', 'in' , requestStatus);
-        const requests = await requestsRef.get();
-        const ret = requests.docs?.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as unknown as (RequestType & { id: string })[];
-        return ret;
-
-      return null;
-  }
-
   return {
     getRequest,
     getRequests,
     addRequest,
     updateRequest,
     getUsefulLinks,
-    getFilteredRequests
   };
 };
 
