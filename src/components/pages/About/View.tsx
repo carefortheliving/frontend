@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Container, Grid, makeStyles, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Navbar from "components/common/Navbar/View";
-import Footer from "components/common/Footer/View";
+import Navbar from "src/components/common/Navbar/View";
+import Footer from "src/components/common/Footer/View";
 import Box from "@material-ui/core/Box";
-import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
 import HearingIcon from "@material-ui/icons/Hearing";
 
 const useStyles = makeStyles((theme) => ({

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useAuth } from 'components/common/AuthProvider/View';
+import { useAuth } from 'src/components/common/AuthProvider/View';
 import { useHistory } from 'react-router-dom';
 import { getLoginRoute } from '../RouterOutlet/routerUtils';
 

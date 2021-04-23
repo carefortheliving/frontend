@@ -11,7 +11,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useHistory } from 'react-router-dom';
-import { useAuth } from 'components/common/AuthProvider/View';
+import { useAuth } from 'src/components/common/AuthProvider/View';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import {
   getAboutRoute,
