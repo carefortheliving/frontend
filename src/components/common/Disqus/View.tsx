@@ -4,7 +4,7 @@ import { DisqusProps } from 'src/types'
 export default function Footer(props: DisqusProps) {
     return (
         <DiscussionEmbed
-            shortname='Comments'
+            shortname='https-carefortheliving-org'
             config={
                 {
                     url: props.url,
