@@ -47,7 +47,8 @@ const About: React.FC<SayAbout> = () => {
         </Typography>
         <Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
           <i>
-            Caring starts with listening <HearingIcon />. <br/>
+            Caring starts with listening! <HearingIcon /> <br/>
+            <br/>
             We are committed to listen to the <strong>voice of pain</strong>{/* <RecordVoiceOverIcon /> */}, <br/>
             and amplify that voice for those, to hear, who can help. <br/>
             <br/>

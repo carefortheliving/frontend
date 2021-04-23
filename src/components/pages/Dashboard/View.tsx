@@ -41,7 +41,7 @@ import {
   useLocation,
   useRouteMatch,
 } from "react-router-dom";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, Tooltip } from "@material-ui/core";
 import {AllLocations} from '../../../Constants/FilterData'
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -254,12 +254,35 @@ function Dashboard() {
               Need {card.requestCategory?.label} Donor
             </Typography>
             <hr />
-            <Typography>{card.requestDescription}</Typography>
+            <Tooltip
+              style={{ width: '300px' }}
+              enterDelay={500} 
+              title={
+                <React.Fragment>
+                  <Typography color="inherit">
+                    {card.requestDescription}
+                  </Typography>
+                </React.Fragment>
+              }
+              placement="top"
+            >
+              <Typography noWrap>{card.requestDescription}</Typography>
+            </Tooltip>
             <br />
-            <Typography>Requested By: {card.requesterName}</Typography>
-            <Typography>
-              Address: {card.patientDistrict?.label}, {card.patientState?.label}
-            </Typography>
+            <Box style={{ display: "flex", color: 'rgba(0, 0, 0, 0.54)' }}>
+              <Typography style={{ marginRight: "10px" }}>
+                <i>Requested By:</i>
+              </Typography>
+              <Typography>{card.requesterName}</Typography>
+            </Box>
+            <Box style={{ display: "flex", color: 'rgba(0, 0, 0, 0.54)' }}>
+              <Typography style={{ marginRight: "10px" }}>
+                <i>Address:</i>
+              </Typography>
+              <Typography>
+                {card.patientDistrict?.label}, {card.patientState?.label}
+              </Typography>
+            </Box>
             {/* {card.requestStatus?.value === "closed" ? (
               <Typography style={{ display: "flex", alignItems: "center" }}>
                 Donor: {card.donorName}
@@ -407,6 +430,8 @@ function Dashboard() {
       <div style={{ /*margin: '12px', */ width: "100%" }}>
         <AppBar position="static" color="default" variant="outlined">
           <Tabs
+            variant="scrollable"
+            scrollButtons="auto"
             value={getCurrentTabFromUrl()}
             indicatorColor="primary"
             textColor="primary"
