@@ -434,119 +434,88 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={1}>
             <Grid container xs={12} sm={12}>
-              <Grid item xs>
-                <Typography variant="h5">Requester's Email</Typography>
-              </Grid>
-              <Grid item xs>
-                <Typography variant="h6">
-                  {isEdit ? data?.requesterEmail : auth?.user?.email}
-                </Typography>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Requester's Name</Typography>
+              {/* <Grid container xs={12} sm={12}>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">Requester's Name</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderRequester()}
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Contact Number</Typography>
+              {/* <Grid container xs={12} sm={12}>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">Contact Number</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderContactNumber()}
                 </Grid>
-              </Grid>
+              </Grid> */}
 
               <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Category</Typography>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">Category</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderCategory()}
                 </Grid>
               </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Gender</Typography>
+              {/* <Grid container xs={12} sm={12}>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">Patient's Gender</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderGender()}
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Blood Group</Typography>
+              {/* <Grid container xs={12} sm={12}>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">Patient's Blood Group</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderBloodGroup()}
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Age</Typography>
+              {/* <Grid container xs={12} sm={12}>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">Patient's Age</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderAge()}
                 </Grid>
-              </Grid>
+              </Grid> */}
 
               <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">State</Typography>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">State</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderState()}
                 </Grid>
               </Grid>
 
               <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">District</Typography>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">District</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={12}>
                   {renderDistrict()}
                 </Grid>
               </Grid>
 
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Description</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderDescription()}
-                </Grid>
-              </Grid>
-
               {/* <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">
-                    Status
-                  </Typography>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle1">Description</Typography>
                 </Grid>
-                <Grid item xs>
-                  {renderStatus()}
+                <Grid item xs={12}>
+                  {renderDescription()}
                 </Grid>
               </Grid> */}
 
-              {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">
-                    Donor Details
-                  </Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderDonor()}
-                </Grid>
-              </Grid> : null} */}
-
-              <Grid
+              {/* <Grid
                 container
                 xs={12}
                 sm={12}
@@ -558,10 +527,7 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
                   {renderSubmit()}
                   {renderCancel()}
                 </Grid>
-                {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
-                  {renderResolve()}
-                </Grid> */}
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
         </form>

@@ -28,12 +28,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import PanToolIcon from "@material-ui/icons/PanTool";
-import {
-  useHistory,
-  useLocation,
-} from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { CircularProgress, Tooltip } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar"
+import AppBar from "@material-ui/core/AppBar";
+import RequestFilters from "./RequestFilters";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,7 +120,7 @@ function Dashboard() {
     const currentUrlParams = new URLSearchParams(location.search);
     return Number(currentUrlParams.get("tab") || "0");
   };
-  
+
   /* eslint-disable react-hooks/exhaustive-deps */
 
   React.useEffect(() => {
@@ -140,15 +138,18 @@ function Dashboard() {
   const loadData = async () => {
     try {
       const requests = await (async () => {
-        switch(getCurrentTabFromUrl()) {
+        switch (getCurrentTabFromUrl()) {
           case 0:
             return await getRequests({
-              requestStatus: ["open"]
+              requestStatus: ["open"],
             });
           case 1:
-            return user?.email && await getRequests({
-              requesterEmail: [user?.email],
-            });
+            return (
+              user?.email &&
+              (await getRequests({
+                requesterEmail: [user?.email],
+              }))
+            );
           default:
             return;
         }
@@ -206,6 +207,28 @@ function Dashboard() {
       pathname: location.pathname,
       search: "?" + currentUrlParams.toString(),
     });
+  };
+
+  const renderFilters = () => {
+    return (
+      <Grid item md={3}>
+        {
+          <div className={classes.filter_Container}>
+            <Typography
+              component="h1"
+              variant="h5"
+              className={classes.filter_Heading}
+            >
+              Filters
+            </Typography>
+            <div className={classes.filter}>
+              <RequestFilters />
+              {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
+            </div>
+          </div>
+        }
+      </Grid>
+    );
   };
 
   const renderSingleCard = (card: typeof requests[0]) => {
@@ -323,45 +346,30 @@ function Dashboard() {
     );
   };
 
-  const renderLinks = () => {
+  const renderSingleLink = (row: any) => {
     return (
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          {/* <TableHead>
-          <TableRow>
-            <TableCell>Link</TableCell>
-            <TableCell>Description</TableCell>
-          </TableRow>
-        </TableHead> */}
-          <TableBody>
-            {usefulLinks?.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  <Typography gutterBottom variant="h6" component="h2">
-                    <a href={row.link} target="blank">
-                      {row.name}
-                    </a>
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography gutterBottom variant="subtitle1" component="h2">
-                    {row.description}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid item key={row.link} xs={12} sm={6} md={4}>
+        <Card className={classes.openCard}>
+          <CardContent className={classes.cardContent}>
+            <Typography gutterBottom variant="h6" component="h2">
+              <a href={row.link} target="blank">
+                {row.name}
+              </a>
+            </Typography>
+            <Typography gutterBottom variant="subtitle1" component="h2">
+              {row.description}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
     );
   };
 
   const renderContent = () => {
     return (
-      <Grid item md={12}>
+      <Grid item md={9}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
-            {renderTabs()}
             {loading ? (
               <CircularProgress
                 style={{ margin: "auto", marginTop: "100px" }}
@@ -375,7 +383,7 @@ function Dashboard() {
                       ? requests.map((card) => renderSingleCard(card))
                       : renderNoRequests();
                   default:
-                    return renderLinks();
+                    return usefulLinks?.map((link) => renderSingleLink(link));
                 }
               })()
             )}
@@ -387,24 +395,22 @@ function Dashboard() {
 
   const renderTabs = () => {
     return (
-      <div style={{ /*margin: '12px', */ width: "100%" }}>
-        <AppBar position="static" color="default" variant="outlined">
-          <Tabs
-            variant="scrollable"
-            scrollButtons="auto"
-            value={getCurrentTabFromUrl()}
-            indicatorColor="primary"
-            textColor="primary"
-            onChange={handleTabChange}
-            // aria-label="disabled tabs example"
-            // variant="fullWidth"
-          >
-            <Tab label="All Requests" />
-            <Tab label="My Requests" />
-            <Tab label="Useful links" />
-          </Tabs>
-        </AppBar>
-      </div>
+      <AppBar position="static" color="default" variant="outlined">
+        <Tabs
+          variant="scrollable"
+          scrollButtons="auto"
+          value={getCurrentTabFromUrl()}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleTabChange}
+          // aria-label="disabled tabs example"
+          // variant="fullWidth"
+        >
+          <Tab label="All Requests" />
+          <Tab label="My Requests" />
+          <Tab label="Useful links" />
+        </Tabs>
+      </AppBar>
     );
   };
 
@@ -415,10 +421,15 @@ function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>{renderHeader()}</div>
-        <Grid container>
-          {/* {renderFilters()} */}
-          {renderContent()}
-        </Grid>
+        <Container>
+          <Grid container>
+            <Grid item md={12}>
+              <Container disableGutters>{renderTabs()}</Container>
+            </Grid>
+            {getCurrentTabFromUrl() === 0 ? renderFilters() : null}
+            {renderContent()}
+          </Grid>
+        </Container>
         <Box pt={4}>
           <Footer />
         </Box>

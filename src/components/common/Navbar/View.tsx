@@ -1,28 +1,27 @@
-import React from "react";
 import AppBar from "@material-ui/core/AppBar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
-import { makeStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import { makeStyles } from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import InfoIcon from "@material-ui/icons/Info";
+import React from "react";
 import { useHistory } from "react-router-dom";
+import { useAuth } from "src/components/common/AuthProvider/View";
+import useBreakpoint from "src/hooks/useBreakpoint";
+import useRoutes from "src/hooks/useRoutes";
 import {
   getAboutRoute,
   getCreateRequestRoute,
-  getHomeRoute,
+  getHomeRoute
 } from "../RouterOutlet/routerUtils";
-import { useAuth } from "src/components/common/AuthProvider/View";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import useBreakpoint from "src/hooks/useBreakpoint";
-import useRoutes from "src/hooks/useRoutes";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import InfoIcon from "@material-ui/icons/Info";
+import FabIcon from './FabIcon';
 
 const drawerWidth = 240;
 
@@ -107,11 +106,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     fontWeight: 600,
   },
-  fab: {
-    position: "fixed",
-    bottom: theme.spacing(4),
-    right: theme.spacing(3),
-  },
 }));
 
 interface NavbarProps {
@@ -158,9 +152,7 @@ function Navbar(props: NavbarProps) {
             Create Request
           </Button>
         ) : (
-          <Fab color="secondary" className={classes.fab}>
-            <AddIcon onClick={() => history.push(getCreateRequestRoute())} />
-          </Fab>
+          <FabIcon />
         )}
         {isUpSm ? (
           <Button
