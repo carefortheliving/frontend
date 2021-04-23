@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
 import { getLoginRoute } from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/components/common/AuthProvider/View";

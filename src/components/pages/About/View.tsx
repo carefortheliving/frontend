@@ -4,8 +4,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Navbar from "src/components/common/Navbar/View";
 import Footer from "src/components/common/Footer/View";
 import Box from "@material-ui/core/Box";
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
-import HearingIcon from '@material-ui/icons/Hearing';
+import HearingIcon from "@material-ui/icons/Hearing";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,16 +44,23 @@ const About: React.FC<SayAbout> = () => {
         >
           Our Vision <br></br>
         </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="textSecondary"
+          paragraph
+        >
           <i>
-            Caring starts with listening! <HearingIcon /> <br/>
-            <br/>
-            We are committed to listen to the <strong>voice of pain</strong>{/* <RecordVoiceOverIcon /> */}, <br/>
-            and amplify that voice for those, to hear, who can help. <br/>
-            <br/>
-            If you are seeking help, <br/>
-            kindly click on <strong>Create Request</strong> and generate your request. <br/>
-            We will do our best to make it visible to the world. <br/>
+            Caring starts with listening! <HearingIcon /> <br />
+            <br />
+            We are committed to listen to the <strong>voice of pain</strong>
+            {/* <RecordVoiceOverIcon /> */}, <br />
+            and amplify that voice for those, to hear, who can help. <br />
+            <br />
+            If you are seeking help, <br />
+            kindly click on <strong>Create Request</strong> and generate your
+            request. <br />
+            We will do our best to make it visible to the world. <br />
             <br />
           </i>
           {/* - Buddha */}
@@ -80,12 +86,8 @@ const About: React.FC<SayAbout> = () => {
       <Navbar showBack />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          {renderHeader()}
-        </div>
-        <Grid container>
-          {renderContent()}
-        </Grid>
+        <div className={classes.heroContent}>{renderHeader()}</div>
+        <Grid container>{renderContent()}</Grid>
         <Box mt={8}>
           <Footer />
         </Box>
