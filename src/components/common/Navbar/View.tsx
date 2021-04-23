@@ -18,6 +18,12 @@ import {
 } from "../RouterOutlet/routerUtils";
 import { useAuth } from "src/components/common/AuthProvider/View";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import useBreakpoint from "src/hooks/useBreakpoint";
+import useRoutes from "src/hooks/useRoutes";
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import InfoIcon from "@material-ui/icons/Info";
 
 const drawerWidth = 240;
 
@@ -102,6 +108,11 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     fontWeight: 600,
   },
+  fab: {
+    position: "fixed",
+    bottom: theme.spacing(4),
+    right: theme.spacing(3),
+  },
 }));
 
 interface NavbarProps {
@@ -115,6 +126,8 @@ function Navbar(props: NavbarProps) {
   const classes = useStyles();
   const history = useHistory();
   const [profileBtn, setProfileBtn] = React.useState(null);
+  const isUpSm = useBreakpoint("sm");
+  const { isHome } = useRoutes();
 
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
@@ -141,6 +154,88 @@ function Navbar(props: NavbarProps) {
     history.push(getHomeRoute());
   };
 
+  const renderActions = () => {
+    return isHome ? (
+      <>
+        {isUpSm ? (
+          <Button
+            variant="contained"
+            className={classes.btnStyle}
+            size="small"
+            color="secondary"
+            onClick={() => history.push(getCreateRequestRoute())}
+          >
+            Create Request
+          </Button>
+        ) : (
+          <Fab color="secondary" className={classes.fab}>
+            <AddIcon onClick={() => history.push(getCreateRequestRoute())} />
+          </Fab>
+        )}
+        {isUpSm ? (
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => history.push(getAboutRoute())}
+          >
+            Info
+          </Button>
+        ) : (
+          <InfoIcon onClick={() => history.push(getAboutRoute())} />
+        )}
+      </>
+    ) : null;
+  };
+
+  const renderMenu = () => {
+    return (
+      <>
+        {isLogged ? (
+          <IconButton color="inherit" onClick={handleProfileClick}>
+            <Badge color="secondary">
+              <AccountCircleIcon />
+            </Badge>
+          </IconButton>
+        ) : (
+          <></>
+        )}
+        <Menu
+          id="simple-menu"
+          anchorEl={profileBtn}
+          keepMounted
+          open={Boolean(profileBtn)}
+          onClose={handleProfileClose}
+        >
+          <MenuItem>
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdOIDnLsN0YSgsZTPsk09X95yde_1lE-9qS9YR5g4Y5sStCwA/viewform?usp=sf_link"
+              target="blank"
+            >
+              Send Feedback
+            </a>
+          </MenuItem>
+          <MenuItem disabled>{user?.displayName}</MenuItem>
+          <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+        </Menu>
+      </>
+    );
+  };
+
+  const renderTitle = () => {
+    return (
+      <Typography
+        component="h1"
+        variant={isUpSm ? "h6" : "subtitle1"}
+        color="inherit"
+        noWrap
+        className={classes.title}
+        // onClick={handleRedirectHome}
+      >
+        {title || "Care for the Living"}
+      </Typography>
+    );
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -155,59 +250,9 @@ function Navbar(props: NavbarProps) {
           ) : (
             <div />
           )}
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-            // onClick={handleRedirectHome}
-          >
-            {title || "Care for the Living"}
-          </Typography>
-          <Button
-            variant="contained"
-            className={classes.btnStyle}
-            size="small"
-            color="secondary"
-            onClick={() => history.push(getCreateRequestRoute())}
-          >
-            Create Request
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => history.push(getAboutRoute())}
-          >
-            Info
-          </Button>
-          {isLogged ? (
-            <IconButton color="inherit" onClick={handleProfileClick}>
-              <Badge color="secondary">
-                <AccountCircleIcon />
-              </Badge>
-            </IconButton>
-          ) : (
-            <></>
-          )}
-          <Menu
-            id="simple-menu"
-            anchorEl={profileBtn}
-            keepMounted
-            open={Boolean(profileBtn)}
-            onClose={handleProfileClose}
-          >
-            <MenuItem>
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSdOIDnLsN0YSgsZTPsk09X95yde_1lE-9qS9YR5g4Y5sStCwA/viewform?usp=sf_link"
-                target="blank"
-              >
-                Send Feedback
-              </a>
-            </MenuItem>
-            <MenuItem disabled>{user?.displayName}</MenuItem>
-            <MenuItem onClick={handleLogOut}>Logout</MenuItem>
-          </Menu>
+          {renderTitle()}
+          {renderActions()}
+          {renderMenu()}
         </Toolbar>
       </AppBar>
     </div>
