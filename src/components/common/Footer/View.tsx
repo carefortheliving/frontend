@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   footerStyle: {
-    position: "fixed",
+    position: "static",
     bottom: "1%",
     left: 0,
     width: "100%",
