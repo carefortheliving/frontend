@@ -1,5 +1,5 @@
-import firebase from "firebase";
-import { useAuth } from "src/components/common/AuthProvider/View";
+import firebase from 'firebase';
+import { useAuth } from 'components/common/AuthProvider/View';
 
 const useFirebase = () => {
   const db = firebase.firestore();

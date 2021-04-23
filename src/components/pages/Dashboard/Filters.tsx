@@ -1,50 +1,45 @@
 import React, { useState } from 'react';
 import { Tree } from 'antd';
-import { makeStyles } from "@material-ui/core/styles";
-import FilterData from '../../../Constants/FilterData'
+import { makeStyles } from '@material-ui/core/styles';
+import FilterData from '../../../Constants/FilterData';
 
 const { categories, status, state: indianStates } = FilterData();
 
-
 const useStyles = makeStyles(() => ({
   style: {
-    backgroundColor: "inherit"
-  }
-}))
+    backgroundColor: 'inherit',
+  },
+}));
 const treeData = [
 
   {
     title: 'Status',
     key: 'status',
     children: [
-      ...status.map(item => ({ title: item, key: item }))
-    ]
+      ...status.map((item) => ({ title: item, key: item })),
+    ],
   },
 
   {
     title: 'Category',
     key: 'category',
     children: [
-      ...categories.map(item => ({ title: item, key: item }))
-    ]
+      ...categories.map((item) => ({ title: item, key: item })),
+    ],
   },
-
-
 
   {
     title: 'Location',
     key: 'location',
     children: [
-      ...Object.keys(indianStates).map(state => {
-        return ({
-          title: state, key: state, children: [
-            ...indianStates[state].map(val => {
-              return ({ title: val.city || val, key: val.city || val })
-            })
-          ]
-        })
-      })
-    ]
+      ...Object.keys(indianStates).map((state) => ({
+        title: state,
+        key: state,
+        children: [
+          ...indianStates[state].map((val) => ({ title: val.city || val, key: val.city || val })),
+        ],
+      })),
+    ],
   },
 ];
 
@@ -66,7 +61,6 @@ const Demo = (props:any) => {
   const onCheck = (checkedKeysValue) => {
     // console.log('onCheck', checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
-
   };
 
   const onSelect = (selectedKeysValue: React.Key[], info: any) => {
@@ -75,17 +69,14 @@ const Demo = (props:any) => {
     // console.log('onCheck', checkedKeys);
     // console.log(selectedKeysValue)
 
-    if (!checkedKeys.includes(selectedKeysValue[0]))
-      setCheckedKeys([...checkedKeys, selectedKeysValue[0]])
-    else
-      setCheckedKeys(checkedKeys.filter(val => val != selectedKeysValue[0]))
-
+    if (!checkedKeys.includes(selectedKeysValue[0])) setCheckedKeys([...checkedKeys, selectedKeysValue[0]]);
+    else setCheckedKeys(checkedKeys.filter((val) => val != selectedKeysValue[0]));
   };
   // console.log(checkedKeys)
 
   React.useEffect(() => {
-      props.getFilters(checkedKeys)
-  }, [checkedKeys])
+    props.getFilters(checkedKeys);
+  }, [checkedKeys]);
 
   return (
     <>

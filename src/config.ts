@@ -1,10 +1,10 @@
 // import dotenv from 'dotenv'
- 
+
 // const config = dotenv.config()
 
 const config = process.env as unknown as {
   AST_REFRESH: boolean;
-  NODE_ENV: "development" | "production";
+  NODE_ENV: 'development' | 'production';
   PUBLIC_URL: string;
   REACT_APP_firebase_apiKey: string;
   REACT_APP_firebase_appId: string;

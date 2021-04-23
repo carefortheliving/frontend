@@ -7,7 +7,7 @@ const theme = createMuiTheme();
 class ThemeProvider extends React.PureComponent<any, any> {
   render() {
     return (
-      <JssThemeProvider theme={{}} >
+      <JssThemeProvider theme={{}}>
         <MuiThemeProvider theme={theme}>
           {this.props.children}
         </MuiThemeProvider>

@@ -37,7 +37,7 @@ export interface UsefulLink {
 
 export interface DisqusProps {
   url: string;
-  id: string;
+  identifier: string;
   title: string;
   language: string;
 }

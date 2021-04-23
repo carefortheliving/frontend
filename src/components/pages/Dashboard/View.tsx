@@ -1,51 +1,52 @@
 // import React from 'react'
-import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Footer from "src/components/common/Footer/View";
-import Box from "@material-ui/core/Box";
-import Card from "@material-ui/core/Card";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Chip from "@material-ui/core/Chip";
+import { makeStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Footer from 'components/common/Footer/View';
+import Box from '@material-ui/core/Box';
+import Card from '@material-ui/core/Card';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import {  Modal } from 'antd';
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Container from "@material-ui/core/Container";
-import Navbar from "src/components/common/Navbar/View";
-import { useAuth } from "src/components/common/AuthProvider/View";
-import * as React from "react";
-import useFirestore from "src/hooks/useFirestore";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import Button from "@material-ui/core/Button";
-import Filter from "./Filters";
-import { RequestType, UsefulLink } from "src/types";
-import { parseTime } from "src/utils/commonUtils";
-import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import PanToolIcon from "@material-ui/icons/PanTool";
+import { Modal } from 'antd';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Container from '@material-ui/core/Container';
+import Navbar from 'components/common/Navbar/View';
+import { useAuth } from 'components/common/AuthProvider/View';
+import * as React from 'react';
+import useFirestore from 'hooks/useFirestore';
+import { useSnackbar } from 'components/common/SnackbarProvider/View';
+import Button from '@material-ui/core/Button';
+import { RequestType, UsefulLink } from 'types';
+import { parseTime } from 'utils/commonUtils';
+import { getViewRequestRoute } from 'components/common/RouterOutlet/routerUtils';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import PanToolIcon from '@material-ui/icons/PanTool';
 import {
   useHistory,
   useParams,
   useLocation,
   useRouteMatch,
-} from "react-router-dom";
-import { CircularProgress } from "@material-ui/core";
-import {AllLocations} from '../../../Constants/FilterData'
+} from 'react-router-dom';
+import { CircularProgress } from '@material-ui/core';
+import Filter from './Filters';
+import { AllLocations } from '../../../Constants/FilterData';
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: 'flex',
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -53,8 +54,8 @@ const useStyles = makeStyles((theme) => ({
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
+    height: '100vh',
+    overflow: 'auto',
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -66,8 +67,8 @@ const useStyles = makeStyles((theme) => ({
   greet: {
     // marginLeft: "auto",
     // marginRight: "auto",
-    textAlign: "center",
-    paddingTop: "1em",
+    textAlign: 'center',
+    paddingTop: '1em',
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
@@ -78,35 +79,35 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(8),
   },
   openCard: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    cursor: "pointer",
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    cursor: 'pointer',
   },
   closedCard: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    cursor: "pointer",
-    background: "#efefef",
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    cursor: 'pointer',
+    background: '#efefef',
   },
   cardMedia: {
-    paddingTop: "56.25%",
+    paddingTop: '56.25%',
   },
   cardContent: {
     flexGrow: 1,
   },
   filter_Heading: {
-    textAlign: "center",
-    margin: "3.5rem 0 1rem 0",
+    textAlign: 'center',
+    margin: '3.5rem 0 1rem 0',
   },
   filter_Container: {
-    position: "relative",
+    position: 'relative',
   },
   filter: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   table: {
     // minWidth: 650,
@@ -119,18 +120,18 @@ function Dashboard() {
   const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
   const [requests, setRequests] = React.useState(
-    [] as (RequestType & { id: string })[]
+    [] as (RequestType & { id: string })[],
   );
   const [usefulLinks, setUsefulLinks] = React.useState([] as UsefulLink[]);
   const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
-  const [filterResults , setFilterResults] = React.useState([] as Array<String>)
-  const allLocations = AllLocations()
+  const [filterResults, setFilterResults] = React.useState([] as Array<String>);
+  const allLocations = AllLocations();
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
-    return Number(currentUrlParams.get("tab") || "0");
+    return Number(currentUrlParams.get('tab') || '0');
   };
 
   React.useEffect(() => {
@@ -185,17 +186,16 @@ function Dashboard() {
   React.useEffect(() => {
     const loadData = async () => {
       try {
-        if(filterResults.length == 0)
-          {
-            setRequests([])
-            return                                            
-          }
-        let status:String[]= []
+        if (filterResults.length == 0) {
+          setRequests([]);
+          return;
+        }
+        const status:String[] = [];
         // let location:String[] = []
         // let category:String[] = []
-        const keys = [...filterResults]
-        keys.includes("Active")&&status.push("open")
-        keys.includes("Completed")&&status.push("closed")
+        const keys = [...filterResults];
+        keys.includes('Active') && status.push('open');
+        keys.includes('Completed') && status.push('closed');
         // filterResults.includes("Completed") && status.push("closed")
         // keys.forEach(element => {
         //   if(allLocations.includes(element))
@@ -204,21 +204,18 @@ function Dashboard() {
         //     }
         // });
         // console.log(location)
-        const requests = await (async()=>{
-                return await getRequests({
-                  requestStatus : status,
-                  requestLocation:location
-              });
-        })()
-        console.log(requests)
+        const requests = await (async () => await getRequests({
+          requestStatus: status,
+          requestLocation: location,
+        }))();
+        console.log(requests);
         setRequests(requests);
       } catch (e) {
-        snackbar.show("error", `Something went wrong, try reloading!`);
+        snackbar.show('error', 'Something went wrong, try reloading!');
       }
     };
-    loadData()
-   
-  }, [filterResults])
+    loadData();
+  }, [filterResults]);
 
   const handleCardClick = (docId: string) => {
     history.push(getViewRequestRoute(docId));
@@ -226,41 +223,52 @@ function Dashboard() {
 
   const handleTabChange = (event, newValue: number) => {
     const currentUrlParams = new URLSearchParams(location.search);
-    currentUrlParams.set("tab", newValue?.toString());
+    currentUrlParams.set('tab', newValue?.toString());
     history.push({
       pathname: location.pathname,
-      search: "?" + currentUrlParams.toString(),
+      search: `?${currentUrlParams.toString()}`,
     });
   };
 
-  const renderSingleCard = (card: typeof requests[0]) => {
-    return (
-      <Grid item key={card.id} xs={12} sm={6} md={4}>
-        <Card
-          className={`${
-            card.requestStatus?.value === "open"
-              ? classes.openCard
-              : classes.closedCard
-          }`}
-          onClick={() => handleCardClick(card.id)}
-        >
-          {/* <CardMedia
+  const renderSingleCard = (card: typeof requests[0]) => (
+    <Grid item key={card.id} xs={12} sm={6} md={4}>
+      <Card
+        className={`${
+          card.requestStatus?.value === 'open'
+            ? classes.openCard
+            : classes.closedCard
+        }`}
+        onClick={() => handleCardClick(card.id)}
+      >
+        {/* <CardMedia
             className={classes.cardMedia}
             image={card.image}
             title="Image title"
           /> */}
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h5" component="h2">
-              Need {card.requestCategory?.label} Donor
-            </Typography>
-            <hr />
-            <Typography>{card.requestTitle}</Typography>
-            <br />
-            <Typography>Requested By: {card.requesterName}</Typography>
-            <Typography>
-              Address: {card.patientDistrict?.label}, {card.patientState?.label}
-            </Typography>
-            {/* {card.requestStatus?.value === "closed" ? (
+        <CardContent className={classes.cardContent}>
+          <Typography gutterBottom variant="h5" component="h2">
+            Need
+            {' '}
+            {card.requestCategory?.label}
+            {' '}
+            Donor
+          </Typography>
+          <hr />
+          <Typography>{card.requestTitle}</Typography>
+          <br />
+          <Typography>
+            Requested By:
+            {card.requesterName}
+          </Typography>
+          <Typography>
+            Address:
+            {' '}
+            {card.patientDistrict?.label}
+            ,
+            {' '}
+            {card.patientState?.label}
+          </Typography>
+          {/* {card.requestStatus?.value === "closed" ? (
               <Typography style={{ display: "flex", alignItems: "center" }}>
                 Donor: {card.donorName}
                 <FavoriteIcon
@@ -270,158 +278,155 @@ function Dashboard() {
                 />
               </Typography>
             ) : null} */}
-            <br />
-            <Chip
-              label={card.patientBloodGroup?.label}
-              variant="outlined"
-            />{" "}
-            <Chip label={card.requestCategory?.label} variant="outlined" />{" "}
-            <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
-            <br />
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              endIcon={<PanToolIcon />}
-              onClick={() => handleCardClick(card.id)}
-            >
-              I want to help
-            </Button>
-          </CardContent>
-        </Card>
-      </Grid>
-    );
-  };
-
-  const renderNoRequests = () => {
-    return (
-      <Container style={{ marginTop: "20px" }}>
-        <Alert severity="info">
-          <AlertTitle>No requests created yet</AlertTitle>
-          Click on the <strong>Create Request</strong> button to get started!
-        </Alert>
-      </Container>
-    );
-  };
-
-  const renderHeader = () => {
-    return (
-      <Container maxWidth="md">
-        <Typography
-          component="h2"
-          variant="h3"
-          align="center"
-          color="textPrimary"
-          gutterBottom
-        >
-          Care for the Living <br></br>
-        </Typography>
-        <Typography variant="h6" align="center" color="textSecondary" paragraph>
-          "If you truly loved yourself, you could never hurt another."
           <br />
-          {/* - Buddha */}
-        </Typography>
-      </Container>
-    );
-  };
+          <Chip
+            label={card.patientBloodGroup?.label}
+            variant="outlined"
+          />
+          {' '}
+          <Chip label={card.requestCategory?.label} variant="outlined" />
+          {' '}
+          <Chip label={parseTime(card.updatedAt)} variant="outlined" />
+          {' '}
+          <br />
+          <br />
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            endIcon={<PanToolIcon />}
+            onClick={() => handleCardClick(card.id)}
+          >
+            I want to help
+          </Button>
+        </CardContent>
+      </Card>
+    </Grid>
+  );
 
-  const renderFilters = () => {
-    return (
-      <Grid item md={3}>
-        {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
-        <Typography component="h1" variant="h5" className={classes.filter_Heading}>
-          Filter Requests
-                  </Typography>
-        <div className={classes.filter}>
-          <Filter getFilters={(keys)=>setFilterResults(keys)} />
+  const renderNoRequests = () => (
+    <Container style={{ marginTop: '20px' }}>
+      <Alert severity="info">
+        <AlertTitle>No requests created yet</AlertTitle>
+        Click on the
+        {' '}
+        <strong>Create Request</strong>
+        {' '}
+        button to get started!
+      </Alert>
+    </Container>
+  );
+
+  const renderHeader = () => (
+    <Container maxWidth="md">
+      <Typography
+        component="h2"
+        variant="h3"
+        align="center"
+        color="textPrimary"
+        gutterBottom
+      >
+        Care for the Living
+        {' '}
+        <br />
+      </Typography>
+      <Typography variant="h6" align="center" color="textSecondary" paragraph>
+        "If you truly loved yourself, you could never hurt another."
+        <br />
+        {/* - Buddha */}
+      </Typography>
+    </Container>
+  );
+
+  const renderFilters = () => (
+    <Grid item md={3}>
+      {getCurrentTabFromUrl() === 0 ? (
+        <div className={classes.filter_Container}>
+          <Typography component="h1" variant="h5" className={classes.filter_Heading}>
+            Filter Requests
+          </Typography>
+          <div className={classes.filter}>
+            <Filter getFilters={(keys) => setFilterResults(keys)} />
+          </div>
         </div>
-      </div> : null}
-      </Grid>
-    );
-  };
+      ) : null}
+    </Grid>
+  );
 
-  const renderLinks = () => {
-    return (
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          {/* <TableHead>
+  const renderLinks = () => (
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        {/* <TableHead>
           <TableRow>
             <TableCell>Link</TableCell>
             <TableCell>Description</TableCell>
           </TableRow>
         </TableHead> */}
-          <TableBody>
-            {usefulLinks?.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  <Typography gutterBottom variant="h6" component="h2">
-                    <a href={row.link} target="blank">
-                      {row.name}
-                    </a>
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography gutterBottom variant="subtitle1" component="h2">
-                    {row.description}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    );
-  };
+        <TableBody>
+          {usefulLinks?.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                <Typography gutterBottom variant="h6" component="h2">
+                  <a href={row.link} target="blank">
+                    {row.name}
+                  </a>
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography gutterBottom variant="subtitle1" component="h2">
+                  {row.description}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 
-  const renderContent = () => {
-    return (
-      <Grid item md={9}>
-        <Container className={classes.cardGrid} maxWidth="lg">
-          <Grid container spacing={4}>
-            {renderTabs()}
-            {loading ? (
-              <CircularProgress
-                style={{ margin: "auto", marginTop: "100px" }}
-              />
-            ) : (
-              (() => {
-                switch (getCurrentTabFromUrl()) {
-                  case 0:
-                  case 1:
-                    return requests?.length
-                      ? requests.map((card) => renderSingleCard(card))
-                      : renderNoRequests();
-                  default:
-                    return renderLinks();
-                }
-              })()
-            )}
-          </Grid>
-        </Container>
-      </Grid>
-    );
-  };
+  const renderContent = () => (
+    <Grid item md={9}>
+      <Container className={classes.cardGrid} maxWidth="lg">
+        <Grid container spacing={4}>
+          {renderTabs()}
+          {loading ? (
+            <CircularProgress
+              style={{ margin: 'auto', marginTop: '100px' }}
+            />
+          ) : (
+            (() => {
+              switch (getCurrentTabFromUrl()) {
+                case 0:
+                case 1:
+                  return requests?.length
+                    ? requests.map((card) => renderSingleCard(card))
+                    : renderNoRequests();
+                default:
+                  return renderLinks();
+              }
+            })()
+          )}
+        </Grid>
+      </Container>
+    </Grid>
+  );
 
-  const renderTabs = () => {
-    return (
-      <div style={{ /*margin: '12px', */ width: "100%" }}>
-        <AppBar position="static" color="default" variant="outlined">
-          <Tabs
-            value={getCurrentTabFromUrl()}
-            indicatorColor="primary"
-            textColor="primary"
-            onChange={handleTabChange}
-            // aria-label="disabled tabs example"
-            // variant="fullWidth"
-          >
-            <Tab label="All Requests" />
-            <Tab label="My Requests" />
-            <Tab label="Useful links" />
-          </Tabs>
-        </AppBar>
-      </div>
-    );
-  };
+  const renderTabs = () => (
+    <div style={{ /* margin: '12px', */ width: '100%' }}>
+      <AppBar position="static" color="default" variant="outlined">
+        <Tabs
+          value={getCurrentTabFromUrl()}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleTabChange}
+        >
+          <Tab label="All Requests" />
+          <Tab label="My Requests" />
+          <Tab label="Useful links" />
+        </Tabs>
+      </AppBar>
+    </div>
+  );
 
   return (
     <div className={classes.root}>

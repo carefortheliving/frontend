@@ -1,27 +1,13 @@
-export const getHomeRoute = () => {
-  return `/`;
-};
+export const getHomeRoute = () => '/';
 
-export const getLoginRoute = () => {
-  return `/login`;
-};
+export const getLoginRoute = () => '/login';
 
-export const getCreateRequestRoute = () => {
-  return `/request/create`;
-};
+export const getCreateRequestRoute = () => '/request/create';
 
-export const getEditRequestRoute = (docId: string) => {
-  return `/request/edit/${docId}`;
-};
+export const getEditRequestRoute = (docId: string) => `/request/edit/${docId}`;
 
-export const getViewRequestRoute = (docId: string) => {
-  return `/request/view/${docId}`;
-};
+export const getViewRequestRoute = (docId: string) => `/request/view/${docId}`;
 
-export const getSayThanksRoute = (docId: string) => {
-  return `/thank/${docId}`;
-};
+export const getSayThanksRoute = (docId: string) => `/thank/${docId}`;
 
-export const getAboutRoute = () => {
-  return `/about`;
-};
+export const getAboutRoute = () => '/about';

@@ -11,16 +11,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 }));
 interface LoginProps {
 }
 
 const AppLoader: React.FC<LoginProps> = ({}) => {
   const classes = useStyles();
-  return <div className={classes.loader}>
-    <CircularProgress />
-  </div>;
+  return (
+    <div className={classes.loader}>
+      <CircularProgress />
+    </div>
+  );
 };
 
 export default AppLoader;

@@ -1,22 +1,20 @@
-import { Snackbar } from "@material-ui/core";
-import { Alert, AlertProps } from "@material-ui/lab";
-import * as React from "react";
+import { Snackbar } from '@material-ui/core';
+import { Alert, AlertProps } from '@material-ui/lab';
+import * as React from 'react';
 
 interface SnackbarContextValues {
-  show: (severity: AlertProps["severity"], message: string) => Promise<void>;
+  show: (severity: AlertProps['severity'], message: string) => Promise<void>;
 }
 const SnackbarContext = React.createContext({} as any);
-export const useSnackbar = () => {
-  return React.useContext(SnackbarContext) as SnackbarContextValues;
-};
+export const useSnackbar = () => React.useContext(SnackbarContext) as SnackbarContextValues;
 interface SnackbarProviderProps {}
 const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
   const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState({
-    severity: "success",
-    message: "",
+    severity: 'success',
+    message: '',
   } as {
-    severity: AlertProps["severity"];
+    severity: AlertProps['severity'];
     message: string;
   });
 
@@ -24,7 +22,7 @@ const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
     setOpen(false);
   };
 
-  const show: SnackbarContextValues["show"] = async (severity, message) => {
+  const show: SnackbarContextValues['show'] = async (severity, message) => {
     setContent({
       severity,
       message,
@@ -36,15 +34,13 @@ const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
     show,
   };
 
-  const renderSnackbar = () => {
-    return (
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={content.severity}>
-          {content.message}
-        </Alert>
-      </Snackbar>
-    );
-  };
+  const renderSnackbar = () => (
+    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={content.severity}>
+        {content.message}
+      </Alert>
+    </Snackbar>
+  );
 
   return (
     <SnackbarContext.Provider value={values}>

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Button,
   Container,
@@ -6,77 +7,73 @@ import {
   TextareaAutosize,
   TextField,
   Typography,
-} from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import MuiPhoneNumber from "material-ui-phone-number";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useHistory, useParams } from "react-router-dom";
-import Select from "react-select";
-import Navbar from "src/components/common/Navbar/View";
-import Box from "@material-ui/core/Box";
+} from '@material-ui/core';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import MuiPhoneNumber from 'material-ui-phone-number';
+import { Controller, useForm } from 'react-hook-form';
+import { useHistory, useParams } from 'react-router-dom';
+import Select from 'react-select';
+import Navbar from 'components/common/Navbar/View';
+import Box from '@material-ui/core/Box';
 import {
   getHomeRoute,
   getLoginRoute,
   getViewRequestRoute,
-} from "src/components/common/RouterOutlet/routerUtils";
-import Footer from "src/components/common/Footer/View";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import useFirestore from "src/hooks/useFirestore";
-import useFirebase from "src/hooks/useFirebase";
-import useGeo from "src/hooks/useGeo";
-import { RequestType } from "src/types";
+} from 'components/common/RouterOutlet/routerUtils';
+import Footer from 'components/common/Footer/View';
+import { useSnackbar } from 'components/common/SnackbarProvider/View';
+import useFirestore from 'hooks/useFirestore';
+import useFirebase from 'hooks/useFirebase';
+import useGeo from 'hooks/useGeo';
+import { RequestType } from 'types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
+    height: '100vh',
+    overflow: 'auto',
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
   },
   buttons: {
-    marginTop: "50px",
+    marginTop: '50px',
   },
 }));
+
 interface CreateRequestProps {
   isEdit?: boolean;
 }
 
-const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
+const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }: CreateRequestProps) => {
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
-    requestTitle: "",
-    requestDescription: "",
-    requesterName: "",
-    requestCategory: { value: "plasma", label: "Plasma" },
-    patientGender: { value: "male", label: "Male" },
-    patientBloodGroup: { value: "a+", label: "A+" },
-    patientAge: "",
-    patientState: { value: "Uttar Pradesh", label: "Uttar Pradesh" },
-    patientDistrict: { value: "Muzaffarnagar", label: "Muzaffarnagar" },
-    requesterContactNumber: "",
+    requestTitle: '',
+    requestDescription: '',
+    requesterName: '',
+    requestCategory: { value: 'plasma', label: 'Plasma' },
+    patientGender: { value: 'male', label: 'Male' },
+    patientBloodGroup: { value: 'a+', label: 'A+' },
+    patientAge: '',
+    patientState: { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+    patientDistrict: { value: 'Muzaffarnagar', label: 'Muzaffarnagar' },
+    requesterContactNumber: '',
     // donor: ''
   } as RequestType;
   const {
     handleSubmit,
     control,
-    reset,
-    register,
     setValue,
-    getValues,
   } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
-  // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
   const history = useHistory();
   const params = useParams();
   // const match = useRouteMatch();
@@ -90,7 +87,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   }, []);
 
   React.useEffect(() => {
-    setValue("requesterName", auth?.user?.displayName);
+    setValue('requesterName', auth?.user?.displayName);
   }, [auth?.user?.displayName]);
 
   React.useEffect(() => {
@@ -107,11 +104,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     }
   };
 
-  const isValidUser = () => {
-    return data?.requesterEmail
-      ? data?.requesterEmail === auth?.user?.email
-      : !!auth?.user?.email;
-  };
+  const isValidUser = () => (data?.requesterEmail
+    ? data?.requesterEmail === auth?.user?.email
+    : !!auth?.user?.email);
 
   const ensurePermissions = () => {
     if (!isValidUser()) {
@@ -123,24 +118,24 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     const existingRequest = isEdit
       ? await getRequest(params?.docId)
       : undefined;
-    if (typeof existingRequest === "object") {
+    if (typeof existingRequest === 'object') {
       setData(existingRequest as any);
     }
   };
 
   const prefillData = async () => {
-    data &&
+    if (data) {
       Object.keys(data).forEach((key) => {
         setValue(key as any, data?.[key]);
       });
+    }
   };
 
   const handleStateChange = (state: string) => {
     // getValues().state.value
-    const newDistricts =
-      states[state]?.map((el) => ({ value: el.city, label: el.city })) || [];
+    const newDistricts = states[state]?.map((el) => ({ value: el.city, label: el.city })) || [];
     setDistricts(newDistricts);
-    setValue("patientDistrict", newDistricts[0]);
+    setValue('patientDistrict', newDistricts[0]);
   };
 
   // const handleStatusChange = (status: string) => {
@@ -151,29 +146,29 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const onSubmit = async (data: RequestType) => {
     // console.log(data);
     if (!isValidUser()) {
-      snackbar.show("error", `You're not authorized for the action!`);
+      snackbar.show('error', 'You\'re not authorized for the action!');
       return;
     }
     try {
       const res = isEdit
         ? await updateRequest(params?.docId, data)
         : await addRequest({
-            ...data,
-            requestStatus: { value: "open", label: "Open" },
-            requesterEmail: auth?.user?.email,
-          });
+          ...data,
+          requestStatus: { value: 'open', label: 'Open' },
+          requesterEmail: auth?.user?.email,
+        });
       // console.log({ newId: res.id });
       snackbar.show(
-        "success",
-        `Request ${isEdit ? "updated" : "created"} successfully!`
+        'success',
+        `Request ${isEdit ? 'updated' : 'created'} successfully!`,
       );
       // message.success('Request created successfully!')
       history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error('Error adding document: ', e);
       snackbar.show(
-        "error",
-        `Couldn't ${isEdit ? "update" : "create"} request!`
+        'error',
+        `Couldn't ${isEdit ? 'update' : 'create'} request!`,
       );
       // message.error(`Couldn't create request!`);
     }
@@ -183,204 +178,182 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     history.push(getHomeRoute());
   };
 
-  const renderTitle = () => {
-    return (
-      <Controller
-        name={"requestTitle"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            placeholder="Situation title goes here ..."
-            style={{ width: "100%" }}
-          />
-        )}
-      />
-    );
-  };
+  const renderTitle = () => (
+    <Controller
+      name="requestTitle"
+      control={control}
+      defaultValue=""
+      render={({ field }) => (
+        <TextField
+          {...field}
+          placeholder="Situation title goes here ..."
+          style={{ width: '100%' }}
+        />
+      )}
+    />
+  );
 
-  const renderDescription = () => {
-    return (
-      <Controller
-        name={"requestDescription"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextareaAutosize
-            {...field}
-            placeholder="Situation description goes here ..."
-            style={{ width: "100%", height: "100px" }}
-          />
-        )}
-      />
-    );
-  };
+  const renderDescription = () => (
+    <Controller
+      name="requestDescription"
+      control={control}
+      defaultValue=""
+      render={({ field }) => (
+        <TextareaAutosize
+          {...field}
+          placeholder="Situation description goes here ..."
+          style={{ width: '100%', height: '100px' }}
+        />
+      )}
+    />
+  );
 
-  const renderRequester = () => {
-    return (
-      <Controller
-        name={"requesterName"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            style={{ width: "100%" }}
-            placeholder="Requester's Name"
-          />
-        )}
-      />
-    );
-  };
+  const renderRequester = () => (
+    <Controller
+      name="requesterName"
+      control={control}
+      defaultValue=""
+      render={({ field }) => (
+        <TextField
+          {...field}
+          style={{ width: '100%' }}
+          placeholder="Requester's Name"
+        />
+      )}
+    />
+  );
 
-  const renderAge = () => {
-    return (
-      <Controller
-        name={"patientAge"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            style={{ width: "100%" }}
-            placeholder="Patient's Age"
-          />
-        )}
-      />
-    );
-  };
+  const renderAge = () => (
+    <Controller
+      name="patientAge"
+      control={control}
+      defaultValue=""
+      render={({ field }) => (
+        <TextField
+          {...field}
+          style={{ width: '100%' }}
+          placeholder="Patient's Age"
+        />
+      )}
+    />
+  );
 
-  const renderCategory = () => {
-    return (
-      <Controller
-        name="requestCategory"
-        control={control}
-        render={({ field }) => {
-          return (
-            <Select
-              {...field}
-              placeholder="Select Category"
-              options={[
-                { value: "plasma", label: "Plasma" },
-                { value: "oxygen", label: "Oxygen" },
-                { value: "medicine", label: "Medicine" },
-                { value: "blood", label: "Blood" },
-                { value: "money", label: "Monetary" },
-                { value: "other", label: "Other" },
-              ]}
-            />
-          );
-        }}
-      />
-    );
-  };
+  const renderCategory = () => (
+    <Controller
+      name="requestCategory"
+      control={control}
+      render={({ field }) => (
+        <Select
+          {...field}
+          placeholder="Select Category"
+          options={[
+            { value: 'plasma', label: 'Plasma' },
+            { value: 'oxygen', label: 'Oxygen' },
+            { value: 'medicine', label: 'Medicine' },
+            { value: 'blood', label: 'Blood' },
+            { value: 'money', label: 'Monetary' },
+            { value: 'other', label: 'Other' },
+          ]}
+        />
+      )}
+    />
+  );
 
-  const renderGender = () => {
-    return (
-      <Controller
-        name="patientGender"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder="Select Blood Group of the patient"
-            options={[
-              { value: "male", label: "Male" },
-              { value: "femal", label: "Female" },
-            ]}
-          />
-        )}
-      />
-    );
-  };
+  const renderGender = () => (
+    <Controller
+      name="patientGender"
+      control={control}
+      render={({ field }) => (
+        <Select
+          {...field}
+          placeholder="Select Blood Group of the patient"
+          options={[
+            { value: 'male', label: 'Male' },
+            { value: 'femal', label: 'Female' },
+          ]}
+        />
+      )}
+    />
+  );
 
-  const renderBloodGroup = () => {
-    return (
-      <Controller
-        name="patientBloodGroup"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder="Select Blood Group of the patient"
-            options={[
-              { value: "a+", label: "A+" },
-              { value: "a-", label: "A-" },
-              { value: "b+", label: "B+" },
-              { value: "b-", label: "B-" },
-              { value: "c+", label: "C+" },
-              { value: "c-", label: "C-" },
-              { value: "o+", label: "O+" },
-              { value: "o-", label: "O-" },
-              { value: "ab+", label: "AB+" },
-              { value: "ab+", label: "AB+" },
-            ]}
-          />
-        )}
-      />
-    );
-  };
+  const renderBloodGroup = () => (
+    <Controller
+      name="patientBloodGroup"
+      control={control}
+      render={({ field }) => (
+        <Select
+          {...field}
+          placeholder="Select Blood Group of the patient"
+          options={[
+            { value: 'a+', label: 'A+' },
+            { value: 'a-', label: 'A-' },
+            { value: 'b+', label: 'B+' },
+            { value: 'b-', label: 'B-' },
+            { value: 'c+', label: 'C+' },
+            { value: 'c-', label: 'C-' },
+            { value: 'o+', label: 'O+' },
+            { value: 'o-', label: 'O-' },
+            { value: 'ab+', label: 'AB+' },
+            { value: 'ab+', label: 'AB+' },
+          ]}
+        />
+      )}
+    />
+  );
 
-  const renderContactNumber = () => {
-    return (
-      <Controller
-        name={"requesterContactNumber"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <MuiPhoneNumber
-            {...field}
-            defaultCountry={"in"}
-            onlyCountries={["in"]}
-            disableCountryCode
-            disableDropdown
-            style={{ width: "100%" }}
-            placeholder="Contact Number"
-          />
-        )}
-      />
-    );
-  };
+  const renderContactNumber = () => (
+    <Controller
+      name="requesterContactNumber"
+      control={control}
+      defaultValue=""
+      render={({ field }) => (
+        <MuiPhoneNumber
+          {...field}
+          defaultCountry="in"
+          onlyCountries={['in']}
+          disableCountryCode
+          disableDropdown
+          style={{ width: '100%' }}
+          placeholder="Contact Number"
+        />
+      )}
+    />
+  );
 
-  const renderState = () => {
-    return (
-      <Controller
-        name="patientState"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder="Select State"
-            onChange={(option) => {
-              handleStateChange(option.value);
-              field?.onChange(option);
-            }}
-            options={Object.keys(states).map((key) => ({
-              value: key,
-              label: key,
-            }))}
-          />
-        )}
-      />
-    );
-  };
+  const renderState = () => (
+    <Controller
+      name="patientState"
+      control={control}
+      render={({ field }) => (
+        <Select
+          {...field}
+          placeholder="Select State"
+          onChange={(option) => {
+            handleStateChange(option.value);
+            field?.onChange(option);
+          }}
+          options={Object.keys(states).map((key) => ({
+            value: key,
+            label: key,
+          }))}
+        />
+      )}
+    />
+  );
 
-  const renderDistrict = () => {
-    return (
-      <Controller
-        name="patientDistrict"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder="Select District"
-            options={districts}
-          />
-        )}
-      />
-    );
-  };
+  const renderDistrict = () => (
+    <Controller
+      name="patientDistrict"
+      control={control}
+      render={({ field }) => (
+        <Select
+          {...field}
+          placeholder="Select District"
+          options={districts}
+        />
+      )}
+    />
+  );
 
   // const renderStatus = () => {
   //   return <Controller
@@ -415,26 +388,22 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   //   />;
   // };
 
-  const renderSubmit = () => {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit(onSubmit)}
-        style={{ marginRight: "10px" }}
-      >
-        Submit
-      </Button>
-    );
-  };
+  const renderSubmit = () => (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={handleSubmit(onSubmit)}
+      style={{ marginRight: '10px' }}
+    >
+      Submit
+    </Button>
+  );
 
-  const renderCancel = () => {
-    return (
-      <Button variant="contained" onClick={handleCancel}>
-        Cancel
-      </Button>
-    );
-  };
+  const renderCancel = () => (
+    <Button variant="contained" onClick={handleCancel}>
+      Cancel
+    </Button>
+  );
 
   // const renderResolve = () => {
   //   return <Button
@@ -454,8 +423,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
           <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: "50px" }}>
-              {isEdit ? "Edit Request" : "Create Request"}
+            <Typography variant="h3" style={{ marginBottom: '50px' }}>
+              {isEdit ? 'Edit Request' : 'Create Request'}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={1}>
@@ -612,5 +581,4 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   );
 };
 
-// export default withAuth(CreateRequest);
 export default CreateRequest;

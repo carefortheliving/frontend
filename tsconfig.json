@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "src",
     "outDir": "build",
     "module": "esnext",
     "target": "es5",
@@ -30,6 +30,7 @@
     "noEmit": true
   },
   "include": [
-    "src"
+    "src",
+    "node_modules"
   ]
 }

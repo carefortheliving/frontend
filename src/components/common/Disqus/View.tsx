@@ -1,18 +1,21 @@
+import React from 'react';
 import { DiscussionEmbed } from 'disqus-react';
-import { DisqusProps } from 'src/types'
+import { DisqusProps } from 'types';
 
-export default function Footer(props: DisqusProps) {
-    return (
-        <DiscussionEmbed
-            shortname='Comments'
-            config={
-                {
-                    url: props.url,
-                    identifier: props.id,
-                    title: props.title,
-                    language: props.language	
-                }
-            }
-        />
-    )
+export default function Disqus({
+  url, identifier, title, language,
+}: DisqusProps) {
+  return (
+    <DiscussionEmbed
+      shortname="Comments"
+      config={
+        {
+          url,
+          identifier,
+          title,
+          language,
+        }
+      }
+    />
+  );
 }

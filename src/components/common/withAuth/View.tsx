@@ -1,17 +1,12 @@
-import * as React from "react";
-import { getLoginRoute } from "../RouterOutlet/routerUtils";
-import { useAuth } from "src/components/common/AuthProvider/View";
-import { useHistory } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { useAuth } from 'components/common/AuthProvider/View';
+import { useHistory } from 'react-router-dom';
+import { getLoginRoute } from '../RouterOutlet/routerUtils';
 
 const withAuth = <T extends React.FC>(Component: T) => {
   const WithAuthHOC: React.FC<any> = ({ ...props }) => {
-    // const [loading, setLoading] = React.useState(true);
     const { user } = useAuth();
     const history = useHistory();
-
-    React.useEffect(() => {
-      init();
-    }, []);
 
     const init = async () => {
       // setLoading(true);
@@ -22,6 +17,10 @@ const withAuth = <T extends React.FC>(Component: T) => {
         history.replace(getLoginRoute());
       }
     };
+
+    useEffect(() => {
+      init();
+    }, []);
 
     // if (loading) {
     //   return null;
