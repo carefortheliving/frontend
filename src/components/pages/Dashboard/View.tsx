@@ -42,7 +42,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
-import {AllLocations} from '../../../Constants/FilterData'
+import {FilterInterface} from 'src/types'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -125,8 +125,7 @@ function Dashboard() {
   const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
-  const [filterResults , setFilterResults] = React.useState([] as Array<String>)
-  const allLocations = AllLocations()
+  const [filterResults , setFilterResults] = React.useState({} as FilterInterface)
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -144,6 +143,9 @@ function Dashboard() {
     setLoading(false);
     setUsefulLinks(links);
   };
+  const myRef = React.useRef<any>();
+
+  const executeScroll = () => myRef.current.scrollIntoView({ block: 'start',  behavior: 'smooth' })   
 
   // const loadData = async () => {
   //   try {
@@ -185,18 +187,18 @@ function Dashboard() {
   React.useEffect(() => {
     const loadData = async () => {
       try {
-        if(filterResults.length == 0)
-          {
-            setRequests([])
-            return                                            
-          }
-        let status:String[]= []
+        // if(filterResults.length == 0)
+        //   {
+        //     setRequests([])
+        //     return                                            
+        //   }
+        // let status:String[]= []
         // let location:String[] = []
         // let category:String[] = []
-        const keys = [...filterResults]
-        keys.includes("Active")&&status.push("open")
-        keys.includes("Completed")&&status.push("closed")
-        // filterResults.includes("Completed") && status.push("closed")
+        // const keys = [...filterResults]
+        // keys.includes("Active")&&status.push("open")
+        // keys.includes("Completed")&&status.push("closed")
+      
         // keys.forEach(element => {
         //   if(allLocations.includes(element))
         //     {
@@ -204,14 +206,19 @@ function Dashboard() {
         //     }
         // });
         // console.log(location)
+        // console.log(filterResults)
+
         const requests = await (async()=>{
                 return await getRequests({
-                  requestStatus : status,
-                  requestLocation:location
+                  requestStatus : filterResults.status , 
+                  requestStates : filterResults.states  ,
+                  requestCities : filterResults.cities,
+                  requestCategories : filterResults.categories
               });
         })()
-        console.log(requests)
+    
         setRequests(requests);
+        executeScroll()
       } catch (e) {
         snackbar.show("error", `Something went wrong, try reloading!`);
       }
@@ -375,7 +382,7 @@ function Dashboard() {
 
   const renderContent = () => {
     return (
-      <Grid item md={9}>
+      <Grid item md={9} ref={myRef}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {renderTabs()}

@@ -25,7 +25,10 @@ export interface RequestType {
 export interface FiltersType {
   requesterEmail?: string;
   requestStatus?: any;
+  requestStates?:any;
+  requestCities?:any;
   requestLocation?:any;
+  requestCategories?:any;
 }
 
 export interface UsefulLink {
@@ -34,3 +37,9 @@ export interface UsefulLink {
   description: string;
 }
 
+export interface FilterInterface{
+  status: string[] ;
+  states: string[] ;
+  cities: string[] ;
+  categories: string[] ;
+}

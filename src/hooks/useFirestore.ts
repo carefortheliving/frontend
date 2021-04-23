@@ -24,29 +24,35 @@ const useFirestore = () => {
   };
 
   const getRequests = async ({
-    requesterEmail,
+    
     requestStatus,
-    requestLocation
+    requestStates,
+    requestCities,
+    requestCategories
   } : FiltersType) => {
-    let requestsRef: any = await db.collection("requests").where('requestStatus.value', 'in', requestStatus)
-    // if(requestLocation.length>0)
-    //     requestsRef = await requestsRef.where('patientDistrict' , 'in' , requestLocation )
+    console.log(requestStates)
+    // let requestsRef: any = await db.collection("requests")
+    let requestsRef: any  = await db.collection("requests")
+
+    if(requestStatus.length==1)
+   requestsRef = (requestStatus[0]==="Active") ? await requestsRef.where('requestStatus.value', '==',  "open") : await requestsRef.where('requestStatus.value', '==',  "closed")
+    if(requestStates.length==1)
+        requestsRef = await requestsRef.where('patientState.value','==',requestStates[0])
+    if(requestCities.length>0)
+    {console.log({requestCities}) ;
+      requestsRef = await requestsRef.where('patientDistrict.key','in',requestCities)}
 
 
-        
-    // if (requesterEmail) {
-    //   requestsRef = await requestsRef.where('requesterEmail', '==', requesterEmail);
-    // }
-    // if (requestStatus) {
-    //   requestsRef = await requestsRef.where('requestStatus.value', '==', requestStatus);
-    // }
     const requests = await requestsRef.get();
-    console.log(requests)
+
     const ret = requests.docs?.map(doc => ({
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
-    console.log({ ret });
+    console.log(ret)
+
+  
+    
     return ret;
   };
 

@@ -1,7 +1,7 @@
 import useGeo from "../hooks/useGeo"
 
 
-const CATEGORIES = ["Blood", "Plasma", "Financial Aid" , "Transport"]
+export const CATEGORIES = ["Oxygen", "Plasma", "Medicine" , "Blood", "Monetary", "Other"]
 const STATUS = ["Active", "Completed"]
 
 
@@ -27,12 +27,17 @@ export const FilterData = ()=>{
 
 export default FilterData;
 
-export const AllLocations = ()=>{
+export const Locations = ()=>{
   const {states } = useGeo();
-  let location = [];
+  let indianStates = [];
+  let indianCities = [];
+
   Object.keys(states).map(state =>{
-    location.push(state)
-    states[state].map(city=>location.push(city.city))
+    indianStates.push(state)
+    states[state].map(city=>indianCities.push(city.city))
+
   })
-  return location
+  return ({
+    indianStates , indianCities
+  })
 }
