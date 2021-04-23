@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
   Container,
@@ -66,14 +67,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     requesterContactNumber: "",
     // donor: ''
   } as RequestType;
-  const {
-    handleSubmit,
-    control,
-    reset,
-    register,
-    setValue,
-    getValues,
-  } = useForm({ defaultValues });
+  const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
   // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');

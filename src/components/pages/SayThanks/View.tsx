@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
 import {
   Button,
@@ -6,13 +7,13 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { TextField, TextareaAutosize } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import withAuth from "src/components/common/withAuth/View";
 import { useHistory, useParams } from "react-router-dom";
 import { getHomeRoute } from "src/components/common/RouterOutlet/routerUtils";
 import Navbar from "src/components/common/Navbar/View";
-import { useFormContext, Controller, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import { RequestType } from "src/types";
@@ -41,23 +42,16 @@ const useStyles = makeStyles((theme) => ({
 
 interface SayThanksProps {}
 
-const SayThanks: React.FC<SayThanksProps> = ({}) => {
+const SayThanks: React.FC<SayThanksProps> = () => {
   const classes = useStyles();
   const history = useHistory();
   const defaultValues = {
     donorEmail: "",
     donorName: "",
   } as Pick<RequestType, "donorEmail" | "donorName">;
-  const {
-    handleSubmit,
-    control,
-    reset,
-    register,
-    setValue,
-    getValues,
-  } = useForm({ defaultValues });
+  const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const params = useParams();
-  const { addRequest, updateRequest, getRequest } = useFirestore();
+  const { updateRequest, getRequest } = useFirestore();
   const snackbar = useSnackbar();
 
   React.useEffect(() => {
@@ -76,7 +70,7 @@ const SayThanks: React.FC<SayThanksProps> = ({}) => {
   const onSubmit = async (data) => {
     // console.log(data);
     try {
-      const res = await updateRequest(params?.docId, {
+      await updateRequest(params?.docId, {
         ...data,
         requestStatus: { value: "closed", label: "Closed" },
       });
