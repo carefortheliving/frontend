@@ -254,7 +254,7 @@ function Dashboard() {
               Need {card.requestCategory?.label} Donor
             </Typography>
             <hr />
-            <Typography>{card.requestDescription}</Typography>
+            <Typography>{card.requestTitle}</Typography>
             <br />
             <Typography>Requested By: {card.requesterName}</Typography>
             <Typography>

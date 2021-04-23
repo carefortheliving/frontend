@@ -13,6 +13,7 @@ export interface RequestType {
   patientGender?: { value: string, label: string };
   patientState?: { value: string, label: string };
   requestCategory?: { value: string, label: string };
+  requestTitle: string;
   requestDescription?: string;
   requestStatus?: { value: string, label: string };
   requesterContactNumber: string;
@@ -34,3 +35,9 @@ export interface UsefulLink {
   description: string;
 }
 
+export interface DisqusProps {
+  url: string;
+  id: string;
+  title: string;
+  language: string;
+}

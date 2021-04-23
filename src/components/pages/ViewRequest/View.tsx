@@ -23,6 +23,7 @@ import { parseTime } from "src/utils/commonUtils";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Box from "@material-ui/core/Box";
 import Footer from "src/components/common/Footer/View";
+import Disqus from 'src/components/common/Disqus/View';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ViewRequestProps {}
+interface ViewRequestProps { }
 
 const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   const classes = useStyles();
@@ -53,6 +54,14 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   const { addRequest, updateRequest, getRequest } = useFirestore();
   const [data, setData] = React.useState(undefined as undefined | RequestType);
   const { auth } = useFirebase();
+  const [pageURL, setPageURL] = React.useState('');
+  const [pageID, setPageID] = React.useState('');
+
+  React.useEffect(() => {
+    setPageURL(window.location.href);
+    const parts = window.location.href.split('/');
+    setPageID(parts[parts.length - 1]);
+  })
 
   React.useEffect(() => {
     prefillData();
@@ -213,12 +222,19 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
+                  <Typography variant="h5">Title</Typography>
+                </Grid>
+                <Grid item xs>
+                  {renderFieldValue(data?.requestTitle)}
+                </Grid>
+              </Grid>
+
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
                   <Typography variant="h5">Description</Typography>
                 </Grid>
                 <Grid item xs>
-                  <pre>
-                    {renderFieldValue(data?.requestDescription)}
-                  </pre>
+                  {renderFieldValue(data?.requestDescription)}
                 </Grid>
               </Grid>
 
@@ -329,7 +345,16 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                 </>
               )}
             </Grid>
-          </Container>
+            {
+              data && data.requestTitle && (
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Disqus url={ pageURL } id={ pageID } title={ data.requestTitle } language="en" />
+                  </Grid>
+                </Grid>
+              )
+            }
+        </Container>
         </div>
         <Box mt={8}>
           <Footer />
