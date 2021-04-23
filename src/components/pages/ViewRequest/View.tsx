@@ -1,48 +1,48 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Button,
   Container,
   Grid,
   makeStyles,
   Typography,
-} from '@material-ui/core';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { useHistory, useParams } from 'react-router-dom';
+} from "@material-ui/core";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { useHistory, useParams } from "react-router-dom";
 import {
   getEditRequestRoute,
   getSayThanksRoute,
-} from 'components/common/RouterOutlet/routerUtils';
-import Navbar from 'components/common/Navbar/View';
-import useFirestore from 'hooks/useFirestore';
-import useFirebase from 'hooks/useFirebase';
-import { RequestType } from 'types';
-import { parseTime } from 'utils/commonUtils';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import Box from '@material-ui/core/Box';
-import Footer from 'components/common/Footer/View';
-import Disqus from 'components/common/Disqus/View';
+} from "components/common/RouterOutlet/routerUtils";
+import Navbar from "components/common/Navbar/View";
+import useFirestore from "hooks/useFirestore";
+import useFirebase from "hooks/useFirebase";
+import { RequestType } from "types";
+import { parseTime } from "utils/commonUtils";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import Box from "@material-ui/core/Box";
+import Footer from "components/common/Footer/View";
+import Disqus from "components/common/Disqus/View";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
+    height: "100vh",
+    overflow: "auto",
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
   },
   buttons: {
-    marginTop: '50px',
+    marginTop: "50px",
   },
 }));
 
-interface ViewRequestProps { }
+interface ViewRequestProps {}
 
 const ViewRequest: React.FC<ViewRequestProps> = () => {
   const classes = useStyles();
@@ -51,12 +51,12 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
   const { getRequest } = useFirestore();
   const [data, setData] = React.useState(undefined as undefined | RequestType);
   const { auth } = useFirebase();
-  const [pageURL, setPageURL] = React.useState('');
-  const [pageID, setPageID] = React.useState('');
+  const [pageURL, setPageURL] = React.useState("");
+  const [pageID, setPageID] = React.useState("");
 
   React.useEffect(() => {
     setPageURL(window.location.href);
-    const parts = window.location.href.split('/');
+    const parts = window.location.href.split("/");
     setPageID(parts[parts.length - 1]);
   });
 
@@ -67,7 +67,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
     // console.log({ existingRequest });
-    if (typeof existingRequest === 'object') {
+    if (typeof existingRequest === "object") {
       setData(existingRequest as any);
     }
   };
@@ -85,7 +85,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
       variant="contained"
       color="secondary"
       onClick={handleCloseClick}
-      style={{ marginRight: '10px' }}
+      style={{ marginRight: "10px" }}
     >
       Mark as Resolved
     </Button>
@@ -96,7 +96,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
       variant="contained"
       color="primary"
       onClick={handleEditClick}
-      style={{ marginRight: '10px' }}
+      style={{ marginRight: "10px" }}
     >
       Edit
     </Button>
@@ -104,10 +104,10 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
 
   const renderFieldValue = (
     value: string | undefined,
-    style = {} as React.CSSProperties,
+    style = {} as React.CSSProperties
   ) => (
     <Typography variant="h5" style={style}>
-      {value || '-'}
+      {value || "-"}
     </Typography>
   );
 
@@ -120,7 +120,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
           <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: '50px' }}>
+            <Typography variant="h3" style={{ marginBottom: "50px" }}>
               Request Details
             </Typography>
             <Grid container spacing={1}>
@@ -254,7 +254,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
                 </Grid>
               </Grid> : null} */}
 
-              {data?.requestStatus?.value === 'open' ? (
+              {data?.requestStatus?.value === "open" ? (
                 data?.requesterEmail === auth?.user?.email ? (
                   <Grid
                     container
@@ -284,14 +284,14 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
                       <Typography variant="h5">Donor Name</Typography>
                     </Grid>
                     <Grid item xs>
-                      <span style={{ display: 'flex', alignItems: 'center' }}>
+                      <span style={{ display: "flex", alignItems: "center" }}>
                         {renderFieldValue(data?.donorName, {
                           fontWeight: 600,
                         })}
                         <FavoriteIcon
                           color="secondary"
                           fontSize="small"
-                          style={{ marginLeft: '5px' }}
+                          style={{ marginLeft: "5px" }}
                         />
                       </span>
                     </Grid>
@@ -313,7 +313,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
                       <Typography variant="h5">Status</Typography>
                     </Grid>
                     <Grid item xs>
-                      {renderFieldValue('Closed', {
+                      {renderFieldValue("Closed", {
                         fontWeight: 600,
                       })}
                     </Grid>
@@ -321,15 +321,18 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
                 </>
               )}
             </Grid>
-            {
-              data && data.requestTitle && (
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Disqus url={pageURL} identifier={pageID} title={data.requestTitle} language="en" />
-                  </Grid>
+            {data && data.requestTitle && (
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
+                  <Disqus
+                    url={pageURL}
+                    identifier={pageID}
+                    title={data.requestTitle}
+                    language="en"
+                  />
                 </Grid>
-              )
-            }
+              </Grid>
+            )}
           </Container>
         </div>
         <Box mt={8}>
