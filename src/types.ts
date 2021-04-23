@@ -23,9 +23,10 @@ export interface RequestType {
 }
 
 export interface FiltersType {
-  requesterEmail?: string;
-  requestStatus?: any;
-  requestLocation?:any;
+  requesterEmail?: string[];
+  requestStatus?: ('open' | 'closed')[];
+  requestState?: string[];
+  requestDistrict?: string[];
 }
 
 export interface UsefulLink {

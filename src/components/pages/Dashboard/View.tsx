@@ -7,8 +7,8 @@ import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
-import FilterListIcon from '@material-ui/icons/FilterList';
-import {  Modal } from 'antd';
+import FilterListIcon from "@material-ui/icons/FilterList";
+import { Modal } from "antd";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
@@ -18,7 +18,7 @@ import * as React from "react";
 import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import Button from "@material-ui/core/Button";
-import Filter from "./Filters";
+import RequestFilters from "./RequestFilters";
 import { RequestType, UsefulLink } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
@@ -42,7 +42,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { CircularProgress, Tooltip } from "@material-ui/core";
-import {AllLocations} from '../../../Constants/FilterData'
+import { AllLocations } from "../../../Constants/FilterData";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -125,8 +125,8 @@ function Dashboard() {
   const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
-  const [filterResults , setFilterResults] = React.useState([] as Array<String>)
-  const allLocations = AllLocations()
+  const [filterResults, setFilterResults] = React.useState([] as Array<String>);
+  const allLocations = AllLocations();
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -134,7 +134,7 @@ function Dashboard() {
   };
 
   React.useEffect(() => {
-    // loadData();
+    loadData();
     loadLinks();
   }, [getCurrentTabFromUrl()]);
 
@@ -145,80 +145,63 @@ function Dashboard() {
     setUsefulLinks(links);
   };
 
-  // const loadData = async () => {
-  //   try {
-  //     const requests = await (async () => {
-  //       switch(getCurrentTabFromUrl()) {
-  //         case 0:
-  //           return await getRequests({
-  //             requestStatus: "open"
-  //           });
-  //         case 1:
-  //           return user?.email && await getRequests({
-  //             requesterEmail: user?.email,
-  //           });
-  //         default:
-  //           return;
-  //       }
-  //     })();
-  //     // console.log({ requests });
-  //     setRequests(requests);
-  //   } catch (e) {
-  //     snackbar.show("error", `Something went wrong, try reloading!`);
-  //   }
-  // };
+  const loadData = async () => {
+    try {
+      const requests = await (async () => {
+        switch(getCurrentTabFromUrl()) {
+          case 0:
+            return await getRequests({
+              requestStatus: ["open"]
+            });
+          case 1:
+            return user?.email && await getRequests({
+              requesterEmail: [user?.email],
+            });
+          default:
+            return;
+        }
+      })();
+      setRequests(requests);
+    } catch (e) {
+      snackbar.show("error", `Something went wrong, try reloading!`);
+    }
+  };
 
+  // React.useEffect(() => {
   //   const loadData = async () => {
-  //   try {
-  //     const requests = await (async()=>{
-  //             return await getRequests({
-  //             requestStatus: "open"
-  //           });
-  //     })()
-  //     console.log(requests)
-  //     setRequests(requests);
-  //   } catch (e) {
-  //     snackbar.show("error", `Something went wrong, try reloading!`);
-  //   }
-  // };
-  // console.log(filterResults)
-  React.useEffect(() => {
-    const loadData = async () => {
-      try {
-        if(filterResults.length == 0)
-          {
-            setRequests([])
-            return                                            
-          }
-        let status:String[]= []
-        // let location:String[] = []
-        // let category:String[] = []
-        const keys = [...filterResults]
-        keys.includes("Active")&&status.push("open")
-        keys.includes("Completed")&&status.push("closed")
-        // filterResults.includes("Completed") && status.push("closed")
-        // keys.forEach(element => {
-        //   if(allLocations.includes(element))
-        //     {
-        //     location.push(element)
-        //     }
-        // });
-        // console.log(location)
-        const requests = await (async()=>{
-                return await getRequests({
-                  requestStatus : status,
-                  requestLocation:location
-              });
-        })()
-        console.log(requests)
-        setRequests(requests);
-      } catch (e) {
-        snackbar.show("error", `Something went wrong, try reloading!`);
-      }
-    };
-    loadData()
-   
-  }, [filterResults])
+  //     try {
+  //       if (filterResults.length == 0) {
+  //         setRequests([]);
+  //         return;
+  //       }
+  //       let status: String[] = [];
+  //       // let location:String[] = []
+  //       // let category:String[] = []
+  //       const keys = [...filterResults];
+  //       keys.includes("Active") && status.push("open");
+  //       keys.includes("Completed") && status.push("closed");
+  //       // filterResults.includes("Completed") && status.push("closed")
+  //       // keys.forEach(element => {
+  //       //   if(allLocations.includes(element))
+  //       //     {
+  //       //     location.push(element)
+  //       //     }
+  //       // });
+  //       // console.log(location)
+  //       const requests = await (async () => {
+  //         return await getRequests({
+  //           requestStatus: status,
+  //           requestLocation: location,
+  //         });
+  //       })();
+  //       console.log(requests);
+  //       setRequests(requests);
+  //     } catch (e) {
+  //       snackbar.show("error", `Something went wrong, try reloading!`);
+  //     }
+  //   };
+  //   loadData();
+  // }, [filterResults]);
 
   const handleCardClick = (docId: string) => {
     history.push(getViewRequestRoute(docId));
@@ -255,8 +238,8 @@ function Dashboard() {
             </Typography>
             <hr />
             <Tooltip
-              style={{ width: '300px' }}
-              enterDelay={500} 
+              style={{ width: "300px" }}
+              enterDelay={500}
               title={
                 <React.Fragment>
                   <Typography color="inherit">
@@ -269,13 +252,13 @@ function Dashboard() {
               <Typography noWrap>{card.requestDescription}</Typography>
             </Tooltip>
             <br />
-            <Box style={{ display: "flex", color: 'rgba(0, 0, 0, 0.54)' }}>
+            <Box style={{ display: "flex", color: "rgba(0, 0, 0, 0.54)" }}>
               <Typography style={{ marginRight: "10px" }}>
                 <i>Requested By:</i>
               </Typography>
               <Typography>{card.requesterName}</Typography>
             </Box>
-            <Box style={{ display: "flex", color: 'rgba(0, 0, 0, 0.54)' }}>
+            <Box style={{ display: "flex", color: "rgba(0, 0, 0, 0.54)" }}>
               <Typography style={{ marginRight: "10px" }}>
                 <i>Address:</i>
               </Typography>
@@ -351,14 +334,21 @@ function Dashboard() {
   const renderFilters = () => {
     return (
       <Grid item md={3}>
-        {getCurrentTabFromUrl() === 0 ? <div className={classes.filter_Container}>
-        <Typography component="h1" variant="h5" className={classes.filter_Heading}>
-          Filter Requests
-                  </Typography>
-        <div className={classes.filter}>
-          <Filter getFilters={(keys)=>setFilterResults(keys)} />
-        </div>
-      </div> : null}
+        {getCurrentTabFromUrl() === 0 ? (
+          <div className={classes.filter_Container}>
+            {/* <Typography
+              component="h1"
+              variant="h5"
+              className={classes.filter_Heading}
+            >
+              Filters
+            </Typography> */}
+            <div className={classes.filter}>
+              {/* <RequestFilters /> */}
+              {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
+            </div>
+          </div>
+        ) : null}
       </Grid>
     );
   };

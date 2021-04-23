@@ -87,7 +87,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
         variant="contained"
         color="secondary"
         onClick={handleCloseClick}
-        style={{ marginRight: "10px" }}
+        // style={{ marginRight: "10px" }}
       >
         Mark as Resolved
       </Button>
@@ -108,7 +108,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
         variant="contained"
         color="primary"
         onClick={handleEditClick}
-        style={{ marginRight: "10px" }}
+        style={{ marginRight: "5px" }}
       >
         Edit
       </Button>
@@ -272,7 +272,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                     // justify="flex-end"
                     className={classes.buttons}
                   >
-                    <Grid item xs={6} sm={6} md={4} spacing={2}>
+                    <Grid item xs={12} md={6} spacing={2}>
                       {renderEditButton()}
                       {renderCloseButton()}
                     </Grid>
