@@ -120,7 +120,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
     style = {} as React.CSSProperties
   ) => {
     return (
-      <Typography variant="h5" style={style}>
+      <Typography variant="subtitle2" style={style}>
         {value || "-"}
       </Typography>
     );
@@ -135,13 +135,13 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
           <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: "50px" }}>
+            {/* <Typography variant="h5" style={{ marginBottom: "50px" }}>
               Request Details
-            </Typography>
+            </Typography> */}
             <Grid container spacing={1}>
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Requester's Name</Typography>
+                  {renderFieldValue(`Requester's Name`)}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.requesterName)}
@@ -150,7 +150,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Contact Number</Typography>
+                  {renderFieldValue('Contact Number')}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.requesterContactNumber)}
@@ -159,7 +159,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Category</Typography>
+                  {renderFieldValue('Category')}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.requestCategory?.label)}
@@ -168,7 +168,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Patient's Gender</Typography>
+                  {renderFieldValue(`Patient's Gender`)}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.patientGender?.label)}
@@ -177,7 +177,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Patient's Blood Group</Typography>
+                  {renderFieldValue(`Patient's Blood Group`)}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.patientBloodGroup?.label)}
@@ -186,7 +186,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Patient's Age</Typography>
+                  {renderFieldValue(`Patient's Age`)}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.patientAge)}
@@ -195,7 +195,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">State</Typography>
+                  {renderFieldValue('State')}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.patientState?.label)}
@@ -204,7 +204,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">District</Typography>
+                  {renderFieldValue('District')}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(data?.patientDistrict?.label)}
@@ -212,19 +212,19 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
               </Grid>
 
               <Grid container xs={12} sm={12}>
-                <Grid item xs={6}>
-                  <Typography variant="h5">Description</Typography>
+                <Grid item xs={12}>
+                  {renderFieldValue('Description')}
                 </Grid>
-                <Grid item xs={6}>
-                  <pre>
+                <Grid item xs={12}>
+                  {/* <pre > */}
                     {renderFieldValue(data?.requestDescription)}
-                  </pre>
+                  {/* </pre> */}
                 </Grid>
               </Grid>
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Created At</Typography>
+                  {renderFieldValue('Created At')}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(parseTime(data?.createdAt))}
@@ -233,7 +233,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
               <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">Updated At</Typography>
+                  {renderFieldValue('Updated At')}
                 </Grid>
                 <Grid item xs>
                   {renderFieldValue(parseTime(data?.updatedAt))}
@@ -289,7 +289,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                 <>
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Donor Name</Typography>
+                      {renderFieldValue('Donor Name')}
                     </Grid>
                     <Grid item xs>
                       <span style={{ display: "flex", alignItems: "center" }}>
@@ -307,7 +307,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Donor Email</Typography>
+                      {renderFieldValue('Donor Email')}
                     </Grid>
                     <Grid item xs>
                       {renderFieldValue(data?.donorEmail, {
@@ -318,7 +318,7 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Status</Typography>
+                      {renderFieldValue('Status')}
                     </Grid>
                     <Grid item xs>
                       {renderFieldValue("Closed", {

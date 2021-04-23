@@ -150,14 +150,14 @@ const SayThanks: React.FC<SayThanksProps> = ({}) => {
     <div className={classes.root}>
       <CssBaseline />
 
-      <Navbar showBack />
+      <Navbar showBack title="Say Thanks"/>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
           <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: "50px" }}>
+            {/* <Typography variant="h3" style={{ marginBottom: "50px" }}>
               Say thanks
-            </Typography>
+            </Typography> */}
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={1}>
                 <Grid container xs={12} sm={12}>
