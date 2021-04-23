@@ -1,11 +1,10 @@
 import { FiltersType, RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
-// import firebase from "firebase";
 import { getCurrentTime } from 'src/utils/commonUtils';
 
 const useFirestore = () => {
   const { db } = useFirebase();
-  
+
   const addRequest = async (request: RequestType) => {
     const requests = await db.collection("requests").add({
       ...request,
@@ -26,10 +25,8 @@ const useFirestore = () => {
   const getRequests = async ({
     requesterEmail,
     requestStatus,
-  } : FiltersType) => {
+  }: FiltersType) => {
     let requestsRef: any = await db.collection("requests")
-    // if(requestLocation.length>0)
-    //     requestsRef = await requestsRef.where('patientDistrict' , 'in' , requestLocation )    
     if (requesterEmail) {
       requestsRef = await requestsRef.where('requesterEmail', 'in', requesterEmail);
     }
@@ -37,7 +34,6 @@ const useFirestore = () => {
       requestsRef = await requestsRef.where('requestStatus.value', 'in', requestStatus);
     }
     const requests = await requestsRef.get();
-    // console.log({ requests });
     const ret = requests.docs?.map(doc => ({
       id: doc.id,
       ...doc.data(),
