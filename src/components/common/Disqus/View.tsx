@@ -1,6 +1,6 @@
 import React from 'react';
 import { DiscussionEmbed } from 'disqus-react';
-import { DisqusProps } from 'types';
+import { DisqusProps } from 'src/types';
 
 export default function Disqus({
   url, identifier, title, language,

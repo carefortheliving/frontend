@@ -7,10 +7,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Footer from 'components/common/Footer/View';
+import Footer from 'src/components/common/Footer/View';
 import { useHistory } from 'react-router-dom';
-import { useAuth } from 'components/common/AuthProvider/View';
-import { getCreateRequestRoute } from 'components/common/RouterOutlet/routerUtils';
+import { useAuth } from 'src/components/common/AuthProvider/View';
+import { getCreateRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 
 const useStyles = makeStyles((theme) => ({
   paper: {

@@ -1,7 +1,7 @@
 import useGeo from '../hooks/useGeo';
 
 const CATEGORIES = ['Blood', 'Plasma', 'Financial Aid', 'Transport'];
-const STATUS = ['Active', 'Completed'];
+const STATUS = ['Active', 'src/completed'];
 
 export const FilterData = () => {
   const { states } = useGeo();

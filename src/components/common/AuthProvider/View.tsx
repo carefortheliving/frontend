@@ -3,7 +3,7 @@ import {
 } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import config from 'config';
+import config from 'src/config';
 
 // Initialize Firebase
 firebase.initializeApp({

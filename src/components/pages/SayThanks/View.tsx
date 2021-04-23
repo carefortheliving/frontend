@@ -9,15 +9,15 @@ import {
 } from '@material-ui/core';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import withAuth from 'components/common/withAuth/View';
+import withAuth from 'src/components/common/withAuth/View';
 import { useHistory, useParams } from 'react-router-dom';
-import { getHomeRoute } from 'components/common/RouterOutlet/routerUtils';
-import Navbar from 'components/common/Navbar/View';
+import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import Navbar from 'src/components/common/Navbar/View';
 import { useFormContext, Controller, useForm } from 'react-hook-form';
-import useFirestore from 'hooks/useFirestore';
-import { useSnackbar } from 'components/common/SnackbarProvider/View';
-import { RequestType } from 'types';
-import Footer from 'components/common/Footer/View';
+import useFirestore from 'src/hooks/useFirestore';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import { RequestType } from 'src/types';
+import Footer from 'src/components/common/Footer/View';
 import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({

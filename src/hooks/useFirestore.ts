@@ -1,5 +1,5 @@
-import { FiltersType, RequestType, UsefulLink } from 'types';
-import { getCurrentTime } from 'utils/commonUtils';
+import { FiltersType, RequestType, UsefulLink } from 'src/types';
+import { getCurrentTime } from 'src/utils/commonUtils';
 import useFirebase from './useFirebase';
 // import firebase from "firebase";
 

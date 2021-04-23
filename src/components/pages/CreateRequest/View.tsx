@@ -13,19 +13,19 @@ import MuiPhoneNumber from 'material-ui-phone-number';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import Select from 'react-select';
-import Navbar from 'components/common/Navbar/View';
+import Navbar from 'src/components/common/Navbar/View';
 import Box from '@material-ui/core/Box';
 import {
   getHomeRoute,
   getLoginRoute,
   getViewRequestRoute,
-} from 'components/common/RouterOutlet/routerUtils';
-import Footer from 'components/common/Footer/View';
-import { useSnackbar } from 'components/common/SnackbarProvider/View';
-import useFirestore from 'hooks/useFirestore';
-import useFirebase from 'hooks/useFirebase';
-import useGeo from 'hooks/useGeo';
-import { RequestType } from 'types';
+} from 'src/components/common/RouterOutlet/routerUtils';
+import Footer from 'src/components/common/Footer/View';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import useFirestore from 'src/hooks/useFirestore';
+import useFirebase from 'src/hooks/useFirebase';
+import useGeo from 'src/hooks/useGeo';
+import { RequestType } from 'src/types';
 
 const useStyles = makeStyles((theme) => ({
   root: {

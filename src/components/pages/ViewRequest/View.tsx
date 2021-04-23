@@ -11,16 +11,16 @@ import { useHistory, useParams } from 'react-router-dom';
 import {
   getEditRequestRoute,
   getSayThanksRoute,
-} from 'components/common/RouterOutlet/routerUtils';
-import Navbar from 'components/common/Navbar/View';
-import useFirestore from 'hooks/useFirestore';
-import useFirebase from 'hooks/useFirebase';
-import { RequestType } from 'types';
-import { parseTime } from 'utils/commonUtils';
+} from 'src/components/common/RouterOutlet/routerUtils';
+import Navbar from 'src/components/common/Navbar/View';
+import useFirestore from 'src/hooks/useFirestore';
+import useFirebase from 'src/hooks/useFirebase';
+import { RequestType } from 'src/types';
+import { parseTime } from 'src/utils/commonUtils';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Box from '@material-ui/core/Box';
-import Footer from 'components/common/Footer/View';
-import Disqus from 'components/common/Disqus/View';
+import Footer from 'src/components/common/Footer/View';
+import Disqus from 'src/components/common/Disqus/View';
 
 const useStyles = makeStyles((theme) => ({
   root: {
