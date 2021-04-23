@@ -8,7 +8,6 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Modal } from "antd";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
@@ -234,7 +233,7 @@ function Dashboard() {
           /> */}
           <CardContent className={classes.cardContent}>
             <Typography gutterBottom variant="h5" component="h2">
-              Need {card.requestCategory?.label} Donor
+              {card.requestTitle}
             </Typography>
             <hr />
             <Tooltip
@@ -388,7 +387,7 @@ function Dashboard() {
 
   const renderContent = () => {
     return (
-      <Grid item md={9}>
+      <Grid item md={12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {renderTabs()}
@@ -446,7 +445,7 @@ function Dashboard() {
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>{renderHeader()}</div>
         <Grid container>
-          {renderFilters()}
+          {/* {renderFilters()} */}
           {renderContent()}
         </Grid>
         <Box pt={4}>

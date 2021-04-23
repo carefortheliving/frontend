@@ -54,6 +54,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
+    requestTitle: "",
     requestDescription: "",
     requesterName: "",
     requestCategory: { value: "plasma", label: "Plasma" },
@@ -180,6 +181,23 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const handleCancel = async () => {
     history.push(getHomeRoute());
+  };
+
+  const renderTitle = () => {
+    return (
+      <Controller
+        name={"requestTitle"}
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            placeholder="Situation title goes here ..."
+            style={{ width: "100%" }}
+          />
+        )}
+      />
+    );
   };
 
   const renderDescription = () => {
@@ -522,6 +540,15 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
                     </Grid>
                     <Grid item xs>
                       {renderDistrict()}
+                    </Grid>
+                  </Grid>
+
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h5">Title</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderTitle()}
                     </Grid>
                   </Grid>
 
