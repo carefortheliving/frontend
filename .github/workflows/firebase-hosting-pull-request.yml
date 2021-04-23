@@ -4,21 +4,48 @@
 name: Deploy to Firebase Hosting on PR
 
 on:
-  # push:
-  #   branches: [master]
-  workflow_dispatch:
-    # Inputs the workflow accepts.
+  push:
+    branches: [production]
 
 jobs:
-  build_and_preview:
+  deploy_live_website:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: CI=false npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Installing Dependencies ⏳
+        run: npm install
+        
+      - name: Building Optimized Production Build 🚀
+        run: npm run build --if-present
+        env:
+          REACT_APP_FIREBASE_APIKEY: ${{ secrets.REACT_APP_FIREBASE_APIKEY }}
+          REACT_APP_FIREBASE_AUTHDOMAIN: ${{ secrets.REACT_APP_FIREBASE_AUTHDOMAIN }}
+          REACT_APP_FIREBASE_DATABASEURL: ${{ secrets.REACT_APP_FIREBASE_DATABASEURL }}
+          REACT_APP_FIREBASE_PROJECTID: ${{ secrets.REACT_APP_FIREBASE_PROJECTID }}
+          REACT_APP_FIREBASE_STORAGEBUCKET: ${{ secrets.REACT_APP_FIREBASE_STORAGEBUCKET }}
+          REACT_APP_FIREBASE_MESSAGINGSENDERID: ${{ secrets.REACT_APP_FIREBASE_MESSAGINGSENDERID }}
+          REACT_APP_FIREBASE_APPID: ${{ secrets.REACT_APP_FIREBASE_APPID }}
+          REACT_APP_FIREBASE_MEASUREMENTID: ${{ secrets.REACT_APP_FIREBASE_MEASUREMENTID }}
+      
+      - name: Deploying on firebase hosting 🔥
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CAREFORTHELIVING_BCA71 }}'
           projectId: carefortheliving-bca71
+          channelId: live
         env:
+          REACT_APP_FIREBASE_APIKEY: ${{ secrets.REACT_APP_FIREBASE_APIKEY }}
+          REACT_APP_FIREBASE_AUTHDOMAIN: ${{ secrets.REACT_APP_FIREBASE_AUTHDOMAIN }}
+          REACT_APP_FIREBASE_DATABASEURL: ${{ secrets.REACT_APP_FIREBASE_DATABASEURL }}
+          REACT_APP_FIREBASE_PROJECTID: ${{ secrets.REACT_APP_FIREBASE_PROJECTID }}
+          REACT_APP_FIREBASE_STORAGEBUCKET: ${{ secrets.REACT_APP_FIREBASE_STORAGEBUCKET }}
+          REACT_APP_FIREBASE_MESSAGINGSENDERID: ${{ secrets.REACT_APP_FIREBASE_MESSAGINGSENDERID }}
+          REACT_APP_FIREBASE_APPID: ${{ secrets.REACT_APP_FIREBASE_APPID }}
+          REACT_APP_FIREBASE_MEASUREMENTID: ${{ secrets.REACT_APP_FIREBASE_MEASUREMENTID }}
           FIREBASE_CLI_PREVIEWS: hostingchannels

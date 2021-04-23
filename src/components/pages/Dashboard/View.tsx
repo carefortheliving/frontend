@@ -7,10 +7,7 @@ import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import { Modal } from "antd";
 import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import Container from "@material-ui/core/Container";
 import Navbar from "src/components/common/Navbar/View";
 import { useAuth } from "src/components/common/AuthProvider/View";
@@ -18,12 +15,9 @@ import * as React from "react";
 import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import Button from "@material-ui/core/Button";
-import RequestFilters from "./RequestFilters";
 import { RequestType, UsefulLink } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { Alert, AlertTitle } from "@material-ui/lab";
@@ -31,18 +25,16 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import PanToolIcon from "@material-ui/icons/PanTool";
 import {
   useHistory,
-  useParams,
   useLocation,
-  useRouteMatch,
 } from "react-router-dom";
 import { CircularProgress, Tooltip } from "@material-ui/core";
-import { AllLocations } from "../../../Constants/FilterData";
+import AppBar from "@material-ui/core/AppBar"
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -125,13 +117,13 @@ function Dashboard() {
   const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
-  const [filterResults, setFilterResults] = React.useState([] as Array<String>);
-  const allLocations = AllLocations();
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
     return Number(currentUrlParams.get("tab") || "0");
   };
+  
+  /* eslint-disable react-hooks/exhaustive-deps */
 
   React.useEffect(() => {
     loadData();
@@ -234,7 +226,7 @@ function Dashboard() {
           /> */}
           <CardContent className={classes.cardContent}>
             <Typography gutterBottom variant="h5" component="h2">
-              Need {card.requestCategory?.label} Donor
+              {card.requestTitle}
             </Typography>
             <hr />
             <Tooltip
@@ -331,28 +323,6 @@ function Dashboard() {
     );
   };
 
-  const renderFilters = () => {
-    return (
-      <Grid item md={3}>
-        {getCurrentTabFromUrl() === 0 ? (
-          <div className={classes.filter_Container}>
-            {/* <Typography
-              component="h1"
-              variant="h5"
-              className={classes.filter_Heading}
-            >
-              Filters
-            </Typography> */}
-            <div className={classes.filter}>
-              {/* <RequestFilters /> */}
-              {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
-            </div>
-          </div>
-        ) : null}
-      </Grid>
-    );
-  };
-
   const renderLinks = () => {
     return (
       <TableContainer component={Paper}>
@@ -388,7 +358,7 @@ function Dashboard() {
 
   const renderContent = () => {
     return (
-      <Grid item md={9}>
+      <Grid item md={12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {renderTabs()}
@@ -446,7 +416,7 @@ function Dashboard() {
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>{renderHeader()}</div>
         <Grid container>
-          {renderFilters()}
+          {/* {renderFilters()} */}
           {renderContent()}
         </Grid>
         <Box pt={4}>

@@ -5,13 +5,13 @@ import config from 'src/config'
 
 // Initialize Firebase
 firebase.initializeApp({
-  apiKey: config.REACT_APP_firebase_apiKey,
-  authDomain: config.REACT_APP_firebase_authDomain,
-  databaseURL: config.REACT_APP_firebase_databaseURL,
-  projectId: config.REACT_APP_firebase_projectId,
-  storageBucket: config.REACT_APP_firebase_storageBucket,
-  messagingSenderId: config.REACT_APP_firebase_messagingSenderId,
-  appId: config.REACT_APP_firebase_appId,
+  apiKey: config.REACT_APP_FIREBASE_APIKEY,
+  authDomain: config.REACT_APP_FIREBASE_AUTHDOMAIN,
+  databaseURL: config.REACT_APP_FIREBASE_DATABASEURL,
+  projectId: config.REACT_APP_FIREBASE_PROJECTID,
+  storageBucket: config.REACT_APP_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: config.REACT_APP_FIREBASE_MESSAGINGSENDERID,
+  appId: config.REACT_APP_FIREBASE_APPID,
 });
 
 const AuthContext = createContext({} as any);

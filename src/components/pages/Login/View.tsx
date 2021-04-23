@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -10,7 +11,7 @@ import Container from "@material-ui/core/Container";
 import Footer from "src/components/common/Footer/View";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "src/components/common/AuthProvider/View";
-import { getHomeRoute } from "src/components/common/RouterOutlet/routerUtils";
+import { getCreateRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,7 +40,7 @@ function LogIn() {
 
   useEffect(() => {
     if (user && user.email) {
-      history.push(getHomeRoute());
+      history.push(getCreateRequestRoute());
     }
   }, []);
 
@@ -72,7 +73,7 @@ function LogIn() {
   async function login() {
     try {
       await signInWithGoogle();
-      history.push(getHomeRoute());
+      history.push(getCreateRequestRoute());
     } catch (error) {
       alert(error.message);
     }

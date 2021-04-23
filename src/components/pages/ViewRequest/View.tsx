@@ -7,22 +7,20 @@ import {
   Typography,
 } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import withAuth from "src/components/common/withAuth/View";
 import { useHistory, useParams } from "react-router-dom";
 import {
   getEditRequestRoute,
-  getHomeRoute,
   getSayThanksRoute,
 } from "src/components/common/RouterOutlet/routerUtils";
 import Navbar from "src/components/common/Navbar/View";
 import useFirestore from "src/hooks/useFirestore";
 import useFirebase from "src/hooks/useFirebase";
 import { RequestType } from "src/types";
-import moment from "moment";
 import { parseTime } from "src/utils/commonUtils";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Box from "@material-ui/core/Box";
 import Footer from "src/components/common/Footer/View";
+import Disqus from 'src/components/common/Disqus/View';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,19 +42,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ViewRequestProps {}
+interface ViewRequestProps { }
 
-const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
+const ViewRequest: React.FC<ViewRequestProps> = () => {
   const classes = useStyles();
   const history = useHistory();
   const params = useParams();
-  const { addRequest, updateRequest, getRequest } = useFirestore();
+  const { getRequest } = useFirestore();
   const [data, setData] = React.useState(undefined as undefined | RequestType);
   const { auth } = useFirebase();
+  const [pageURL, setPageURL] = React.useState('');
+  const [pageID, setPageID] = React.useState('');
 
   React.useEffect(() => {
-    prefillData();
-  }, []);
+    setPageURL(window.location.href);
+    const parts = window.location.href.split('/');
+    setPageID(parts[parts.length - 1]);
+  }, [])
 
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
@@ -66,19 +68,18 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
     }
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
+  React.useEffect(() => {
+    prefillData();
+  }, []);
+
+
   const handleCloseClick = () => {
     history.push(getSayThanksRoute(params?.docId));
   };
 
   const handleEditClick = () => {
     history.push(getEditRequestRoute(params?.docId));
-  };
-
-  const handleCancel = async () => {
-    history.push({
-      pathname: getHomeRoute(),
-      search: "?tab=1",
-    });
   };
 
   const renderCloseButton = () => {
@@ -90,14 +91,6 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
         // style={{ marginRight: "10px" }}
       >
         Mark as Resolved
-      </Button>
-    );
-  };
-
-  const renderCancelButton = () => {
-    return (
-      <Button variant="contained" onClick={handleCancel}>
-        Cancel
       </Button>
     );
   };
@@ -212,13 +205,20 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
               </Grid>
 
               <Grid container xs={12} sm={12}>
-                <Grid item xs={12}>
+                <Grid item xs>
+                  {renderFieldValue('Title')}
+                </Grid>
+                <Grid item xs>
+                  {renderFieldValue(data?.requestTitle)}
+                </Grid>
+              </Grid>
+
+              <Grid container xs={12} sm={12}>
+                <Grid item xs>
                   {renderFieldValue('Description')}
                 </Grid>
-                <Grid item xs={12}>
-                  {/* <pre > */}
-                    {renderFieldValue(data?.requestDescription)}
-                  {/* </pre> */}
+                <Grid item xs>
+                  {renderFieldValue(data?.requestDescription)}
                 </Grid>
               </Grid>
 
@@ -329,7 +329,16 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
                 </>
               )}
             </Grid>
-          </Container>
+            {
+              data && data.requestTitle && (
+                <Grid container xs={12} sm={12}>
+                  <Grid item xs>
+                    <Disqus url={ pageURL } id={ pageID } title={ data.requestTitle } language="en" />
+                  </Grid>
+                </Grid>
+              )
+            }
+        </Container>
         </div>
         <Box mt={8}>
           <Footer />

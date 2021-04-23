@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
   Container,
@@ -54,6 +55,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
+    requestTitle: "",
     requestDescription: "",
     requesterName: "",
     requestCategory: { value: "plasma", label: "Plasma" },
@@ -65,14 +67,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     requesterContactNumber: "",
     // donor: ''
   } as RequestType;
-  const {
-    handleSubmit,
-    control,
-    reset,
-    register,
-    setValue,
-    getValues,
-  } = useForm({ defaultValues });
+  const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
   // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
@@ -180,6 +175,23 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const handleCancel = async () => {
     history.push(getHomeRoute());
+  };
+
+  const renderTitle = () => {
+    return (
+      <Controller
+        name={"requestTitle"}
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            placeholder="Situation title goes here ..."
+            style={{ width: "100%" }}
+          />
+        )}
+      />
+    );
   };
 
   const renderDescription = () => {
@@ -522,6 +534,15 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
                     </Grid>
                     <Grid item xs>
                       {renderDistrict()}
+                    </Grid>
+                  </Grid>
+
+                  <Grid container xs={12} sm={12}>
+                    <Grid item xs>
+                      <Typography variant="h6">Title</Typography>
+                    </Grid>
+                    <Grid item xs>
+                      {renderTitle()}
                     </Grid>
                   </Grid>
 

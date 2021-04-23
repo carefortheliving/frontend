@@ -4,7 +4,7 @@ import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
 
 const useFirestore = () => {
-  const { db, auth } = useFirebase();
+  const { db } = useFirebase();
   
   const addRequest = async (request: RequestType) => {
     const requests = await db.collection("requests").add({

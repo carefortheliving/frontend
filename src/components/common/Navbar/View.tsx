@@ -20,7 +20,6 @@ import { useAuth } from "src/components/common/AuthProvider/View";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import useBreakpoint from "src/hooks/useBreakpoint";
 import useRoutes from "src/hooks/useRoutes";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import InfoIcon from "@material-ui/icons/Info";
@@ -128,15 +127,6 @@ function Navbar(props: NavbarProps) {
   const [profileBtn, setProfileBtn] = React.useState(null);
   const isUpSm = useBreakpoint("sm");
   const { isHome } = useRoutes();
-
-  const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const isLogged = !!(user && user.email);
 
