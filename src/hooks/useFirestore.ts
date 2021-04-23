@@ -26,18 +26,29 @@ const useFirestore = () => {
   const getRequests = async ({
     requesterEmail,
     requestStatus,
+    requestCategory,
+    patientDistrict,
+    patientState,
   } : FiltersType) => {
     let requestsRef: any = await db.collection("requests")
-    // if(requestLocation.length>0)
-    //     requestsRef = await requestsRef.where('patientDistrict' , 'in' , requestLocation )    
+
+    // refer: RequestType for keys
     if (requesterEmail) {
-      requestsRef = await requestsRef.where('requesterEmail', 'in', requesterEmail);
+      requestsRef = await requestsRef.where('requesterEmail', '==', requesterEmail);
+    }
+    if (requestCategory) {
+      requestsRef = await requestsRef.where('requestCategory.value', '==', requestCategory);
+    }
+    if (patientDistrict) {
+      requestsRef = await requestsRef.where('patientDistrict.value', '==', patientDistrict);
+    }
+    if (patientState) {
+      requestsRef = await requestsRef.where('patientState.value', '==', patientState);
     }
     if (requestStatus) {
-      requestsRef = await requestsRef.where('requestStatus.value', 'in', requestStatus);
+      requestsRef = await requestsRef.where('requestStatus.value', '==', requestStatus);
     }
     const requests = await requestsRef.get();
-    // console.log({ requests });
     const ret = requests.docs?.map(doc => ({
       id: doc.id,
       ...doc.data(),

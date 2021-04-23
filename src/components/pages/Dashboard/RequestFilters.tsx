@@ -1,31 +1,21 @@
 import {
-  Button,
   Container,
   Grid,
   makeStyles,
   TextareaAutosize,
   TextField,
-  Typography,
+  Typography
 } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import MuiPhoneNumber from "material-ui-phone-number";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
-import Navbar from "src/components/common/Navbar/View";
-import Box from "@material-ui/core/Box";
-import {
-  getHomeRoute,
-  getLoginRoute,
-  getViewRequestRoute,
-} from "src/components/common/RouterOutlet/routerUtils";
-import Footer from "src/components/common/Footer/View";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import useFirestore from "src/hooks/useFirestore";
 import useFirebase from "src/hooks/useFirebase";
+import useFirestore from "src/hooks/useFirestore";
 import useGeo from "src/hooks/useGeo";
-import { RequestType } from "src/types";
+import { FiltersType, RequestType } from "src/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,22 +37,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 interface RequestFiltersProps {
-  isEdit?: boolean;
+  onChangeFilter: (updatedFilters: Partial<FiltersType>) => void;
 }
 
-const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
+const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
+  const { onChangeFilter } = props;
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
-    requestDescription: "",
-    requesterName: "",
-    requestCategory: { value: "plasma", label: "Plasma" },
-    patientGender: { value: "male", label: "Male" },
-    patientBloodGroup: { value: "a+", label: "A+" },
-    patientAge: "",
-    patientState: { value: "Uttar Pradesh", label: "Uttar Pradesh" },
-    patientDistrict: { value: "Muzaffarnagar", label: "Muzaffarnagar" },
-    requesterContactNumber: "",
+    requestCategory: undefined,
+    // patientGender: undefined,
+    // patientBloodGroup: undefined,
+    // patientAge: undefined,
+    patientState: undefined,
+    patientDistrict: undefined,
     // donor: ''
   } as RequestType;
   const {
@@ -75,111 +63,15 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
   } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
-  // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
   const history = useHistory();
   const params = useParams();
-  // const match = useRouteMatch();
   const { addRequest, updateRequest, getRequest } = useFirestore();
   const snackbar = useSnackbar();
-  const [data, setData] = React.useState(undefined as undefined | RequestType);
-
-  React.useEffect(() => {
-    // ensureLoggedIn();
-    loadData();
-  }, []);
-
-  React.useEffect(() => {
-    setValue("requesterName", auth?.user?.displayName);
-  }, [auth?.user?.displayName]);
-
-  React.useEffect(() => {
-    // ensurePermissions();
-  }, [data?.requesterEmail]);
-
-  React.useEffect(() => {
-    prefillData();
-  }, [data]);
-
-  const ensureLoggedIn = async () => {
-    if (!auth?.user?.email) {
-      history.replace(getLoginRoute());
-    }
-  };
-
-  const isValidUser = () => {
-    return data?.requesterEmail
-      ? data?.requesterEmail === auth?.user?.email
-      : !!auth?.user?.email;
-  };
-
-  const ensurePermissions = () => {
-    if (!isValidUser()) {
-      history.push(getLoginRoute());
-    }
-  };
-
-  const loadData = async () => {
-    const existingRequest = isEdit
-      ? await getRequest(params?.docId)
-      : undefined;
-    if (typeof existingRequest === "object") {
-      setData(existingRequest as any);
-    }
-  };
-
-  const prefillData = async () => {
-    data &&
-      Object.keys(data).forEach((key) => {
-        setValue(key as any, data?.[key]);
-      });
-  };
 
   const handleStateChange = (state: string) => {
-    // getValues().state.value
     const newDistricts =
       states[state]?.map((el) => ({ value: el.city, label: el.city })) || [];
     setDistricts(newDistricts);
-    setValue("patientDistrict", newDistricts[0]);
-  };
-
-  // const handleStatusChange = (status: string) => {
-  //   console.log({ status });
-  //   setIsDonorVisible(status === 'closed');
-  // };
-
-  const onSubmit = async (data: RequestType) => {
-    // console.log(data);
-    if (!isValidUser()) {
-      snackbar.show("error", `You're not authorized for the action!`);
-      return;
-    }
-    try {
-      const res = isEdit
-        ? await updateRequest(params?.docId, data)
-        : await addRequest({
-            ...data,
-            requestStatus: { value: "open", label: "Open" },
-            requesterEmail: auth?.user?.email,
-          });
-      // console.log({ newId: res.id });
-      snackbar.show(
-        "success",
-        `Request ${isEdit ? "updated" : "created"} successfully!`
-      );
-      // message.success('Request created successfully!')
-      history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      snackbar.show(
-        "error",
-        `Couldn't ${isEdit ? "update" : "create"} request!`
-      );
-      // message.error(`Couldn't create request!`);
-    }
-  };
-
-  const handleCancel = async () => {
-    history.push(getHomeRoute());
   };
 
   const renderDescription = () => {
@@ -241,8 +133,15 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
         render={({ field }) => {
           return (
             <Select
+              isClearable={true}
               {...field}
               placeholder="Select Category"
+              onChange={(option) => {
+                onChangeFilter({
+                  requestCategory: option?.value,
+                })
+                field?.onChange(option);
+              }}
               options={[
                 { value: "plasma", label: "Plasma" },
                 { value: "oxygen", label: "Oxygen" },
@@ -265,6 +164,7 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
         control={control}
         render={({ field }) => (
           <Select
+            isClearable={true}
             {...field}
             placeholder="Select Blood Group of the patient"
             options={[
@@ -284,6 +184,7 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
         control={control}
         render={({ field }) => (
           <Select
+            isClearable={true}
             {...field}
             placeholder="Select Blood Group of the patient"
             options={[
@@ -332,10 +233,14 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
         control={control}
         render={({ field }) => (
           <Select
+            isClearable={true}
             {...field}
             placeholder="Select State"
             onChange={(option) => {
-              handleStateChange(option.value);
+              handleStateChange(option?.value);
+              onChangeFilter({
+                patientState: option?.value
+              })
               field?.onChange(option);
             }}
             options={Object.keys(states).map((key) => ({
@@ -355,9 +260,17 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
         control={control}
         render={({ field }) => (
           <Select
+            isClearable={true}
+            isDisabled={!districts.length}
             {...field}
             placeholder="Select District"
             options={districts}
+            onChange={(option) => {
+              onChangeFilter({
+                patientDistrict: option?.value
+              })
+              field?.onChange(option);
+            }}
           />
         )}
       />
@@ -378,7 +291,7 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
   //           { value: "closed", label: "Closed" },
   //         ]}
   //         onChange={(option) => {
-  //           handleStatusChange(option.value);
+  //           handleStatusChange(option?.value);
   //           field?.onChange(option);
   //         }}
   //       />;
@@ -397,27 +310,6 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
   //   />;
   // };
 
-  const renderSubmit = () => {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit(onSubmit)}
-        style={{ marginRight: "10px" }}
-      >
-        Submit
-      </Button>
-    );
-  };
-
-  const renderCancel = () => {
-    return (
-      <Button variant="contained" onClick={handleCancel}>
-        Cancel
-      </Button>
-    );
-  };
-
   // const renderResolve = () => {
   //   return <Button
   //     variant="contained"
@@ -431,7 +323,9 @@ const RequestFilters: React.FC<RequestFiltersProps> = ({ isEdit }) => {
   return (
     <div className={classes.heroContent}>
       <Container maxWidth="md">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form 
+          // onSubmit={handleSubmit(onSubmit)}
+        >
           <Grid container spacing={1}>
             <Grid container xs={12} sm={12}>
               {/* <Grid container xs={12} sm={12}>

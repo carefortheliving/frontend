@@ -24,10 +24,11 @@ export interface RequestType {
 }
 
 export interface FiltersType {
-  requesterEmail?: string[];
-  requestStatus?: ('open' | 'closed')[];
-  requestState?: string[];
-  requestDistrict?: string[];
+  requesterEmail?: string;
+  requestStatus?: ('open' | 'closed');
+  patientState?: string;
+  patientDistrict?: string;
+  requestCategory?: string;
 }
 
 export interface UsefulLink {

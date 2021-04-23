@@ -15,7 +15,7 @@ import * as React from "react";
 import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import Button from "@material-ui/core/Button";
-import { RequestType, UsefulLink } from "src/types";
+import { FiltersType, RequestType, UsefulLink } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
 import Tabs from "@material-ui/core/Tabs";
@@ -115,6 +115,7 @@ function Dashboard() {
   const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
+  const [appliedFilters, setAppliedFilters] = React.useState({} as Partial<FiltersType>);
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -127,6 +128,10 @@ function Dashboard() {
     loadData();
     loadLinks();
   }, [getCurrentTabFromUrl()]);
+
+  React.useEffect(() => {
+    loadData();
+  }, [appliedFilters]);
 
   const loadLinks = async () => {
     setLoading(true);
@@ -141,13 +146,15 @@ function Dashboard() {
         switch (getCurrentTabFromUrl()) {
           case 0:
             return await getRequests({
-              requestStatus: ["open"],
+              requestStatus: "open",
+              ...appliedFilters
             });
           case 1:
             return (
               user?.email &&
               (await getRequests({
-                requesterEmail: [user?.email],
+                requesterEmail: user?.email,
+                // ...appliedFilters
               }))
             );
           default:
@@ -156,45 +163,10 @@ function Dashboard() {
       })();
       setRequests(requests);
     } catch (e) {
+      console.log(e);
       snackbar.show("error", `Something went wrong, try reloading!`);
     }
   };
-
-  // React.useEffect(() => {
-  //   const loadData = async () => {
-  //     try {
-  //       if (filterResults.length == 0) {
-  //         setRequests([]);
-  //         return;
-  //       }
-  //       let status: String[] = [];
-  //       // let location:String[] = []
-  //       // let category:String[] = []
-  //       const keys = [...filterResults];
-  //       keys.includes("Active") && status.push("open");
-  //       keys.includes("Completed") && status.push("closed");
-  //       // filterResults.includes("Completed") && status.push("closed")
-  //       // keys.forEach(element => {
-  //       //   if(allLocations.includes(element))
-  //       //     {
-  //       //     location.push(element)
-  //       //     }
-  //       // });
-  //       // console.log(location)
-  //       const requests = await (async () => {
-  //         return await getRequests({
-  //           requestStatus: status,
-  //           requestLocation: location,
-  //         });
-  //       })();
-  //       console.log(requests);
-  //       setRequests(requests);
-  //     } catch (e) {
-  //       snackbar.show("error", `Something went wrong, try reloading!`);
-  //     }
-  //   };
-  //   loadData();
-  // }, [filterResults]);
 
   const handleCardClick = (docId: string) => {
     history.push(getViewRequestRoute(docId));
@@ -207,6 +179,11 @@ function Dashboard() {
       pathname: location.pathname,
       search: "?" + currentUrlParams.toString(),
     });
+  };
+
+  const handleFilterChange = (updatedFilters: Partial<FiltersType>) => {
+    const newFilters = appliedFilters
+    setAppliedFilters({ ...appliedFilters, ...updatedFilters })
   };
 
   const renderFilters = () => {
@@ -222,7 +199,7 @@ function Dashboard() {
               Filters
             </Typography>
             <div className={classes.filter}>
-              <RequestFilters />
+              <RequestFilters onChangeFilter={handleFilterChange}/>
               {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
             </div>
           </div>
