@@ -10,6 +10,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.3.10",
     "antd": "^4.15.2",
+    "disqus-react": "^1.0.11",
     "firebase": "^8.4.1",
     "indian-cities-database": "^1.0.5",
     "react": "^17.0.2",
@@ -29,7 +30,9 @@
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "antd": "^4.15.2",
+    "cz-conventional-changelog": "^3.3.0",
     "firebase": "^8.4.1",
+    "husky": "^6.0.0",
     "material-ui-phone-number": "^2.2.6",
     "moment": "^2.29.1",
     "react": "^17.0.2",
@@ -70,5 +73,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
   }
 }

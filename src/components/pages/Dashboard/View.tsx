@@ -237,20 +237,7 @@ function Dashboard() {
               Need {card.requestCategory?.label} Donor
             </Typography>
             <hr />
-            <Tooltip
-              style={{ width: "300px" }}
-              enterDelay={500}
-              title={
-                <React.Fragment>
-                  <Typography color="inherit">
-                    {card.requestDescription}
-                  </Typography>
-                </React.Fragment>
-              }
-              placement="top"
-            >
-              <Typography noWrap>{card.requestDescription}</Typography>
-            </Tooltip>
+            <Typography>{card.requestTitle}</Typography>
             <br />
             <Box style={{ display: "flex", color: "rgba(0, 0, 0, 0.54)" }}>
               <Typography style={{ marginRight: "10px" }}>
