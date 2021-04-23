@@ -212,10 +212,10 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
               </Grid>
 
               <Grid container xs={12} sm={12}>
-                <Grid item xs>
+                <Grid item xs={6}>
                   <Typography variant="h5">Description</Typography>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={6}>
                   <pre>
                     {renderFieldValue(data?.requestDescription)}
                   </pre>
