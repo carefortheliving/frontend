@@ -18,7 +18,7 @@ const App = () => (
           <SnackbarProvider>
             <CssBaseline />
             <Navbar />
-            <Box mt={10}>
+            <Box mt={10} minHeight="70vh">
               <RouterOutlet />
             </Box>
             <Footer />

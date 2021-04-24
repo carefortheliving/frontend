@@ -18,17 +18,19 @@ export default function Footer() {
     <Box marginY={5}>
       <Typography
         className={classes.footerStyle}
-        variant="body2"
-        color="textSecondary"
       >
-        {"copyright © "}
-        {new Date().getFullYear()}
-        <a
+        Made with ❤️️ in 🇮🇳 by <a
           href="https://github.com/carefortheliving/frontend"
           target="_blank"
           rel="noopener noreferrer"
         >
           <strong>{" carefortheliving"}</strong>
+        </a> & <a
+          href="https://opendevs.in"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <strong>{" open devs"}</strong>
         </a>
         </Typography>
       </Box>

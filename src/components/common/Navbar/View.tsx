@@ -27,9 +27,6 @@ import FabIcon from "./FabIcon";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
   toolbar: {
     paddingRight: 24,
   },
@@ -121,7 +118,7 @@ function Navbar(props: NavbarProps) {
   const history = useHistory();
   const [profileBtn, setProfileBtn] = React.useState(null);
   const isUpSm = useBreakpoint("sm");
-  const { isHome } = useRoutes();
+  const { isCreateRequest, isLogin } = useRoutes();
 
   const isLogged = !!(user && user.email);
 
@@ -140,31 +137,37 @@ function Navbar(props: NavbarProps) {
   };
 
   const renderActions = () => {
-    return isHome ? (
+    return !isCreateRequest && !isLogin ? (
       <>
         {isUpSm ? (
-          <Button
-            variant="contained"
-            className={classes.btnStyle}
-            size="small"
-            color="secondary"
-            onClick={() => history.push(getCreateRequestRoute())}
-          >
-            Create Request
-          </Button>
+          <>
+            <Button
+              variant="contained"
+              className={classes.btnStyle}
+              size="small"
+              color="secondary"
+              onClick={() => history.push(getCreateRequestRoute())}
+            >
+              Create Request
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => history.push(getAboutRoute())}
+            >
+              Info
+            </Button>
+          </>
         ) : (
-          <FabIcon />
-        )}
-        {isUpSm ? (
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => history.push(getAboutRoute())}
-          >
-            Info
-          </Button>
-        ) : (
-          <InfoIcon onClick={() => history.push(getAboutRoute())} />
+          <>
+            <FabIcon />
+            <IconButton
+              color="inherit"
+              onClick={() => history.push(getAboutRoute())}
+            >
+              <InfoIcon />
+            </IconButton>
+          </>
         )}
       </>
     ) : null;
@@ -219,7 +222,6 @@ function Navbar(props: NavbarProps) {
         color="inherit"
         noWrap
         className={classes.title}
-        // onClick={handleRedirectHome}
       >
         {state.title || "Care for the Living"}
       </Typography>
@@ -227,24 +229,20 @@ function Navbar(props: NavbarProps) {
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="absolute">
-        <Toolbar className={classes.toolbar}>
-          {state.backButton ? (
-            <ArrowBackIosIcon
-              className={classes.btnStyle}
-              onClick={handleRedirectHome}
-              style={{ cursor: "pointer" }}
-            />
-          ) : (
-            <div />
-          )}
-          {renderTitle()}
-          {renderActions()}
-          {renderMenu()}
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position="absolute">
+      <Toolbar className={classes.toolbar}>
+        {
+          state.backButton && (
+          <IconButton size="small" color="inherit" onClick={handleRedirectHome}>
+            <ArrowBackIosIcon className={classes.btnStyle} />
+          </IconButton>
+          )
+        }
+        {renderTitle()}
+        {renderActions()}
+        {renderMenu()}
+      </Toolbar>
+    </AppBar>
   );
 }
 

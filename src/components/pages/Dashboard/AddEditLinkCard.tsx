@@ -10,7 +10,7 @@ import {
   Typography,
   TextareaAutosize,
 } from "@material-ui/core";
-import * as React from "react";
+import React, { useState, useEffect, FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { UsefulLink } from "../../../types";
 import useFirestore from "src/hooks/useFirestore";
@@ -41,15 +41,14 @@ type AddEditLinkCardProps = {
   onReloadRequested?: () => void;
 };
 
-const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
+const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
   const { prefillData, onReloadRequested } = props;
   const type = prefillData ? "view" : "add";
   const classes = useStyles();
-  const [isEdit, setIsEdit] = React.useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const defaultValues = {
     ...prefillData,
   };
-  // console.log({ prefillData })
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const {
     addUsefulLink,
@@ -58,8 +57,12 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
   const { isAdmin, email } = useUser();
   const snackbar = useSnackbar();
 
-  React.useEffect(() => {
+  useEffect(() => {
     handlePrefillData();
+
+    return () => {
+      setIsEdit(false);
+    }
   }, [prefillData]);
 
   const handlePrefillData = async () => {
