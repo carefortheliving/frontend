@@ -530,13 +530,11 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           </Grid>
           <Grid
             container
-            xs={12}
-            sm={12}
-            md={12}
             // justify="flex-end"
             className={classes.buttons}
+            spacing={2}
           >
-            <Grid item xs={12} sm={6} md={4} spacing={2}>
+            <Grid item xs={12} sm={6} md={4}>
               {renderSubmit()}
               {renderCancel()}
             </Grid>
