@@ -1,3 +1,4 @@
+import { Box, Container, Grid } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
@@ -173,11 +174,17 @@ function Navbar(props: NavbarProps) {
     return (
       <>
         {isLogged ? (
-          <IconButton color="inherit" onClick={handleProfileClick}>
-            <Badge color="secondary">
-              <AccountCircleIcon />
-            </Badge>
-          </IconButton>
+          <Box
+            style={{ display: "flex", alignItems: "center", cursor: 'pointer' }}
+            onClick={handleProfileClick}
+          >
+            <IconButton color="inherit">
+              <Badge color="secondary">
+                <AccountCircleIcon />
+              </Badge>
+            </IconButton>
+            {isUpSm ? user?.displayName : null}
+          </Box>
         ) : (
           <></>
         )}
@@ -188,16 +195,16 @@ function Navbar(props: NavbarProps) {
           open={Boolean(profileBtn)}
           onClose={handleProfileClose}
         >
+          {isUpSm ? null : <MenuItem disabled>{user?.displayName}</MenuItem>}
           <MenuItem>
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSdOIDnLsN0YSgsZTPsk09X95yde_1lE-9qS9YR5g4Y5sStCwA/viewform?usp=sf_link"
               target="blank"
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: "none" }}
             >
               Send Feedback
             </a>
           </MenuItem>
-          <MenuItem disabled>{user?.displayName}</MenuItem>
           <MenuItem onClick={handleLogOut}>Logout</MenuItem>
         </Menu>
       </>
