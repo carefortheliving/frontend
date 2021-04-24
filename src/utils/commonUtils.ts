@@ -1,8 +1,6 @@
-// import firebase from "firebase";
 import moment from 'moment';
 
 export const getCurrentTime = () => {
-  // const time = firebase.firestore.FieldValue.serverTimestamp();
   const time = moment().valueOf();
   return time;
 };

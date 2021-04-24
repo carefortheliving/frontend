@@ -1,11 +1,10 @@
 import { FiltersType, RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
-// import firebase from "firebase";
 import { getCurrentTime } from 'src/utils/commonUtils';
 
 const useFirestore = () => {
   const { db } = useFirebase();
-  
+
   const addRequest = async (request: RequestType) => {
     const requests = await db.collection("requests").add({
       ...request,
