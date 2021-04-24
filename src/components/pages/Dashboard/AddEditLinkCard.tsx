@@ -199,7 +199,7 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
           if (isEdit) return renderEdit();
           switch (type) {
             case "view":
-              return renderLink(prefillData);
+              return prefillData ? renderLink(prefillData) : null;
             case "add":
             default:
               return renderAddCard();
