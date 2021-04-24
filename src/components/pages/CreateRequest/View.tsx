@@ -8,58 +8,47 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import MuiPhoneNumber from "material-ui-phone-number";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
-import Navbar from "src/components/common/Navbar/View";
-import Box from "@material-ui/core/Box";
 import {
   getHomeRoute,
   getLoginRoute,
   getViewRequestRoute,
 } from "src/components/common/RouterOutlet/routerUtils";
-import Footer from "src/components/common/Footer/View";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import useFirestore from "src/hooks/useFirestore";
 import useFirebase from "src/hooks/useFirebase";
 import useGeo from "src/hooks/useGeo";
 import { RequestType } from "src/types";
-import * as lodash from 'lodash';
+import pickBy from "lodash/pickBy";
+import identity from "lodash/identity";
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton,
+} from "src/contexts/AppContext";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
   buttons: {
     marginTop: "50px",
   },
   input: {
     width: "100%",
     border: "solid hsl(0, 0%, 80%) 1px",
-    borderRadius: '4px',
-    paddingLeft: '10px',
-    paddingRight: '10px',
-  }
+    borderRadius: "4px",
+    paddingLeft: "10px",
+    paddingRight: "10px",
+  },
 }));
 interface CreateRequestProps {
   isEdit?: boolean;
 }
 
 const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
+  const { dispatch } = useAppContext();
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
@@ -77,31 +66,34 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   } as Partial<RequestType>;
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { states } = useGeo();
-  const [districts, setDistricts] = React.useState([]);
-  // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
+  const [districts, setDistricts] = useState([]);
   const history = useHistory();
   const params = useParams();
-  // const match = useRouteMatch();
   const { addRequest, updateRequest, getRequest } = useFirestore();
   const snackbar = useSnackbar();
-  const [data, setData] = React.useState(undefined as undefined | RequestType);
+  const [data, setData] = useState(undefined as undefined | RequestType);
 
-  React.useEffect(() => {
+  useEffect(() => {
     ensureLoggedIn();
     loadData();
+    dispatch(changeBackButton(true));
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue("requesterName", auth?.user?.displayName);
   }, [auth?.user?.displayName]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     ensurePermissions();
   }, [data?.requesterEmail]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     prefillData();
   }, [data]);
+
+  useEffect(() => {
+    dispatch(changeTitle(isEdit ? "Edit Request" : "Create Request"));
+  }, [isEdit]);
 
   const ensureLoggedIn = async () => {
     if (!auth?.user?.email) {
@@ -174,7 +166,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     }
     if(!validateFields(data)) return;
     try {
-      const payload: RequestType = lodash.pickBy(data, lodash.identity) as any;
+      const payload: RequestType = pickBy(data, identity) as any;
       const res = isEdit
         ? await updateRequest(params?.docId, payload)
         : await addRequest({
@@ -193,7 +185,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
       console.error("Error adding document: ", e);
       snackbar.show(
         "error",
-        `Couldn't ${isEdit ? "update" : "create"} request!\n All the fields are mandatory!`
+        `Couldn't ${
+          isEdit ? "update" : "create"
+        } request!\n All the fields are mandatory!`
       );
       // message.error(`Couldn't create request!`);
     }
@@ -416,39 +410,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     );
   };
 
-  // const renderStatus = () => {
-  //   return <Controller
-  //     name="status"
-  //     control={control}
-  //     render={({ field }) => {
-  //       return <Select
-  //         {...field}
-  //         isDisabled={!isEdit}
-  //         placeholder={renderSelectPlaceholder("Select Status")}
-  //         options={[
-  //           { value: "open", label: "Open" },
-  //           { value: "closed", label: "Closed" },
-  //         ]}
-  //         onChange={(option) => {
-  //           handleStatusChange(option.value);
-  //           field?.onChange(option);
-  //         }}
-  //       />;
-  //     }}
-  //   />;
-  // };
-
-  // const renderDonor = () => {
-  //   return <Controller
-  //     name={'donor'}
-  //     control={control}
-  //     defaultValue=""
-  //     render={({ field }) => <TextareaAutosize {...field}
-  //       placeholder={renderSelectPlaceholder("Donor details")}
-  //       style={{ width: '100%', height: '100px' }} />}
-  //   />;
-  // };
-
   const renderSubmit = () => {
     return (
       <Button
@@ -470,179 +431,129 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     );
   };
 
-  // const renderResolve = () => {
-  //   return <Button
-  //     variant="contained"
-  //     onClick={handleCancel}
-  //     color="secondary"
-  //   >
-  //     Close Request
-  //   </Button>;
-  // };
-
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Navbar showBack title={isEdit ? "Edit Request" : "Create Request"} />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          <Container maxWidth="md">
-            {/* <Typography variant="h3" style={{ marginBottom: "50px" }}>
-              {isEdit ? "Edit Request" : "Create Request"}
-            </Typography> */}
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={1}>
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h6">Requester's Email</Typography>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography variant="h6">
-                      {isEdit ? data?.requesterEmail : auth?.user?.email}
-                    </Typography>
-                  </Grid>
+    <Container maxWidth="md">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={1}>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Requester's Email</Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="h6">
+                {isEdit ? data?.requesterEmail : auth?.user?.email}
+              </Typography>
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">Requester's Name</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderRequester()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Requester's Name</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderRequester()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">Contact Number</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderContactNumber()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Contact Number</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderContactNumber()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">Category</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderCategory()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Category</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderCategory()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">Patient's Gender</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderGender()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Patient's Gender</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderGender()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">
-                        Patient's Blood Group
-                      </Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderBloodGroup()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Patient's Blood Group</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderBloodGroup()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">Patient's Age</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderAge()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Patient's Age</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderAge()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">State</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderState()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">State</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderState()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">District</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderDistrict()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">District</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderDistrict()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">Title</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderTitle()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Title</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderTitle()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h6">Description</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderDescription()}
-                    </Grid>
-                  </Grid>
-
-                  {/* <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h6">
-                    Status
-                  </Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderStatus()}
-                </Grid>
-              </Grid> */}
-
-                  {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h6">
-                    Donor Details
-                  </Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderDonor()}
-                </Grid>
-              </Grid> : null} */}
-
-                  <Grid
-                    container
-                    xs={12}
-                    sm={12}
-                    md={12}
-                    // justify="flex-end"
-                    className={classes.buttons}
-                  >
-                    <Grid item xs={12} sm={6} md={4} spacing={2}>
-                      {renderSubmit()}
-                      {renderCancel()}
-                    </Grid>
-                    {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Description</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderDescription()}
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            xs={12}
+            sm={12}
+            md={12}
+            // justify="flex-end"
+            className={classes.buttons}
+          >
+            <Grid item xs={12} sm={6} md={4} spacing={2}>
+              {renderSubmit()}
+              {renderCancel()}
+            </Grid>
+            {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}
-                  </Grid>
-                </Grid>
-              </Grid>
-            </form>
-          </Container>
-        </div>
-        <Box pt={4}>
-          <Footer />
-        </Box>
-      </main>
-    </div>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
   );
 };
 

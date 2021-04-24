@@ -2,6 +2,15 @@
   "name": "carefortheliving.com",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start --use-strict",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "firebase-token": "npm install -g firebase-tools@8 && firebase login:ci",
+    "firebase-login": "firebase login",
+    "firebase-deploy": "npm run build && firebase deploy --only hosting"
+  },
   "dependencies": {
     "@hookform/resolvers": "^2.4.0",
     "@material-ui/core": "^4.11.3",
@@ -38,15 +47,6 @@
     "cz-conventional-changelog": "^3.3.0",
     "husky": "^6.0.0",
     "typescript": "^4.2.4"
-  },
-  "scripts": {
-    "start": "react-scripts start --use-strict",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "firebase-token": "npm install -g firebase-tools@8 && firebase login:ci",
-    "firebase-login": "firebase login",
-    "firebase-deploy": "npm run build && firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": [
