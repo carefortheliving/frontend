@@ -150,12 +150,29 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   //   setIsDonorVisible(status === 'closed');
   // };
 
+  const validateFields = (data: RequestType) => {
+    const requiredKeys: (keyof Partial<RequestType>)[] = [
+      'requestTitle',
+      'requestCategory',
+      'patientBloodGroup',
+      'requestDescription',
+      'requesterContactNumber'
+    ];
+    const missingKey = requiredKeys.find(key => !(data?.[key]) );
+    if (missingKey) {
+      snackbar.show('error', `Field "${missingKey}" must not be empty!`);
+      return false;
+    }
+    return true;
+  };
+
   const onSubmit = async (data: RequestType) => {
     // console.log(data);
     if (!isValidUser()) {
       snackbar.show("error", `You're not authorized for the action!`);
       return;
     }
+    if(!validateFields(data)) return;
     try {
       const payload: RequestType = lodash.pickBy(data, lodash.identity) as any;
       const res = isEdit
@@ -184,6 +201,12 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const handleCancel = async () => {
     history.push(getHomeRoute());
+  };
+
+  const renderSelectPlaceholder = (text: string) =>{
+    return <Typography style={{ color: 'rgba(0, 0, 0, 0.40)' }}>
+      {text}
+    </Typography>
   };
 
   const renderTitle = () => {
@@ -269,7 +292,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           return (
             <Select
               {...field}
-              placeholder="Select Category"
+              placeholder={renderSelectPlaceholder("Select Category")}
               options={[
                 { value: "plasma", label: "Plasma" },
                 { value: "oxygen", label: "Oxygen" },
@@ -293,7 +316,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select Blood Group of the patient"
+            placeholder={renderSelectPlaceholder("Select Gender of the patient")}
             options={[
               { value: "male", label: "Male" },
               { value: "femal", label: "Female" },
@@ -312,7 +335,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select Blood Group of the patient"
+            placeholder={renderSelectPlaceholder("Select Blood Group of the patient")}
             options={[
               { value: "a+", label: "A+" },
               { value: "a-", label: "A-" },
@@ -362,7 +385,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select State"
+            placeholder={renderSelectPlaceholder("Select State")}
             onChange={(option) => {
               handleStateChange(option.value);
               field?.onChange(option);
@@ -385,7 +408,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select District"
+            placeholder={renderSelectPlaceholder("Select District")}
             options={districts}
           />
         )}
@@ -401,7 +424,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   //       return <Select
   //         {...field}
   //         isDisabled={!isEdit}
-  //         placeholder="Select Status"
+  //         placeholder={renderSelectPlaceholder("Select Status")}
   //         options={[
   //           { value: "open", label: "Open" },
   //           { value: "closed", label: "Closed" },
@@ -421,7 +444,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   //     control={control}
   //     defaultValue=""
   //     render={({ field }) => <TextareaAutosize {...field}
-  //       placeholder="Donor details"
+  //       placeholder={renderSelectPlaceholder("Donor details")}
   //       style={{ width: '100%', height: '100px' }} />}
   //   />;
   // };
