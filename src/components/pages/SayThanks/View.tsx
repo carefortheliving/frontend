@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import * as React from "react";
+import React, { useEffect, memo, FC } from "react";
 import {
   Button,
   Container,
@@ -8,33 +8,20 @@ import {
   Typography,
 } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import withAuth from "src/components/common/withAuth/View";
 import { useHistory, useParams } from "react-router-dom";
 import { getHomeRoute } from "src/components/common/RouterOutlet/routerUtils";
-import Navbar from "src/components/common/Navbar/View";
 import { Controller, useForm } from "react-hook-form";
 import useFirestore from "src/hooks/useFirestore";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import { RequestType } from "src/types";
-import Footer from "src/components/common/Footer/View";
-import Box from "@material-ui/core/Box";
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton,
+} from "src/contexts/AppContext";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
   buttons: {
     marginTop: "50px",
   },
@@ -42,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
 
 interface SayThanksProps {}
 
-const SayThanks: React.FC<SayThanksProps> = () => {
+const SayThanks: FC<SayThanksProps> = () => {
+  const { dispatch } = useAppContext();
   const classes = useStyles();
   const history = useHistory();
   const defaultValues = {
@@ -54,8 +42,10 @@ const SayThanks: React.FC<SayThanksProps> = () => {
   const { updateRequest, getRequest } = useFirestore();
   const snackbar = useSnackbar();
 
-  React.useEffect(() => {
+  useEffect(() => {
     prefillData();
+    dispatch(changeBackButton(true));
+    dispatch(changeTitle("Say Thanks"));
   }, []);
 
   const prefillData = async () => {
@@ -141,63 +131,50 @@ const SayThanks: React.FC<SayThanksProps> = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-
-      <Navbar showBack title="Say Thanks"/>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          <Container maxWidth="md">
-            {/* <Typography variant="h3" style={{ marginBottom: "50px" }}>
+    <Container maxWidth="md">
+      {/* <Typography variant="h3" style={{ marginBottom: "50px" }}>
               Say thanks
             </Typography> */}
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={1}>
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Donors's Name</Typography>
-                  </Grid>
-                  <Grid item xs>
-                    {renderDonor()}
-                  </Grid>
-                </Grid>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={1}>
+          <Grid container xs={12} sm={12}>
+            <Grid item xs>
+              <Typography variant="h5">Donors's Name</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderDonor()}
+            </Grid>
+          </Grid>
 
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Donors's Email Id</Typography>
-                  </Grid>
-                  <Grid item xs>
-                    {renderEmail()}
-                  </Grid>
-                </Grid>
+          <Grid container xs={12} sm={12}>
+            <Grid item xs>
+              <Typography variant="h5">Donors's Email Id</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderEmail()}
+            </Grid>
+          </Grid>
 
-                <Grid
-                  container
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  // justify="flex-end"
-                  className={classes.buttons}
-                >
-                  <Grid item xs={12} sm={6} md={4} spacing={2}>
-                    {renderSubmit()}
-                    {renderCancel()}
-                  </Grid>
-                  {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
+          <Grid
+            container
+            xs={12}
+            sm={12}
+            md={12}
+            // justify="flex-end"
+            className={classes.buttons}
+          >
+            <Grid item xs={12} sm={6} md={4} spacing={2}>
+              {renderSubmit()}
+              {renderCancel()}
+            </Grid>
+            {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}
-                </Grid>
-              </Grid>
-            </form>
-          </Container>
-        </div>
-        <Box mt={8}>
-          <Footer />
-        </Box>
-      </main>
-    </div>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
   );
 };
 
-export default React.memo(withAuth(SayThanks));
+export default memo(withAuth(SayThanks));

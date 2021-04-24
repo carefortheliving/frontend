@@ -1,8 +1,7 @@
-import { Box  } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -17,12 +16,13 @@ import { useHistory } from "react-router-dom";
 import { useAuth } from "src/components/common/AuthProvider/View";
 import useBreakpoint from "src/hooks/useBreakpoint";
 import useRoutes from "src/hooks/useRoutes";
+import { useAppContext } from "src/contexts/AppContext";
 import {
   getAboutRoute,
   getCreateRequestRoute,
-  getHomeRoute
+  getHomeRoute,
 } from "../RouterOutlet/routerUtils";
-import FabIcon from './FabIcon';
+import FabIcon from "./FabIcon";
 
 const drawerWidth = 240;
 
@@ -115,7 +115,7 @@ interface NavbarProps {
 }
 
 function Navbar(props: NavbarProps) {
-  const { showBack, title } = props;
+  const { state } = useAppContext();
   const { logout, user } = useAuth();
   const classes = useStyles();
   const history = useHistory();
@@ -175,7 +175,7 @@ function Navbar(props: NavbarProps) {
       <>
         {isLogged ? (
           <Box
-            style={{ display: "flex", alignItems: "center", cursor: 'pointer' }}
+            style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
             onClick={handleProfileClick}
           >
             <IconButton color="inherit">
@@ -221,17 +221,16 @@ function Navbar(props: NavbarProps) {
         className={classes.title}
         // onClick={handleRedirectHome}
       >
-        {title || "Care for the Living"}
+        {state.title || "Care for the Living"}
       </Typography>
     );
   };
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar position="absolute">
         <Toolbar className={classes.toolbar}>
-          {showBack ? (
+          {state.backButton ? (
             <ArrowBackIosIcon
               className={classes.btnStyle}
               onClick={handleRedirectHome}

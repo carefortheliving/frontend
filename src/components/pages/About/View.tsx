@@ -1,36 +1,22 @@
-import * as React from "react";
-import { Container, Grid, makeStyles, Typography } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Navbar from "src/components/common/Navbar/View";
-import Footer from "src/components/common/Footer/View";
-import Box from "@material-ui/core/Box";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
+import { Container, Grid, Typography } from "@material-ui/core";
 import HearingIcon from "@material-ui/icons/Hearing";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-    backgroundColor: theme.palette.background.paper,
-  },
-  heroContent: {
-    padding: theme.spacing(8, 0, 6),
-  },
-  contentGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
-  },
-}));
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton,
+} from "src/contexts/AppContext";
 
 interface SayAbout {}
 
 const About: React.FC<SayAbout> = () => {
-  const classes = useStyles();
+  const { dispatch } = useAppContext();
+
+  useEffect(() => {
+    dispatch(changeBackButton(true));
+    dispatch(changeTitle("About"));
+  }, []);
 
   const renderHeader = () => {
     return (
@@ -72,27 +58,16 @@ const About: React.FC<SayAbout> = () => {
   const renderContent = () => {
     return (
       <Grid item md={9}>
-        <Container className={classes.contentGrid} maxWidth="lg">
-          {/**Content goes here */}
-        </Container>
+        <Container maxWidth="lg">{/**Content goes here */}</Container>
       </Grid>
     );
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-
-      <Navbar showBack />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>{renderHeader()}</div>
-        <Grid container>{renderContent()}</Grid>
-        <Box mt={8}>
-          <Footer />
-        </Box>
-      </main>
-    </div>
+    <>
+      {renderHeader()}
+      <Grid container>{renderContent()}</Grid>
+    </>
   );
 };
 

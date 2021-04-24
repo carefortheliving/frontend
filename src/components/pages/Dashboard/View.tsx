@@ -7,7 +7,6 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
 import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
@@ -15,11 +14,9 @@ import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import PanToolIcon from "@material-ui/icons/PanTool";
 import { Alert, AlertTitle } from "@material-ui/lab";
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useAuth } from "src/components/common/AuthProvider/View";
-import Footer from "src/components/common/Footer/View";
-import Navbar from "src/components/common/Navbar/View";
 import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
 import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import useBreakpoint from "src/hooks/useBreakpoint";
@@ -27,34 +24,22 @@ import useFirestore from "src/hooks/useFirestore";
 import { FiltersType, RequestType, UsefulLink } from "src/types";
 import { parseTime } from "src/utils/commonUtils";
 import useUser from "../../../hooks/useUser";
-import AddEditLinkCard from './AddEditLinkCard';
+import AddEditLinkCard from "./AddEditLinkCard";
 import RequestFilters from "./RequestFilters";
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton,
+} from "src/contexts/AppContext";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
   },
-  appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     height: "100vh",
     overflow: "auto",
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  fixedHeight: {
-    height: 240,
-  },
-  greet: {
-    // marginLeft: "auto",
-    // marginRight: "auto",
-    textAlign: "center",
-    paddingTop: "1em",
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
@@ -101,15 +86,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Dashboard() {
+  const { dispatch } = useAppContext();
   const classes = useStyles();
   const { user } = useAuth();
   const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
-  const [requests, setRequests] = React.useState(
+  const [requests, setRequests] = useState(
     [] as (RequestType & { id: string })[]
   );
-  const [usefulLinks, setUsefulLinks] = React.useState([] as UsefulLink[]);
-  const [loading, setLoading] = React.useState(false);
+  const [usefulLinks, setUsefulLinks] = useState([] as UsefulLink[]);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
   const location = useLocation();
   const defaultFilters = {
@@ -119,7 +105,9 @@ function Dashboard() {
     requestStatus: undefined,
     requesterEmail: undefined,
   };
-  const [appliedFilters, setAppliedFilters] = React.useState(defaultFilters as Partial<FiltersType>);
+  const [appliedFilters, setAppliedFilters] = useState(
+    defaultFilters as Partial<FiltersType>
+  );
   const isUpSm = useBreakpoint("sm");
   const { isAdmin } = useUser();
 
@@ -130,15 +118,20 @@ function Dashboard() {
 
   /* eslint-disable react-hooks/exhaustive-deps */
 
-  React.useEffect(() => {
+  useEffect(() => {
     resetFilters();
     loadData();
     loadLinks();
   }, [getCurrentTabFromUrl()]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadData();
   }, [appliedFilters]);
+
+  useEffect(() => {
+    dispatch(changeBackButton(false));
+    dispatch(changeTitle("Care for the Living"));
+  }, []);
 
   const loadLinks = async () => {
     setLoading(true);
@@ -155,7 +148,7 @@ function Dashboard() {
           case 0:
             return await getRequests({
               requestStatus: "open",
-              ...appliedFilters
+              ...appliedFilters,
             });
           case 1:
             return (
@@ -195,7 +188,7 @@ function Dashboard() {
   };
 
   const handleFilterChange = (updatedFilters: Partial<FiltersType>) => {
-    setAppliedFilters({ ...appliedFilters, ...updatedFilters })
+    setAppliedFilters({ ...appliedFilters, ...updatedFilters });
   };
 
   const renderFilters = () => {
@@ -211,7 +204,7 @@ function Dashboard() {
               Filters
             </Typography>
             <div className={classes.filter}>
-              <RequestFilters onChangeFilter={handleFilterChange}/>
+              <RequestFilters onChangeFilter={handleFilterChange} />
               {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
             </div>
           </div>
@@ -245,11 +238,11 @@ function Dashboard() {
               style={{ width: "250px" }}
               enterDelay={500}
               title={
-                <React.Fragment>
+                <>
                   <Typography color="inherit">
                     {card.requestDescription}
                   </Typography>
-                </React.Fragment>
+                </>
               }
               placement="top"
             >
@@ -326,7 +319,12 @@ function Dashboard() {
         >
           Care for the Living <br></br>
         </Typography>
-        <Typography variant={isUpSm ? "h6" : "subtitle1"} align="center" color="textSecondary" paragraph>
+        <Typography
+          variant={isUpSm ? "h6" : "subtitle1"}
+          align="center"
+          color="textSecondary"
+          paragraph
+        >
           "If you truly loved yourself, you could never hurt another."
           <br />
           {/* - Buddha */}
@@ -335,10 +333,12 @@ function Dashboard() {
     );
   };
 
-  const renderLinkCard = (data?: UsefulLink) =>{
-    return <Grid item key={'add link'} xs={12} sm={6} md={4}>
-      <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks}/>
-    </Grid>;
+  const renderLinkCard = (data?: UsefulLink) => {
+    return (
+      <Grid item key={"add link"} xs={12} sm={6} md={4}>
+        <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks} />
+      </Grid>
+    );
   };
 
   const renderContent = () => {
@@ -359,10 +359,12 @@ function Dashboard() {
                       ? requests.map((card) => renderSingleCard(card))
                       : renderNoRequests();
                   default:
-                    return <>
-                      {usefulLinks?.map((link) => renderLinkCard(link))}
-                      {isAdmin ? renderLinkCard() : null}
-                    </>;
+                    return (
+                      <>
+                        {usefulLinks?.map((link) => renderLinkCard(link))}
+                        {isAdmin ? renderLinkCard() : null}
+                      </>
+                    );
                 }
               })()
             )}
@@ -394,26 +396,18 @@ function Dashboard() {
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Navbar />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>{renderHeader()}</div>
-        <Container>
-          <Grid container>
-            <Grid item md={12}>
-              <Container disableGutters>{renderTabs()}</Container>
-            </Grid>
-            {getCurrentTabFromUrl() === 0 ? renderFilters() : null}
-            {renderContent()}
+    <>
+      <div className={classes.heroContent}>{renderHeader()}</div>
+      <Container>
+        <Grid container>
+          <Grid item md={12}>
+            <Container disableGutters>{renderTabs()}</Container>
           </Grid>
-        </Container>
-        <Box pt={4}>
-          <Footer />
-        </Box>
-      </main>
-    </div>
+          {getCurrentTabFromUrl() === 0 ? renderFilters() : null}
+          {renderContent()}
+        </Grid>
+      </Container>
+    </>
   );
 }
 

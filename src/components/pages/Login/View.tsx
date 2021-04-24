@@ -2,16 +2,17 @@
 import React, { useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Footer from "src/components/common/Footer/View";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "src/components/common/AuthProvider/View";
 import { getCreateRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton
+} from "src/contexts/AppContext";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LogIn() {
+  const { dispatch } = useAppContext();
   const { user, signInWithGoogle } = useAuth();
   const classes = useStyles();
   let history = useHistory();
@@ -42,32 +44,27 @@ function LogIn() {
     if (user && user.email) {
       history.push(getCreateRequestRoute());
     }
+    dispatch(changeBackButton(true))
+    dispatch(changeTitle("Login here"))
   }, []);
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          User Login
-        </Typography>
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          onClick={login}
-        >
-          Sign In With Google
-        </Button>
-      </div>
-      <Box mt={8}>
-        <Footer />
-      </Box>
-    </Container>
+    <div className={classes.paper}>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        User Login
+      </Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        onClick={login}
+      >
+        Sign In With Google
+      </Button>
+    </div>
   );
 
   async function login() {
