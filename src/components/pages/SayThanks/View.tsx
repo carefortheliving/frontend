@@ -136,20 +136,20 @@ const SayThanks: FC<SayThanksProps> = () => {
             </Typography> */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={1}>
-          <Grid container xs={12} sm={12}>
-            <Grid item xs>
+          <Grid container>
+            <Grid item xs={6}>
               <Typography variant="h5">Donors's Name</Typography>
             </Grid>
-            <Grid item xs>
+            <Grid item xs={6}>
               {renderDonor()}
             </Grid>
           </Grid>
 
-          <Grid container xs={12} sm={12}>
-            <Grid item xs>
+          <Grid container>
+            <Grid item xs={6}>
               <Typography variant="h5">Donors's Email Id</Typography>
             </Grid>
-            <Grid item xs>
+            <Grid item xs={6}>
               {renderEmail()}
             </Grid>
           </Grid>

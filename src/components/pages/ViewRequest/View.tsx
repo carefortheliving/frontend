@@ -181,11 +181,11 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                   )
                 ) : (
                   <>
-                    <Grid container xs={12} sm={12}>
-                      <Grid item xs>
+                    <Grid container>
+                      <Grid item xs={6}>
                         {renderFieldValue("Donor Name")}
                       </Grid>
-                      <Grid item xs>
+                      <Grid item xs={6}>
                         <span style={{ display: "flex", alignItems: "center" }}>
                           {renderFieldValue(data?.donorName, {
                             fontWeight: 600,
@@ -199,22 +199,22 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                       </Grid>
                     </Grid>
   
-                    <Grid container xs={12} sm={12}>
-                      <Grid item xs>
+                    <Grid container>
+                      <Grid item xs={6}>
                         {renderFieldValue("Donor Email")}
                       </Grid>
-                      <Grid item xs>
+                      <Grid item xs={6}>
                         {renderFieldValue(data?.donorEmail, {
                           fontWeight: 600,
                         })}
                       </Grid>
                     </Grid>
   
-                    <Grid container xs={12} sm={12}>
-                      <Grid item xs>
+                    <Grid container>
+                      <Grid item xs={6}>
                         {renderFieldValue("Status")}
                       </Grid>
-                      <Grid item xs>
+                      <Grid item xs={6}>
                         {renderFieldValue("Closed", {
                           fontWeight: 600,
                         })}

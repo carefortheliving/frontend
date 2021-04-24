@@ -114,33 +114,23 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
     <Container maxWidth="md">
       <form>
         <Grid container spacing={1}>
-          <Grid container xs={12} sm={12}>
-            <Grid container xs={12} sm={12}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1">Category</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                {renderCategory()}
-              </Grid>
-            </Grid>
-
-            <Grid container xs={12} sm={12}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1">State</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                {renderState()}
-              </Grid>
-            </Grid>
-
-            <Grid container xs={12} sm={12}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1">District</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                {renderDistrict()}
-              </Grid>
-            </Grid>
+          <Grid item xs={12}>
+            <Typography variant="subtitle1">Category</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            {renderCategory()}
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="subtitle1">State</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            {renderState()}
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="subtitle1">District</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            {renderDistrict()}
           </Grid>
         </Grid>
       </form>
