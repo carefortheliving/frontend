@@ -1,5 +1,5 @@
 // import React from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Tooltip } from "@material-ui/core";
+import { Accordion, AccordionDetails, AccordionSummary, Badge, CircularProgress, Tooltip } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
@@ -30,6 +30,7 @@ import useUser from "../../../hooks/useUser";
 import AddEditLinkCard from './AddEditLinkCard';
 import RequestFilters from "./RequestFilters";
 import FilterListIcon from '@material-ui/icons/FilterList';
+import * as lodash from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,6 +97,9 @@ const useStyles = makeStyles((theme) => ({
   },
   filterCollapsed: {
     marginTop: theme.spacing(4),
+  },
+  filterCount: {
+    marginLeft: '10px',
   },
   filter: {
     display: "flex",
@@ -228,18 +232,21 @@ function Dashboard() {
   };
 
   const renderFiltersCollapsed = () => {
-    return <Accordion className={classes.filterCollapsed}>
-    <AccordionSummary
-      expandIcon={<FilterListIcon />}
-      aria-controls="panel2a-content"
-      id="panel2a-header"
-    >
-      <Typography >Filters</Typography>
-    </AccordionSummary>
-    <AccordionDetails>
-      {renderFilters()}
-    </AccordionDetails>
-  </Accordion>
+    const filtersCount = Object.keys(lodash.pickBy(appliedFilters, lodash.identity)).length;
+    return (
+      <Accordion className={classes.filterCollapsed}>
+        <AccordionSummary
+          expandIcon={<FilterListIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Badge badgeContent={filtersCount} color="primary">
+          <Typography>Filters</Typography>
+        </Badge>
+        </AccordionSummary>
+        <AccordionDetails>{renderFilters()}</AccordionDetails>
+      </Accordion>
+    );
   };
 
   const renderSingleCard = (card: typeof requests[0]) => {
