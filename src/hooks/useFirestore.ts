@@ -3,7 +3,7 @@ import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
 
 const useFirestore = () => {
-  const { db } = useFirebase();
+  const { db, auth } = useFirebase();
 
   const addRequest = async (request: RequestType) => {
     const requests = await db.collection("requests").add({
@@ -62,7 +62,37 @@ const useFirestore = () => {
 
   const getUsefulLinks = async () => {
     const ret = await db.collection("usefulLinks").get();
-    return ret.docs.map(el => el.data()) as unknown as UsefulLink[];
+    return ret.docs.map(el => ({
+      id: el.id,
+      ...el.data()
+    })) as unknown as UsefulLink[];
+  };
+
+  const addUsefulLink = async (data: UsefulLink) => {
+    const requests = await db.collection("usefulLinks").add({
+      ...data,
+      createdAt: getCurrentTime(),
+      updatedAt: getCurrentTime(),
+    });
+    return requests;
+  };
+
+  const updateUsefulLink = async (docId: string, data: UsefulLink) => {
+    const res = await db.collection("usefulLinks").doc(docId)?.update({
+      ...data,
+      updatedAt: getCurrentTime(),
+    });
+    return res;
+  };
+
+  const isCurrentUserAdmin = async () => {
+    if(!auth?.user?.email) return false;
+
+    let requestsRef: any = await db.collection("users")
+    requestsRef = await requestsRef.where('email', '==', auth?.user?.email);
+    requestsRef = await requestsRef.where('role', '==', 'admin');
+    const adminDocs = await requestsRef.get();
+    return !!(adminDocs?.docs?.length);
   };
 
   return {
@@ -71,6 +101,9 @@ const useFirestore = () => {
     addRequest,
     updateRequest,
     getUsefulLinks,
+    addUsefulLink,
+    updateUsefulLink,
+    isCurrentUserAdmin,
   };
 };
 

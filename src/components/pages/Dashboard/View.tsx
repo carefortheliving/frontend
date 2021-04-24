@@ -1,4 +1,5 @@
 // import React from 'react'
+import useUser from "../../../hooks/useUser";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Footer from "src/components/common/Footer/View";
@@ -33,6 +34,7 @@ import { CircularProgress, Tooltip } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import RequestFilters from "./RequestFilters";
 import useBreakpoint from "src/hooks/useBreakpoint";
+import AddEditLinkCard from './AddEditLinkCard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -118,6 +120,7 @@ function Dashboard() {
   const location = useLocation();
   const [appliedFilters, setAppliedFilters] = React.useState({} as Partial<FiltersType>);
   const isUpSm = useBreakpoint("sm");
+  const { isAdmin } = useUser();
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -327,23 +330,10 @@ function Dashboard() {
     );
   };
 
-  const renderSingleLink = (row: any) => {
-    return (
-      <Grid item key={row.link} xs={12} sm={6} md={4}>
-        <Card className={classes.openCard}>
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h6" component="h2">
-              <a href={row.link} target="blank">
-                {row.name}
-              </a>
-            </Typography>
-            <Typography gutterBottom variant="subtitle1" component="h2">
-              {row.description}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    );
+  const renderLinkCard = (data?: UsefulLink) =>{
+    return <Grid item key={'add link'} xs={12} sm={6} md={4}>
+      <AddEditLinkCard prefillData={data}/>
+    </Grid>;
   };
 
   const renderContent = () => {
@@ -364,7 +354,10 @@ function Dashboard() {
                       ? requests.map((card) => renderSingleCard(card))
                       : renderNoRequests();
                   default:
-                    return usefulLinks?.map((link) => renderSingleLink(link));
+                    return <>
+                      {usefulLinks?.map((link) => renderLinkCard(link))}
+                      {isAdmin ? renderLinkCard() : null}
+                    </>;
                 }
               })()
             )}
