@@ -244,7 +244,8 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
         render={({ field }) => (
           <Select
             isClearable={true}
-            isDisabled={!districts.length}
+            // isDisabled={!districts.length}
+            noOptionsMessage={() => "Please select state first!"}
             {...field}
             placeholder="Select District"
             options={districts}

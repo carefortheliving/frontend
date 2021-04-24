@@ -27,6 +27,7 @@ import useFirestore from "src/hooks/useFirestore";
 import useFirebase from "src/hooks/useFirebase";
 import useGeo from "src/hooks/useGeo";
 import { RequestType } from "src/types";
+import * as lodash from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
   buttons: {
     marginTop: "50px",
   },
+  input: {
+    width: "100%",
+    border: "solid hsl(0, 0%, 80%) 1px",
+    borderRadius: '4px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+  }
 }));
 interface CreateRequestProps {
   isEdit?: boolean;
@@ -55,18 +63,18 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
-    requestTitle: "",
-    requestDescription: "",
-    requesterName: "",
-    requestCategory: { value: "plasma", label: "Plasma" },
-    patientGender: { value: "male", label: "Male" },
-    patientBloodGroup: { value: "a+", label: "A+" },
-    patientAge: "",
-    patientState: { value: "Uttar Pradesh", label: "Uttar Pradesh" },
-    patientDistrict: { value: "Muzaffarnagar", label: "Muzaffarnagar" },
-    requesterContactNumber: "",
+    requestTitle: undefined,
+    requestDescription: undefined,
+    requesterName: undefined,
+    requestCategory: undefined,
+    patientGender: undefined,
+    patientBloodGroup: undefined,
+    patientAge: undefined,
+    patientState: undefined,
+    patientDistrict: undefined,
+    requesterContactNumber: undefined,
     // donor: ''
-  } as RequestType;
+  } as Partial<RequestType>;
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
@@ -149,10 +157,11 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
       return;
     }
     try {
+      const payload: RequestType = lodash.pickBy(data, lodash.identity) as any;
       const res = isEdit
-        ? await updateRequest(params?.docId, data)
+        ? await updateRequest(params?.docId, payload)
         : await addRequest({
-            ...data,
+            ...payload,
             requestStatus: { value: "open", label: "Open" },
             requesterEmail: auth?.user?.email,
           });
@@ -167,7 +176,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
       console.error("Error adding document: ", e);
       snackbar.show(
         "error",
-        `Couldn't ${isEdit ? "update" : "create"} request!`
+        `Couldn't ${isEdit ? "update" : "create"} request!\n All the fields are mandatory!`
       );
       // message.error(`Couldn't create request!`);
     }
@@ -187,7 +196,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           <TextField
             {...field}
             placeholder="Situation title goes here ..."
-            style={{ width: "100%" }}
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />
@@ -205,6 +215,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
             {...field}
             placeholder="Situation description goes here ..."
             style={{ width: "100%", height: "100px" }}
+            className={classes.input}
           />
         )}
       />
@@ -222,6 +233,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
             {...field}
             style={{ width: "100%" }}
             placeholder="Requester's Name"
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />
@@ -239,6 +252,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
             {...field}
             style={{ width: "100%" }}
             placeholder="Patient's Age"
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />
@@ -331,6 +346,8 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
             disableDropdown
             style={{ width: "100%" }}
             placeholder="Contact Number"
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />

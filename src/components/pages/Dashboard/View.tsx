@@ -242,7 +242,7 @@ function Dashboard() {
             </Typography>
             <hr />
             <Tooltip
-              style={{ width: "300px" }}
+              style={{ width: "200px" }}
               enterDelay={500}
               title={
                 <React.Fragment>
