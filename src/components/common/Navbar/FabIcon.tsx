@@ -36,6 +36,7 @@ const FabIcon: React.FC<FabIconProps> = () => {
     {
       icon: (
         <LocalHospitalIcon
+          color="secondary"
           onClick={() => history.push(getCreateRequestRoute())}
         />
       ),
