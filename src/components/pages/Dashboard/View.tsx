@@ -332,7 +332,7 @@ function Dashboard() {
 
   const renderLinkCard = (data?: UsefulLink) =>{
     return <Grid item key={'add link'} xs={12} sm={6} md={4}>
-      <AddEditLinkCard prefillData={data}/>
+      <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks}/>
     </Grid>;
   };
 

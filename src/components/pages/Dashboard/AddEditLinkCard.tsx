@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { UsefulLink } from "../../../types";
 import useFirestore from "src/hooks/useFirestore";
 import useUser from "../../../hooks/useUser";
+import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 
 const useStyles = makeStyles((theme) => ({
   openCard: {
@@ -35,10 +36,11 @@ const useStyles = makeStyles((theme) => ({
 type AddEditLinkCardProps = {
   // type: 'add' | 'view';
   prefillData?: UsefulLink;
+  onReloadRequested?: () => void;
 };
 
 const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
-  const { prefillData } = props;
+  const { prefillData, onReloadRequested } = props;
   const type = prefillData ? "view" : "add";
   const classes = useStyles();
   const [isEdit, setIsEdit] = React.useState(false);
@@ -48,37 +50,36 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
   // console.log({ prefillData })
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { getUsefulLinks, addUsefulLink, updateUsefulLink, isCurrentUserAdmin } = useFirestore();
-  const { isAdmin } = useUser();
+  const { isAdmin, email } = useUser();
+  const snackbar = useSnackbar();
 
   const onSubmit = async (data: typeof defaultValues) => {
-    console.log(isAdmin);
-    // if (!isValidUser()) {
-    //   snackbar.show("error", `You're not authorized for the action!`);
-    //   return;
-    // }
-    // try {
-    //   const res = isEdit
-    //     ? await updateRequest(params?.docId, data)
-    //     : await addRequest({
-    //         ...data,
-    //         requestStatus: { value: "open", label: "Open" },
-    //         requesterEmail: auth?.user?.email,
-    //       });
-    //   // console.log({ newId: res.id });
-    //   snackbar.show(
-    //     "success",
-    //     `Request ${isEdit ? "updated" : "created"} successfully!`
-    //   );
-    //   // message.success('Request created successfully!')
-    //   history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
-    // } catch (e) {
-    //   console.error("Error adding document: ", e);
-    //   snackbar.show(
-    //     "error",
-    //     `Couldn't ${isEdit ? "update" : "create"} request!`
-    //   );
-    //   // message.error(`Couldn't create request!`);
-    // }
+    if (!data.link) {
+      snackbar.show("error", `Link is mandatory!`);
+      return;
+    }
+    try {
+      const res = type === 'view'
+        ? await updateUsefulLink((prefillData as any)?.docId, data)
+        : await addUsefulLink({
+            ...data,
+            addedBy: email,
+          });
+      snackbar.show(
+        "success",
+        `Request ${type === 'view' ? "updated" : "added"} successfully!`
+      );
+      setIsEdit(false);
+      if (typeof onReloadRequested === 'function') {
+        onReloadRequested();
+      }
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      snackbar.show(
+        "error",
+        `Couldn't ${isEdit ? "update" : "add"} link!`
+      );
+    }
   };
 
   const renderInput = (key: keyof typeof defaultValues) => {

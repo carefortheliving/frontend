@@ -63,7 +63,7 @@ const useFirestore = () => {
   const getUsefulLinks = async () => {
     const ret = await db.collection("usefulLinks").get();
     return ret.docs.map(el => ({
-      id: el.id,
+      docId: el.id,
       ...el.data()
     })) as unknown as UsefulLink[];
   };
