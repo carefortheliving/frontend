@@ -16,8 +16,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      
+
+      - name: Cache Node Modules 💾
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: Installing Dependencies ⏳
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
         
       - name: Building Optimized Production Build 🚀
