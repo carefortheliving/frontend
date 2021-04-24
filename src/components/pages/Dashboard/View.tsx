@@ -1,5 +1,5 @@
 // import React from 'react'
-import { CircularProgress, Tooltip } from "@material-ui/core";
+import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Tooltip } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
@@ -29,6 +29,7 @@ import { parseTime } from "src/utils/commonUtils";
 import useUser from "../../../hooks/useUser";
 import AddEditLinkCard from './AddEditLinkCard';
 import RequestFilters from "./RequestFilters";
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,8 +63,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(8, 0, 6),
   },
   cardGrid: {
-    paddingTop: theme.spacing(8),
+    paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(8),
+    paddingLeft: '0px',
+    paddingRight: '0px'
   },
   openCard: {
     height: "100%",
@@ -90,6 +93,9 @@ const useStyles = makeStyles((theme) => ({
   },
   filter_Container: {
     position: "relative",
+  },
+  filterCollapsed: {
+    marginTop: theme.spacing(4),
   },
   filter: {
     display: "flex",
@@ -155,8 +161,8 @@ function Dashboard() {
         switch (getCurrentTabFromUrl()) {
           case 0:
             return await getRequests({
+              ...appliedFilters,
               requestStatus: "open",
-              ...appliedFilters
             });
           case 1:
             return (
@@ -204,13 +210,13 @@ function Dashboard() {
       <Grid item md={3}>
         {
           <div className={classes.filter_Container}>
-            <Typography
+            {isUpSm ? <Typography
               component="h1"
               variant="h5"
               className={classes.filter_Heading}
             >
               Filters
-            </Typography>
+            </Typography> : null}
             <div className={classes.filter}>
               <RequestFilters onChangeFilter={handleFilterChange}/>
               {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
@@ -218,7 +224,22 @@ function Dashboard() {
           </div>
         }
       </Grid>
-    );
+    );;
+  };
+
+  const renderFiltersCollapsed = () => {
+    return <Accordion className={classes.filterCollapsed}>
+    <AccordionSummary
+      expandIcon={<FilterListIcon />}
+      aria-controls="panel2a-content"
+      id="panel2a-header"
+    >
+      <Typography >Filters</Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+      {renderFilters()}
+    </AccordionDetails>
+  </Accordion>
   };
 
   const renderSingleCard = (card: typeof requests[0]) => {
@@ -403,12 +424,16 @@ function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>{renderHeader()}</div>
+        <Grid item md={12}>
+          <Container disableGutters>{renderTabs()}</Container>
+        </Grid>
         <Container>
-          <Grid container>
-            <Grid item md={12}>
-              <Container disableGutters>{renderTabs()}</Container>
-            </Grid>
-            {getCurrentTabFromUrl() === 0 ? renderFilters() : null}
+          <Grid container spacing={4}>
+            {getCurrentTabFromUrl() === 0
+              ? isUpSm
+                ? renderFilters()
+                : renderFiltersCollapsed()
+              : null}
             {renderContent()}
           </Grid>
         </Container>
