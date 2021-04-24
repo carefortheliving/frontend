@@ -27,6 +27,7 @@ import useFirestore from "src/hooks/useFirestore";
 import useFirebase from "src/hooks/useFirebase";
 import useGeo from "src/hooks/useGeo";
 import { RequestType } from "src/types";
+import withAuth from "src/components/common/withAuth/View";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,16 +71,13 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
-  // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
   const history = useHistory();
   const params = useParams();
-  // const match = useRouteMatch();
   const { addRequest, updateRequest, getRequest } = useFirestore();
   const snackbar = useSnackbar();
   const [data, setData] = React.useState(undefined as undefined | RequestType);
 
   React.useEffect(() => {
-    ensureLoggedIn();
     loadData();
   }, []);
 
@@ -94,12 +92,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   React.useEffect(() => {
     prefillData();
   }, [data]);
-
-  const ensureLoggedIn = async () => {
-    if (!auth?.user?.email) {
-      history.replace(getLoginRoute());
-    }
-  };
 
   const isValidUser = () => {
     return data?.requesterEmail
@@ -607,4 +599,4 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 };
 
 // export default withAuth(CreateRequest);
-export default CreateRequest;
+export default React.memo(withAuth(CreateRequest));

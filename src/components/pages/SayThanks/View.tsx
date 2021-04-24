@@ -68,7 +68,6 @@ const SayThanks: React.FC<SayThanksProps> = () => {
   };
 
   const onSubmit = async (data) => {
-    // console.log(data);
     try {
       await updateRequest(params?.docId, {
         ...data,
