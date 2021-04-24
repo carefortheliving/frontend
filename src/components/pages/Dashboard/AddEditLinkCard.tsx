@@ -7,6 +7,7 @@ import {
   makeStyles,
   TextField,
   Typography,
+  TextareaAutosize,
 } from "@material-ui/core";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -106,6 +107,19 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
     );
   };
 
+  const renderTextArea = (key: keyof typeof defaultValues) => {
+    return (
+      <Controller
+        name={key}
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextareaAutosize {...field} style={{ width: "100%", height: '100px' }} placeholder={key} />
+        )}
+      />
+    );
+  };
+
   const renderAddButton = () => {
     return (
       <Button
@@ -140,7 +154,7 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
         {/* <Typography variant="h6">Name</Typography> */}
         {renderInput("name")}
         {renderInput("link")}
-        {renderInput("description")}
+        {renderTextArea("description")}
         <Grid container style={{ marginTop: "20px" }}>
           {renderAddButton()}
           {renderCancelButton()}
