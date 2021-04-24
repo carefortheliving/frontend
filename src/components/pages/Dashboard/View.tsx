@@ -112,7 +112,14 @@ function Dashboard() {
   const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const location = useLocation();
-  const [appliedFilters, setAppliedFilters] = React.useState({} as Partial<FiltersType>);
+  const defaultFilters = {
+    patientDistrict: undefined,
+    patientState: undefined,
+    requestCategory: undefined,
+    requestStatus: undefined,
+    requesterEmail: undefined,
+  };
+  const [appliedFilters, setAppliedFilters] = React.useState(defaultFilters as Partial<FiltersType>);
   const isUpSm = useBreakpoint("sm");
   const { isAdmin } = useUser();
 
@@ -124,6 +131,7 @@ function Dashboard() {
   /* eslint-disable react-hooks/exhaustive-deps */
 
   React.useEffect(() => {
+    resetFilters();
     loadData();
     loadLinks();
   }, [getCurrentTabFromUrl()]);
@@ -180,6 +188,10 @@ function Dashboard() {
       pathname: location.pathname,
       search: "?" + currentUrlParams.toString(),
     });
+  };
+
+  const resetFilters = () => {
+    handleFilterChange(defaultFilters);
   };
 
   const handleFilterChange = (updatedFilters: Partial<FiltersType>) => {
