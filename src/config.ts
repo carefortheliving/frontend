@@ -1,7 +1,3 @@
-// import dotenv from 'dotenv'
- 
-// const config = dotenv.config()
-
 const config = process.env as unknown as {
   AST_REFRESH: boolean;
   NODE_ENV: "development" | "production";

@@ -22,7 +22,7 @@ export default function Footer() {
       {"copyright © "}
       {new Date().getFullYear()}
       <a
-        href="https://github.com/carefortheliving"
+        href="https://github.com/carefortheliving/frontend"
         target="_blank"
         rel="noopener noreferrer"
       >
