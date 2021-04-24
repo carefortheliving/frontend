@@ -53,6 +53,17 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
   const { isAdmin, email } = useUser();
   const snackbar = useSnackbar();
 
+  React.useEffect(() => {
+    handlePrefillData();
+  }, [prefillData]);
+
+  const handlePrefillData = async () => {
+    prefillData &&
+      Object.keys(prefillData).forEach((key) => {
+        setValue(key as any, prefillData?.[key]);
+      });
+  };
+
   const onSubmit = async (data: typeof defaultValues) => {
     if (!data.link) {
       snackbar.show("error", `Link is mandatory!`);
