@@ -141,6 +141,7 @@ function Dashboard() {
   };
 
   const loadData = async () => {
+    setLoading(true);
     try {
       const requests = await (async () => {
         switch (getCurrentTabFromUrl()) {
@@ -166,6 +167,7 @@ function Dashboard() {
       console.log(e);
       snackbar.show("error", `Something went wrong, try reloading!`);
     }
+    setLoading(false);
   };
 
   const handleCardClick = (docId: string) => {
