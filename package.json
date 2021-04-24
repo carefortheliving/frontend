@@ -73,7 +73,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "yarn && npm install"
+      "pre-commit": "yarn && npm install"
     }
   }
 }
