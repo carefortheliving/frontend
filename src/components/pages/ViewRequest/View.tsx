@@ -1,12 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, memo, FC, CSSProperties } from "react";
-import {
-  Button,
-  Container,
-  Grid,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Button, Container, Grid, Typography } from "@material-ui/core";
 import { useHistory, useParams } from "react-router-dom";
 import {
   getEditRequestRoute,
@@ -23,18 +17,19 @@ import {
   changeTitle,
   changeBackButton,
 } from "src/contexts/AppContext";
-
-const useStyles = makeStyles((theme) => ({
-  buttons: {
-    marginTop: "50px",
-  },
-}));
+import CardContent from "@material-ui/core/CardContent";
+import Card from "@material-ui/core/Card";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItem from "@material-ui/core/ListItem";
+import List from "@material-ui/core/List";
+import Box from "@material-ui/core/Box";
+import ShareThis from "src/components/common/ShareThis";
 
 interface ViewRequestProps {}
 
 const ViewRequest: FC<ViewRequestProps> = () => {
   const { dispatch } = useAppContext();
-  const classes = useStyles();
   const history = useHistory();
   const params = useParams();
   const { getRequest } = useFirestore();
@@ -54,7 +49,6 @@ const ViewRequest: FC<ViewRequestProps> = () => {
 
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
-    // console.log({ existingRequest });
     if (typeof existingRequest === "object") {
       setData(existingRequest as any);
     }
@@ -107,197 +101,145 @@ const ViewRequest: FC<ViewRequestProps> = () => {
 
   return (
     <Container maxWidth="md">
-      {/* <Typography variant="h5" style={{ marginBottom: "50px" }}>
-              Request Details
-            </Typography> */}
-      <Grid container spacing={1}>
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue(`Requester's Name`)}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.requesterName)}
-          </Grid>
-        </Grid>
+      <Box marginBottom={5}>
+        <Card>
+          <CardContent>
+            {data && (
+              <Grid container spacing={2}>
+                {data.requestTitle && (
+                  <Grid item xs={12}>
+                    <Typography variant="h4" component="h1" align="center">
+                      {data.requestTitle}
+                    </Typography>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Typography variant="h6" component="h3">
+                    <strong>
+                      {data.requesterName} ({data.patientGender?.value || ""})
+                    </strong>{" "}
+                    of age: <strong>{data.patientAge || "-"}</strong>, blood
+                    group:{" "}
+                    <strong>{data.patientBloodGroup?.value || "-"}</strong> from{" "}
+                    <strong>
+                      {data.patientDistrict?.value}, {data.patientState?.value}
+                    </strong>{" "}
+                    requires <strong>{data.requestCategory?.value}</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <List
+                    subheader={<ListSubheader>More Details:</ListSubheader>}
+                  >
+                    <ListItem>
+                      <ListItemText
+                        id="description"
+                        primary={data.requestDescription}
+                        secondary="Details"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="phone-number"
+                        primary={data.requesterContactNumber}
+                        secondary="Phone number"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="email"
+                        primary={data.requesterEmail}
+                        secondary="Email"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="created-at"
+                        primary={parseTime(data.createdAt)}
+                        secondary="Created At"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="last-updated-at"
+                        primary={parseTime(data.updatedAt)}
+                        secondary="Last Updated At"
+                      />
+                    </ListItem>
+                  </List>
+                </Grid>
+                {data.requestStatus?.value === "open" ? (
+                  data?.requesterEmail === auth?.user?.email && (
+                    <Grid item xs={12} md={6} spacing={2}>
+                      {renderEditButton()}
+                      {renderCloseButton()}
+                    </Grid>
+                  )
+                ) : (
+                  <>
+                    <Grid container>
+                      <Grid item xs={6}>
+                        {renderFieldValue("Donor Name")}
+                      </Grid>
+                      <Grid item xs={6}>
+                        <span style={{ display: "flex", alignItems: "center" }}>
+                          {renderFieldValue(data?.donorName, {
+                            fontWeight: 600,
+                          })}
+                          <FavoriteIcon
+                            color="secondary"
+                            fontSize="small"
+                            style={{ marginLeft: "5px" }}
+                          />
+                        </span>
+                      </Grid>
+                    </Grid>
 
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("Contact Number")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.requesterContactNumber)}
-          </Grid>
-        </Grid>
+                    <Grid container>
+                      <Grid item xs={6}>
+                        {renderFieldValue("Donor Email")}
+                      </Grid>
+                      <Grid item xs={6}>
+                        {renderFieldValue(data?.donorEmail, {
+                          fontWeight: 600,
+                        })}
+                      </Grid>
+                    </Grid>
 
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("Category")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.requestCategory?.label)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue(`Patient's Gender`)}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.patientGender?.label)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue(`Patient's Blood Group`)}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.patientBloodGroup?.label)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue(`Patient's Age`)}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.patientAge)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("State")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.patientState?.label)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("District")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.patientDistrict?.label)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("Title")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.requestTitle)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("Description")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(data?.requestDescription)}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("Created At")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(parseTime(data?.createdAt))}
-          </Grid>
-        </Grid>
-
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            {renderFieldValue("Updated At")}
-          </Grid>
-          <Grid item xs>
-            {renderFieldValue(parseTime(data?.updatedAt))}
-          </Grid>
-        </Grid>
-
-        {data?.requestStatus?.value === "open" ? (
-          data?.requesterEmail === auth?.user?.email ? (
-            <Grid
-              container
-              xs={12}
-              sm={12}
-              md={12}
-              // justify="flex-end"
-              className={classes.buttons}
-            >
-              <Grid item xs={12} md={6} spacing={2}>
-                {renderEditButton()}
-                {renderCloseButton()}
+                    <Grid container>
+                      <Grid item xs={6}>
+                        {renderFieldValue("Status")}
+                      </Grid>
+                      <Grid item xs={6}>
+                        {renderFieldValue("Closed", {
+                          fontWeight: 600,
+                        })}
+                      </Grid>
+                    </Grid>
+                  </>
+                )}
+                <Grid item xs={12}>
+                  <ShareThis />
+                </Grid>
               </Grid>
-
-              {/* <Grid item xs={6} sm={6} md={4} spacing={2} justify="flex-end">
-                  {renderCancelButton()}
-                </Grid> */}
-              {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
-                  {renderResolve()}
-                </Grid> */}
-            </Grid>
-          ) : null
-        ) : (
-          <>
-            <Grid container xs={12} sm={12}>
-              <Grid item xs>
-                {renderFieldValue("Donor Name")}
-              </Grid>
-              <Grid item xs>
-                <span style={{ display: "flex", alignItems: "center" }}>
-                  {renderFieldValue(data?.donorName, {
-                    fontWeight: 600,
-                  })}
-                  <FavoriteIcon
-                    color="secondary"
-                    fontSize="small"
-                    style={{ marginLeft: "5px" }}
-                  />
-                </span>
-              </Grid>
-            </Grid>
-
-            <Grid container xs={12} sm={12}>
-              <Grid item xs>
-                {renderFieldValue("Donor Email")}
-              </Grid>
-              <Grid item xs>
-                {renderFieldValue(data?.donorEmail, {
-                  fontWeight: 600,
-                })}
-              </Grid>
-            </Grid>
-
-            <Grid container xs={12} sm={12}>
-              <Grid item xs>
-                {renderFieldValue("Status")}
-              </Grid>
-              <Grid item xs>
-                {renderFieldValue("Closed", {
-                  fontWeight: 600,
-                })}
-              </Grid>
-            </Grid>
-          </>
+            )}
+          </CardContent>
+        </Card>
+      </Box>
+      <Box>
+        {data && (
+          <Card>
+            <CardContent>
+              <Disqus
+                url={pageURL}
+                id={pageID}
+                title={data.requestTitle}
+                language="en"
+              />
+            </CardContent>
+          </Card>
         )}
-      </Grid>
-      {data && data.requestTitle && (
-        <Grid container xs={12} sm={12}>
-          <Grid item xs>
-            <Disqus
-              url={pageURL}
-              id={pageID}
-              title={data.requestTitle}
-              language="en"
-            />
-          </Grid>
-        </Grid>
-      )}
+      </Box>
     </Container>
   );
 };

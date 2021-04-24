@@ -137,11 +137,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     setValue("patientDistrict", newDistricts[0]);
   };
 
-  // const handleStatusChange = (status: string) => {
-  //   console.log({ status });
-  //   setIsDonorVisible(status === 'closed');
-  // };
-
   const validateFields = (data: RequestType) => {
     const requiredKeys: (keyof Partial<RequestType>)[] = [
       'requestTitle',
@@ -159,7 +154,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   };
 
   const onSubmit = async (data: RequestType) => {
-    // console.log(data);
     if (!isValidUser()) {
       snackbar.show("error", `You're not authorized for the action!`);
       return;
@@ -174,7 +168,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
             requestStatus: { value: "open", label: "Open" },
             requesterEmail: auth?.user?.email,
           });
-      // console.log({ newId: res.id });
       snackbar.show(
         "success",
         `Request ${isEdit ? "updated" : "created"} successfully!`
@@ -537,13 +530,11 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           </Grid>
           <Grid
             container
-            xs={12}
-            sm={12}
-            md={12}
             // justify="flex-end"
             className={classes.buttons}
+            spacing={2}
           >
-            <Grid item xs={12} sm={6} md={4} spacing={2}>
+            <Grid item xs={12} sm={6} md={4}>
               {renderSubmit()}
               {renderCancel()}
             </Grid>
