@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from "react";
 import useFirestore from "src/hooks/useFirestore";
 import useFirebase from "src/hooks/useFirebase";
@@ -5,7 +6,7 @@ import useFirebase from "src/hooks/useFirebase";
 const useUser = () => {
   const { auth } = useFirebase();
   const [isAdmin, setIsAdmin] = React.useState(false);
-  const { getUsefulLinks, addUsefulLink, updateUsefulLink, isCurrentUserAdmin } = useFirestore();
+  const { isCurrentUserAdmin } = useFirestore();
 
   React.useEffect(() => {
     ensureAdmin();

@@ -2,18 +2,11 @@ import {
   Container,
   Grid,
   makeStyles,
-  TextareaAutosize,
-  TextField,
   Typography
 } from "@material-ui/core";
-import MuiPhoneNumber from "material-ui-phone-number";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import useFirebase from "src/hooks/useFirebase";
-import useFirestore from "src/hooks/useFirestore";
 import useGeo from "src/hooks/useGeo";
 import { FiltersType, RequestType } from "src/types";
 
@@ -43,7 +36,6 @@ interface RequestFiltersProps {
 const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
   const { onChangeFilter } = props;
   const classes = useStyles();
-  const { auth } = useFirebase();
   const defaultValues = {
     requestCategory: undefined,
     // patientGender: undefined,
@@ -54,19 +46,10 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
     // donor: ''
   } as RequestType;
   const {
-    handleSubmit,
     control,
-    reset,
-    register,
-    setValue,
-    getValues,
   } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
-  const history = useHistory();
-  const params = useParams();
-  const { addRequest, updateRequest, getRequest } = useFirestore();
-  const snackbar = useSnackbar();
 
   const handleStateChange = (state: string) => {
     const newDistricts =
@@ -74,56 +57,56 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
     setDistricts(newDistricts);
   };
 
-  const renderDescription = () => {
-    return (
-      <Controller
-        name={"requestDescription"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextareaAutosize
-            {...field}
-            placeholder="Situation description goes here ..."
-            style={{ width: "100%", height: "100px" }}
-          />
-        )}
-      />
-    );
-  };
+  // const renderDescription = () => {
+  //   return (
+  //     <Controller
+  //       name={"requestDescription"}
+  //       control={control}
+  //       defaultValue=""
+  //       render={({ field }) => (
+  //         <TextareaAutosize
+  //           {...field}
+  //           placeholder="Situation description goes here ..."
+  //           style={{ width: "100%", height: "100px" }}
+  //         />
+  //       )}
+  //     />
+  //   );
+  // };
 
-  const renderRequester = () => {
-    return (
-      <Controller
-        name={"requesterName"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            style={{ width: "100%" }}
-            placeholder="Requester's Name"
-          />
-        )}
-      />
-    );
-  };
+  // const renderRequester = () => {
+  //   return (
+  //     <Controller
+  //       name={"requesterName"}
+  //       control={control}
+  //       defaultValue=""
+  //       render={({ field }) => (
+  //         <TextField
+  //           {...field}
+  //           style={{ width: "100%" }}
+  //           placeholder="Requester's Name"
+  //         />
+  //       )}
+  //     />
+  //   );
+  // };
 
-  const renderAge = () => {
-    return (
-      <Controller
-        name={"patientAge"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            style={{ width: "100%" }}
-            placeholder="Patient's Age"
-          />
-        )}
-      />
-    );
-  };
+  // const renderAge = () => {
+  //   return (
+  //     <Controller
+  //       name={"patientAge"}
+  //       control={control}
+  //       defaultValue=""
+  //       render={({ field }) => (
+  //         <TextField
+  //           {...field}
+  //           style={{ width: "100%" }}
+  //           placeholder="Patient's Age"
+  //         />
+  //       )}
+  //     />
+  //   );
+  // };
 
   const renderCategory = () => {
     return (
@@ -157,74 +140,74 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
     );
   };
 
-  const renderGender = () => {
-    return (
-      <Controller
-        name="patientGender"
-        control={control}
-        render={({ field }) => (
-          <Select
-            isClearable={true}
-            {...field}
-            placeholder="Select Blood Group of the patient"
-            options={[
-              { value: "male", label: "Male" },
-              { value: "femal", label: "Female" },
-            ]}
-          />
-        )}
-      />
-    );
-  };
+  // const renderGender = () => {
+  //   return (
+  //     <Controller
+  //       name="patientGender"
+  //       control={control}
+  //       render={({ field }) => (
+  //         <Select
+  //           isClearable={true}
+  //           {...field}
+  //           placeholder="Select Blood Group of the patient"
+  //           options={[
+  //             { value: "male", label: "Male" },
+  //             { value: "femal", label: "Female" },
+  //           ]}
+  //         />
+  //       )}
+  //     />
+  //   );
+  // };
 
-  const renderBloodGroup = () => {
-    return (
-      <Controller
-        name="patientBloodGroup"
-        control={control}
-        render={({ field }) => (
-          <Select
-            isClearable={true}
-            {...field}
-            placeholder="Select Blood Group of the patient"
-            options={[
-              { value: "a+", label: "A+" },
-              { value: "a-", label: "A-" },
-              { value: "b+", label: "B+" },
-              { value: "b-", label: "B-" },
-              { value: "c+", label: "C+" },
-              { value: "c-", label: "C-" },
-              { value: "o+", label: "O+" },
-              { value: "o-", label: "O-" },
-              { value: "ab+", label: "AB+" },
-              { value: "ab+", label: "AB+" },
-            ]}
-          />
-        )}
-      />
-    );
-  };
+  // const renderBloodGroup = () => {
+  //   return (
+  //     <Controller
+  //       name="patientBloodGroup"
+  //       control={control}
+  //       render={({ field }) => (
+  //         <Select
+  //           isClearable={true}
+  //           {...field}
+  //           placeholder="Select Blood Group of the patient"
+  //           options={[
+  //             { value: "a+", label: "A+" },
+  //             { value: "a-", label: "A-" },
+  //             { value: "b+", label: "B+" },
+  //             { value: "b-", label: "B-" },
+  //             { value: "c+", label: "C+" },
+  //             { value: "c-", label: "C-" },
+  //             { value: "o+", label: "O+" },
+  //             { value: "o-", label: "O-" },
+  //             { value: "ab+", label: "AB+" },
+  //             { value: "ab+", label: "AB+" },
+  //           ]}
+  //         />
+  //       )}
+  //     />
+  //   );
+  // };
 
-  const renderContactNumber = () => {
-    return (
-      <Controller
-        name={"requesterContactNumber"}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <MuiPhoneNumber
-            {...field}
-            defaultCountry={"in"}
-            onlyCountries={["in"]}
-            disableCountryCode
-            disableDropdown
-            style={{ width: "100%" }}
-            placeholder="Contact Number"
-          />
-        )}
-      />
-    );
-  };
+  // const renderContactNumber = () => {
+  //   return (
+  //     <Controller
+  //       name={"requesterContactNumber"}
+  //       control={control}
+  //       defaultValue=""
+  //       render={({ field }) => (
+  //         <MuiPhoneNumber
+  //           {...field}
+  //           defaultCountry={"in"}
+  //           onlyCountries={["in"]}
+  //           disableCountryCode
+  //           disableDropdown
+  //           style={{ width: "100%" }}
+  //           placeholder="Contact Number"
+  //         />
+  //       )}
+  //     />
+  //   );
+  // };
 
   const renderState = () => {
     return (

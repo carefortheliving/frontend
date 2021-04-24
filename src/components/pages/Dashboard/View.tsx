@@ -1,40 +1,34 @@
 // import React from 'react'
-import useUser from "../../../hooks/useUser";
-import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Footer from "src/components/common/Footer/View";
-import Box from "@material-ui/core/Box";
-import Card from "@material-ui/core/Card";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Chip from "@material-ui/core/Chip";
-import CardContent from "@material-ui/core/CardContent";
-import Container from "@material-ui/core/Container";
-import Navbar from "src/components/common/Navbar/View";
-import { useAuth } from "src/components/common/AuthProvider/View";
-import * as React from "react";
-import useFirestore from "src/hooks/useFirestore";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import Button from "@material-ui/core/Button";
-import { FiltersType, RequestType, UsefulLink } from "src/types";
-import { parseTime } from "src/utils/commonUtils";
-import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import PanToolIcon from "@material-ui/icons/PanTool";
-import { useHistory, useLocation } from "react-router-dom";
 import { CircularProgress, Tooltip } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
-import RequestFilters from "./RequestFilters";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Chip from "@material-ui/core/Chip";
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
+import PanToolIcon from "@material-ui/icons/PanTool";
+import { Alert, AlertTitle } from "@material-ui/lab";
+import * as React from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import { useAuth } from "src/components/common/AuthProvider/View";
+import Footer from "src/components/common/Footer/View";
+import Navbar from "src/components/common/Navbar/View";
+import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
+import { useSnackbar } from "src/components/common/SnackbarProvider/View";
 import useBreakpoint from "src/hooks/useBreakpoint";
+import useFirestore from "src/hooks/useFirestore";
+import { FiltersType, RequestType, UsefulLink } from "src/types";
+import { parseTime } from "src/utils/commonUtils";
+import useUser from "../../../hooks/useUser";
 import AddEditLinkCard from './AddEditLinkCard';
+import RequestFilters from "./RequestFilters";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -189,7 +183,6 @@ function Dashboard() {
   };
 
   const handleFilterChange = (updatedFilters: Partial<FiltersType>) => {
-    const newFilters = appliedFilters
     setAppliedFilters({ ...appliedFilters, ...updatedFilters })
   };
 

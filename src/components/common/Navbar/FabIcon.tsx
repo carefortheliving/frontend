@@ -8,7 +8,6 @@ import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { getCreateRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import { RequestType } from "src/types";
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -23,10 +22,6 @@ interface FabIconProps {}
 const FabIcon: React.FC<FabIconProps> = () => {
   const classes = useStyles();
   const history = useHistory();
-  const defaultValues = {
-    donorEmail: "",
-    donorName: "",
-  } as Pick<RequestType, "donorEmail" | "donorName">;
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleClose = () => {
