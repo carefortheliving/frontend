@@ -1,11 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, memo, FC, CSSProperties } from "react";
-import {
-  Button,
-  Container,
-  Grid,
-  Typography,
-} from "@material-ui/core";
+import { Button, Container, Grid, Typography } from "@material-ui/core";
 import { useHistory, useParams } from "react-router-dom";
 import {
   getEditRequestRoute,
@@ -29,6 +24,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
 import Box from "@material-ui/core/Box";
+import ShareThis from "src/components/common/ShareThis";
 
 interface ViewRequestProps {}
 
@@ -198,7 +194,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                         </span>
                       </Grid>
                     </Grid>
-  
+
                     <Grid container>
                       <Grid item xs={6}>
                         {renderFieldValue("Donor Email")}
@@ -209,7 +205,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                         })}
                       </Grid>
                     </Grid>
-  
+
                     <Grid container>
                       <Grid item xs={6}>
                         {renderFieldValue("Status")}
@@ -222,6 +218,9 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                     </Grid>
                   </>
                 )}
+                <Grid item xs={12}>
+                  <ShareThis />
+                </Grid>
               </Grid>
             )}
           </CardContent>
