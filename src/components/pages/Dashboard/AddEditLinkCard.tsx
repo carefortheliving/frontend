@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Grid,
   Button,
@@ -50,7 +51,10 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
   };
   // console.log({ prefillData })
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
-  const { getUsefulLinks, addUsefulLink, updateUsefulLink, isCurrentUserAdmin } = useFirestore();
+  const {
+    addUsefulLink,
+    updateUsefulLink,
+  } = useFirestore();
   const { isAdmin, email } = useUser();
   const snackbar = useSnackbar();
 
@@ -71,26 +75,23 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
       return;
     }
     try {
-      const res = type === 'view'
-        ? await updateUsefulLink((prefillData as any)?.docId, data as any)
-        : await addUsefulLink({
-            ...(data as any),
-            addedBy: email,
-          });
+        type === "view"
+          ? await updateUsefulLink((prefillData as any)?.docId, data as any)
+          : await addUsefulLink({
+              ...(data as any),
+              addedBy: email,
+            });
       snackbar.show(
         "success",
-        `Request ${type === 'view' ? "updated" : "added"} successfully!`
+        `Request ${type === "view" ? "updated" : "added"} successfully!`
       );
       setIsEdit(false);
-      if (typeof onReloadRequested === 'function') {
+      if (typeof onReloadRequested === "function") {
         onReloadRequested();
       }
     } catch (e) {
       console.error("Error adding document: ", e);
-      snackbar.show(
-        "error",
-        `Couldn't ${isEdit ? "update" : "add"} link!`
-      );
+      snackbar.show("error", `Couldn't ${isEdit ? "update" : "add"} link!`);
     }
   };
 
@@ -114,7 +115,11 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
         control={control}
         defaultValue=""
         render={({ field }) => (
-          <TextareaAutosize {...field} style={{ width: "100%", height: '100px' }} placeholder={key} />
+          <TextareaAutosize
+            {...field}
+            style={{ width: "100%", height: "100px" }}
+            placeholder={key}
+          />
         )}
       />
     );
@@ -181,7 +186,7 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
 
   const renderAddCard = () => {
     return (
-      <Container style={{ margin: 'auto' }}>
+      <Container style={{ margin: "auto" }}>
         <Typography gutterBottom variant="h6" component="h2">
           + Add Link
         </Typography>
