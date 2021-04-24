@@ -72,9 +72,9 @@ const AddEditLinkCard: React.FC<AddEditLinkCardProps> = (props) => {
     }
     try {
       const res = type === 'view'
-        ? await updateUsefulLink((prefillData as any)?.docId, data)
+        ? await updateUsefulLink((prefillData as any)?.docId, data as any)
         : await addUsefulLink({
-            ...data,
+            ...(data as any),
             addedBy: email,
           });
       snackbar.show(
