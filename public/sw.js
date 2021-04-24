@@ -5,27 +5,25 @@ const OFFLINE_URL = "offline.html";
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(staticCacheName).then((cache) => {
-      cache.addAll([
-        "/",
-        "/index.html",
-        "/offline.html",
-        "/favicon.ico",
-        "/manifest.json",
-        "/android-chrome-192x192.png",
-        "/static/js/bundle.js",
-        "/static/js/vendors~main.chunk.js",
-        "/static/js/main.chunk.js",
-        "/static/js/0.chunk.js",
-        "/static/js/2.chunk.js",
-        "/static/js/3.chunk.js",
-        "/static/js/1.chunk.js",
-        "/static/js/5.chunk.js",
-        "/static/js/bundle.js.map",
-        "/static/js/main.chunk.js.map",
-        "/static/js/main.chunk.js.map",
-        "/static/js/vendors~main.chunk.js.map",
-        "/static/js/vendors~main.chunk.js.map"
-      ]);
+      cache.add("/");
+      cache.add("/index.html");
+      cache.add("/offline.html");
+      cache.add("/favicon.ico");
+      cache.add("/manifest.json");
+      cache.add("/android-chrome-192x192.png");
+      cache.add("/static/js/bundle.js");
+      cache.add("/android-chrome-192x192.png");
+      cache.add("/static/js/vendors~main.chunk.js");
+      cache.add("/static/js/vendors~main.chunk.js");
+      cache.add("/static/js/0.chunk.js");
+      cache.add("/static/js/2.chunk.js");
+      cache.add("/static/js/3.chunk.js");
+      cache.add("/static/js/1.chunk.js");
+      cache.add("/static/js/5.chunk.js");
+      cache.add("/static/js/bundle.js.map");
+      cache.add("/static/js/main.chunk.js.map");
+      cache.add("/static/js/vendors~main.chunk.js.map");
+      cache.add("/static/js/main.chunk.js");
     })
   );
 });
@@ -64,3 +62,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
