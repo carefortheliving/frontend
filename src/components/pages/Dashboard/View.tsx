@@ -167,8 +167,7 @@ function Dashboard() {
             return (
               user?.email &&
               (await getRequests({
-                requesterEmail: user?.email,
-                // ...appliedFilters
+                requesterEmail: user?.email
               }))
             );
           default:
@@ -177,7 +176,6 @@ function Dashboard() {
       })();
       setRequests(requests);
     } catch (e) {
-      console.log(e);
       snackbar.show("error", `Something went wrong, try reloading!`);
     }
     setLoading(false);
@@ -368,9 +366,9 @@ function Dashboard() {
     );
   };
 
-  const renderLinkCard = (data?: UsefulLink) => {
+  const renderLinkCard = (data?: UsefulLink, index?: number) => {
     return (
-      <Grid item key={"add link"} xs={12} sm={6} md={4}>
+      <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
         <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks} />
       </Grid>
     );
@@ -397,18 +395,17 @@ function Dashboard() {
             ) : (
               (() => {
                 switch (getCurrentTabFromUrl()) {
-                  case 0:
                   case 1:
-                    return requests?.length
-                      ? requests.map((card) => renderSingleCard(card))
-                      : renderNoRequests();
-                  default:
                     return (
                       <>
-                        {usefulLinks?.map((link) => renderLinkCard(link))}
+                        {usefulLinks?.map((link, index) => renderLinkCard(link, index))}
                         {isAdmin ? renderLinkCard() : null}
                       </>
                     );
+                  default:
+                    return requests?.length
+                      ? requests.map((card) => renderSingleCard(card))
+                      : renderNoRequests();
                 }
               })()
             )}
@@ -432,8 +429,8 @@ function Dashboard() {
           // variant="fullWidth"
         >
           <Tab label="All Requests" />
-          <Tab label="My Requests" />
           <Tab label="Useful links" />
+          {user?.email && <Tab label="My Requests" />}
         </Tabs>
       </AppBar>
     );
