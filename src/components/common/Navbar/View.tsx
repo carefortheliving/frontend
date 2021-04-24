@@ -192,6 +192,7 @@ function Navbar(props: NavbarProps) {
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSdOIDnLsN0YSgsZTPsk09X95yde_1lE-9qS9YR5g4Y5sStCwA/viewform?usp=sf_link"
               target="blank"
+              style={{ textDecoration: 'none' }}
             >
               Send Feedback
             </a>

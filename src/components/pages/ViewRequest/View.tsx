@@ -86,7 +86,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
     return (
       <Button
         variant="contained"
-        color="secondary"
+        color="primary"
         onClick={handleCloseClick}
         // style={{ marginRight: "10px" }}
       >
@@ -99,7 +99,7 @@ const ViewRequest: React.FC<ViewRequestProps> = () => {
     return (
       <Button
         variant="contained"
-        color="primary"
+        // color="primary"
         onClick={handleEditClick}
         style={{ marginRight: "5px" }}
       >
