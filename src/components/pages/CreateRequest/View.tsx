@@ -443,19 +443,19 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Navbar showBack title="Create Request" />
+      <Navbar showBack title={isEdit ? "Edit Request" : "Create Request"} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <div className={classes.heroContent}>
           <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: "50px" }}>
+            {/* <Typography variant="h3" style={{ marginBottom: "50px" }}>
               {isEdit ? "Edit Request" : "Create Request"}
-            </Typography>
+            </Typography> */}
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={1}>
                 <Grid container xs={12} sm={12}>
                   <Grid item xs>
-                    <Typography variant="h5">Requester's Email</Typography>
+                    <Typography variant="h6">Requester's Email</Typography>
                   </Grid>
                   <Grid item xs>
                     <Typography variant="h6">
@@ -465,7 +465,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Requester's Name</Typography>
+                      <Typography variant="h6">Requester's Name</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderRequester()}
@@ -474,7 +474,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Contact Number</Typography>
+                      <Typography variant="h6">Contact Number</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderContactNumber()}
@@ -483,7 +483,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Category</Typography>
+                      <Typography variant="h6">Category</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderCategory()}
@@ -492,7 +492,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Patient's Gender</Typography>
+                      <Typography variant="h6">Patient's Gender</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderGender()}
@@ -501,7 +501,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">
+                      <Typography variant="h6">
                         Patient's Blood Group
                       </Typography>
                     </Grid>
@@ -512,7 +512,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Patient's Age</Typography>
+                      <Typography variant="h6">Patient's Age</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderAge()}
@@ -521,7 +521,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">State</Typography>
+                      <Typography variant="h6">State</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderState()}
@@ -530,7 +530,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">District</Typography>
+                      <Typography variant="h6">District</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderDistrict()}
@@ -539,7 +539,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Title</Typography>
+                      <Typography variant="h6">Title</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderTitle()}
@@ -548,7 +548,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   <Grid container xs={12} sm={12}>
                     <Grid item xs>
-                      <Typography variant="h5">Description</Typography>
+                      <Typography variant="h6">Description</Typography>
                     </Grid>
                     <Grid item xs>
                       {renderDescription()}
@@ -557,7 +557,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   {/* <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
+                  <Typography variant="h6">
                     Status
                   </Typography>
                 </Grid>
@@ -568,7 +568,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
                   {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
                 <Grid item xs>
-                  <Typography variant="h5">
+                  <Typography variant="h6">
                     Donor Details
                   </Typography>
                 </Grid>
