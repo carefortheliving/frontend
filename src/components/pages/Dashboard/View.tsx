@@ -32,6 +32,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { CircularProgress, Tooltip } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import RequestFilters from "./RequestFilters";
+import useBreakpoint from "src/hooks/useBreakpoint";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,6 +117,7 @@ function Dashboard() {
   const history = useHistory();
   const location = useLocation();
   const [appliedFilters, setAppliedFilters] = React.useState({} as Partial<FiltersType>);
+  const isUpSm = useBreakpoint("sm");
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -309,14 +311,14 @@ function Dashboard() {
       <Container maxWidth="md">
         <Typography
           component="h2"
-          variant="h3"
+          variant={isUpSm ? "h3" : "h6"}
           align="center"
           color="textPrimary"
           gutterBottom
         >
           Care for the Living <br></br>
         </Typography>
-        <Typography variant="h6" align="center" color="textSecondary" paragraph>
+        <Typography variant={isUpSm ? "h6" : "subtitle1"} align="center" color="textSecondary" paragraph>
           "If you truly loved yourself, you could never hurt another."
           <br />
           {/* - Buddha */}
