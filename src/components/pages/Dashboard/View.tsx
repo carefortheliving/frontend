@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: "100vh",
     overflow: "auto",
+    width: '100%'
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -85,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   },
   filter_Heading: {
     textAlign: "center",
-    margin: "3.5rem 0 1rem 0",
+    margin: "1rem 0 1rem 0",
   },
   filter_Container: {
     position: "relative",
@@ -347,9 +348,11 @@ function Dashboard() {
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {loading ? (
-              <CircularProgress
-                style={{ margin: "auto", marginTop: "100px" }}
-              />
+              <Box style={{ width: '300px', display: 'flex', alignItems: 'center', margin: "auto" }}>
+                <CircularProgress
+                  style={{ margin: "auto", marginTop: "100px" }}
+                />
+              </Box>
             ) : (
               (() => {
                 switch (getCurrentTabFromUrl()) {

@@ -150,12 +150,29 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   //   setIsDonorVisible(status === 'closed');
   // };
 
+  const validateFields = (data: RequestType) => {
+    const requiredKeys: (keyof Partial<RequestType>)[] = [
+      'requestTitle',
+      'requestCategory',
+      'patientBloodGroup',
+      'requestDescription',
+      'requesterContactNumber'
+    ];
+    const missingKey = requiredKeys.find(key => !(data?.[key]) );
+    if (missingKey) {
+      snackbar.show('error', `Field "${missingKey}" must not be empty!`);
+      return false;
+    }
+    return true;
+  };
+
   const onSubmit = async (data: RequestType) => {
     // console.log(data);
     if (!isValidUser()) {
       snackbar.show("error", `You're not authorized for the action!`);
       return;
     }
+    if(!validateFields(data)) return;
     try {
       const payload: RequestType = lodash.pickBy(data, lodash.identity) as any;
       const res = isEdit
