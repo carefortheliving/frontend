@@ -24,7 +24,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
-import ShareThis from 'src/components/common/ShareThis';
 
 interface ViewRequestProps {}
 
@@ -220,9 +219,6 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                     </Grid>
                   </>
                 )}
-                <Grid item xs={12}>
-                  <ShareThis />
-                </Grid>
               </Grid>
             )}
           </CardContent>
