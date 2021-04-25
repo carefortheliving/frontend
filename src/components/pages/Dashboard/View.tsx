@@ -41,6 +41,7 @@ import {
   changeTitle,
   changeBackButton,
 } from "src/contexts/AppContext";
+import Disqus from "src/components/common/Disqus/View";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -104,6 +105,7 @@ function Dashboard() {
   const { user } = useAuth();
   const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
+  const [pageURL, setPageURL] = useState("");
   const [requests, setRequests] = useState(
     [] as (RequestType & { id: string })[]
   );
@@ -144,6 +146,7 @@ function Dashboard() {
   useEffect(() => {
     dispatch(changeBackButton(false));
     dispatch(changeTitle("Care for the Living"));
+    setPageURL(window.location.href);
   }, []);
 
   const loadLinks = async () => {
@@ -444,10 +447,10 @@ function Dashboard() {
   return (
     <>
       <div className={classes.heroContent}>{renderHeader()}</div>
-      <Grid item md={12}>
-        <Container disableGutters>{renderTabs()}</Container>
-      </Grid>
       <Container>
+        <Grid item sm={12}>
+          {renderTabs()}
+        </Grid>
         <Grid container spacing={4}>
           {getCurrentTabFromUrl() === 0
             ? isUpSm
@@ -455,6 +458,14 @@ function Dashboard() {
               : renderFiltersCollapsed()
             : null}
           {renderContent()}
+        </Grid>
+        <Grid item sm={12}>
+          <Disqus
+            url={pageURL}
+            id="73yyr7h3h718yr37y8****72ye73873wd3y8"
+            title="Care for the Living Homepage"
+            language="en"
+          />
         </Grid>
       </Container>
     </>
