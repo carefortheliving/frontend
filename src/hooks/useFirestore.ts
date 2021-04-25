@@ -70,8 +70,6 @@ const useFirestore = () => {
       docId: el.id,
       ...el.data(),
     })) as unknown as UsefulLink[];
-    
-  
   };
 
   const addUsefulLink = async (data: UsefulLink) => {
