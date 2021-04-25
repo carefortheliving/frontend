@@ -41,7 +41,7 @@ function LogIn() {
   let history = useHistory();
 
   useEffect(() => {
-    if (user && user.email) {
+    if (user?.uid) {
       history.push(getCreateRequestRoute());
     }
     dispatch(changeBackButton(true))

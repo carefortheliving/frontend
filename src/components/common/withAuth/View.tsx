@@ -14,9 +14,8 @@ const withAuth = <T extends React.FC>(Component: T) => {
     }, []);
 
     const init = async () => {
-      const authenticated = user && user.email;
+      const authenticated = user?.uid;
       if (!authenticated) {
-        // TODO: Somehow store original route and redirect back to it after login?
         history.replace(getLoginRoute());
       }
     };

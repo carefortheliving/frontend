@@ -228,16 +228,12 @@ const ViewRequest: FC<ViewRequestProps> = () => {
       </Box>
       <Box>
         {data && (
-          <Card>
-            <CardContent>
-              <Disqus
-                url={pageURL}
-                id={pageID}
-                title={data.requestTitle}
-                language="en"
-              />
-            </CardContent>
-          </Card>
+          <Disqus
+            url={pageURL}
+            id={pageID}
+            title={data.requestTitle}
+            language="en"
+          />
         )}
       </Box>
     </Container>

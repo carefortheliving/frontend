@@ -120,7 +120,7 @@ function Navbar(props: NavbarProps) {
   const isUpSm = useBreakpoint("sm");
   const { isCreateRequest, isLogin } = useRoutes();
 
-  const isLogged = !!(user && user.email);
+  const isLogged = !!(user && user.uid);
 
   const handleProfileClick = (event) => {
     setProfileBtn(event.currentTarget);
