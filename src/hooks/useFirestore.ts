@@ -45,7 +45,7 @@ const useFirestore = () => {
     if (requestStatus) {
       requestsRef = requestsRef.where('requestStatus.value', '==', requestStatus);
     }
-    console.log(requestsRef)
+    // console.log(requestsRef)
     const requests = await requestsRef.get();
     const ret = requests.docs?.map(doc => ({
       id: doc.id,
@@ -60,11 +60,18 @@ const useFirestore = () => {
   };
 
   const getUsefulLinks = async () => {
-    const ret = await db.collection("usefulLinks").get();
+      const ret = await db.collection("usefulLinks").get();
+            const data  = ret 
+        console.log(data.docs.map(el => ({
+          docId: el.id,
+          ...el.data()
+        })))
     return ret.docs.map(el => ({
       docId: el.id,
       ...el.data()
     })) as unknown as UsefulLink[];
+    
+  
   };
 
   const addUsefulLink = async (data: UsefulLink) => {
