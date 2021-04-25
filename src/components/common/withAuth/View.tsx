@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import * as React from "react";
-import { getLoginRoute } from "../RouterOutlet/routerUtils";
-import { useAuth } from "src/components/common/AuthProvider/View";
-import { useHistory } from "react-router-dom";
+import * as React from 'react';
+import { getLoginRoute } from '../RouterOutlet/routerUtils';
+import { useAuth } from 'src/components/common/AuthProvider/View';
+import { useHistory } from 'react-router-dom';
 
 const withAuth = <T extends React.FC>(Component: T) => {
   const WithAuthHOC: React.FC<any> = ({ ...props }) => {

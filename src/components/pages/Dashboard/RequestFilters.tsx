@@ -1,9 +1,9 @@
-import { Container, Grid, Typography } from "@material-ui/core";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import Select from "react-select";
-import useGeo from "src/hooks/useGeo";
-import { FiltersType, RequestType } from "src/types";
+import { Container, Grid, Typography } from '@material-ui/core';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import Select from 'react-select';
+import useGeo from 'src/hooks/useGeo';
+import { FiltersType, RequestType } from 'src/types';
 
 interface RequestFiltersProps {
   onChangeFilter: (updatedFilters: Partial<FiltersType>) => void;
@@ -44,12 +44,12 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
                 field?.onChange(option);
               }}
               options={[
-                { value: "plasma", label: "Plasma" },
-                { value: "oxygen", label: "Oxygen" },
-                { value: "medicine", label: "Medicine" },
-                { value: "blood", label: "Blood" },
-                { value: "money", label: "Monetary" },
-                { value: "other", label: "Other" },
+                { value: 'plasma', label: 'Plasma' },
+                { value: 'oxygen', label: 'Oxygen' },
+                { value: 'medicine', label: 'Medicine' },
+                { value: 'blood', label: 'Blood' },
+                { value: 'money', label: 'Monetary' },
+                { value: 'other', label: 'Other' },
               ]}
             />
           );
@@ -94,7 +94,7 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
           <Select
             isClearable={true}
             // isDisabled={!districts.length}
-            noOptionsMessage={() => "Please select state first!"}
+            noOptionsMessage={() => 'Please select state first!'}
             {...field}
             placeholder="Select District"
             options={districts}

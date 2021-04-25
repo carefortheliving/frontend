@@ -1,5 +1,6 @@
 export interface StylesProps<T> {
   classes: {
+    // eslint-disable-next-line no-unused-vars
     [X in keyof T]: string;
   };
   theme: Record<string, string>;

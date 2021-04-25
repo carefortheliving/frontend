@@ -1,9 +1,10 @@
-import { DiscussionEmbed } from "disqus-react";
-import CardContent from "@material-ui/core/CardContent";
-import Card from "@material-ui/core/Card";
-import { DisqusProps } from "src/types";
+import React from 'react';
+import { DiscussionEmbed } from 'disqus-react';
+import CardContent from '@material-ui/core/CardContent';
+import Card from '@material-ui/core/Card';
+import { DisqusProps } from 'src/types';
 
-export default function Footer(props: DisqusProps) {
+const Disqus = (props: DisqusProps) => {
   return (
     <Card>
       <CardContent>
@@ -19,4 +20,6 @@ export default function Footer(props: DisqusProps) {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default Disqus;

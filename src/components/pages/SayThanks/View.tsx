@@ -1,29 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, memo, FC } from "react";
+import React, { useEffect, memo, FC } from 'react';
 import {
   Button,
   Container,
   Grid,
   makeStyles,
   Typography,
-} from "@material-ui/core";
-import { TextField } from "@material-ui/core";
-import withAuth from "src/components/common/withAuth/View";
-import { useHistory, useParams } from "react-router-dom";
-import { getHomeRoute } from "src/components/common/RouterOutlet/routerUtils";
-import { Controller, useForm } from "react-hook-form";
-import useFirestore from "src/hooks/useFirestore";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import { RequestType } from "src/types";
+} from '@material-ui/core';
+import { TextField } from '@material-ui/core';
+import withAuth from 'src/components/common/withAuth/View';
+import { useHistory, useParams } from 'react-router-dom';
+import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { Controller, useForm } from 'react-hook-form';
+import useFirestore from 'src/hooks/useFirestore';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import { RequestType } from 'src/types';
 import {
   useAppContext,
   changeTitle,
   changeBackButton,
-} from "src/contexts/AppContext";
+} from 'src/contexts/AppContext';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
-    marginTop: "50px",
+    marginTop: '50px',
   },
 }));
 
@@ -34,9 +34,9 @@ const SayThanks: FC<SayThanksProps> = () => {
   const classes = useStyles();
   const history = useHistory();
   const defaultValues = {
-    donorEmail: "",
-    donorName: "",
-  } as Pick<RequestType, "donorEmail" | "donorName">;
+    donorEmail: '',
+    donorName: '',
+  } as Pick<RequestType, 'donorEmail' | 'donorName'>;
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const params = useParams();
   const { updateRequest, getRequest } = useFirestore();
@@ -45,12 +45,12 @@ const SayThanks: FC<SayThanksProps> = () => {
   useEffect(() => {
     prefillData();
     dispatch(changeBackButton(true));
-    dispatch(changeTitle("Say Thanks"));
+    dispatch(changeTitle('Say Thanks'));
   }, []);
 
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
-    if (typeof existingRequest === "object") {
+    if (typeof existingRequest === 'object') {
       Object.keys(existingRequest).forEach((key) => {
         setValue(key as any, existingRequest?.[key]);
       });
@@ -61,12 +61,12 @@ const SayThanks: FC<SayThanksProps> = () => {
     try {
       await updateRequest(params?.docId, {
         ...data,
-        requestStatus: { value: "closed", label: "Closed" },
+        requestStatus: { value: 'closed', label: 'Closed' },
       });
-      snackbar.show("success", `Request closed successfully!`);
+      snackbar.show('success', `Request closed successfully!`);
       history.push(getHomeRoute());
     } catch (e) {
-      snackbar.show("error", `Couldn't close request!`);
+      snackbar.show('error', `Couldn't close request!`);
     }
   };
 
@@ -77,14 +77,14 @@ const SayThanks: FC<SayThanksProps> = () => {
   const renderEmail = () => {
     return (
       <Controller
-        name={"donorEmail"}
+        name={'donorEmail'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
             placeholder="Donor's email id"
-            style={{ width: "100%", height: "100px" }}
+            style={{ width: '100%', height: '100px' }}
           />
         )}
       />
@@ -94,13 +94,13 @@ const SayThanks: FC<SayThanksProps> = () => {
   const renderDonor = () => {
     return (
       <Controller
-        name={"donorName"}
+        name={'donorName'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             placeholder="Donors's Name"
           />
         )}
@@ -114,7 +114,7 @@ const SayThanks: FC<SayThanksProps> = () => {
         variant="contained"
         color="primary"
         onClick={handleSubmit(onSubmit)}
-        style={{ marginRight: "10px" }}
+        style={{ marginRight: '10px' }}
       >
         Submit
       </Button>
@@ -138,7 +138,7 @@ const SayThanks: FC<SayThanksProps> = () => {
         <Grid container spacing={1}>
           <Grid container>
             <Grid item xs={6}>
-              <Typography variant="h5">Donors's Name</Typography>
+              <Typography variant="h5">Donors&apos;s Name</Typography>
             </Grid>
             <Grid item xs={6}>
               {renderDonor()}
@@ -147,7 +147,7 @@ const SayThanks: FC<SayThanksProps> = () => {
 
           <Grid container>
             <Grid item xs={6}>
-              <Typography variant="h5">Donors's Email Id</Typography>
+              <Typography variant="h5">Donors&apos;s Email Id</Typography>
             </Grid>
             <Grid item xs={6}>
               {renderEmail()}
