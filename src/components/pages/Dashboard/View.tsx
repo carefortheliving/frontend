@@ -170,7 +170,7 @@ function Dashboard() {
             return (
               user?.email &&
               (await getRequests({
-                requesterEmail: user?.email
+                requesterEmail: user?.email,
               }))
             );
           default:
@@ -179,7 +179,10 @@ function Dashboard() {
       })();
       setRequests(requests);
     } catch (e) {
-      snackbar.show("error", `Something went wrong, try reloading!`);
+      snackbar.show(
+        "error",
+        `Data fetch failed due to huge traffic load. Meanwhile please use comment thread.`
+      );
     }
     setLoading(false);
   };
@@ -371,7 +374,7 @@ function Dashboard() {
 
   const renderLinkCard = (data?: UsefulLink, index?: number) => {
     return (
-      <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
+      <Grid item key={`add-link-${index || "*"}`} xs={12} sm={6} md={4}>
         <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks} />
       </Grid>
     );
@@ -401,7 +404,9 @@ function Dashboard() {
                   case 1:
                     return (
                       <>
-                        {usefulLinks?.map((link, index) => renderLinkCard(link, index))}
+                        {usefulLinks?.map((link, index) =>
+                          renderLinkCard(link, index)
+                        )}
                         {isAdmin ? renderLinkCard() : null}
                       </>
                     );
