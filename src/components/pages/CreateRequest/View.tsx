@@ -30,7 +30,7 @@ import {
   changeTitle,
   changeBackButton,
 } from "src/contexts/AppContext";
-import withAuth from "src/components/common/withAuth/View"
+import withAuth from "src/components/common/withAuth/View";
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -133,15 +133,15 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const validateFields = (data: RequestType) => {
     const requiredKeys: (keyof Partial<RequestType>)[] = [
-      'requestTitle',
-      'requestCategory',
-      'patientBloodGroup',
-      'requestDescription',
-      'requesterContactNumber'
+      "requestTitle",
+      "requestCategory",
+      "patientBloodGroup",
+      "requestDescription",
+      "requesterContactNumber",
     ];
-    const missingKey = requiredKeys.find(key => !(data?.[key]) );
+    const missingKey = requiredKeys.find((key) => !data?.[key]);
     if (missingKey) {
-      snackbar.show('error', `Field "${missingKey}" must not be empty!`);
+      snackbar.show("error", `Field "${missingKey}" must not be empty!`);
       return false;
     }
     return true;
@@ -152,7 +152,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
       snackbar.show("error", `You're not authorized for the action!`);
       return;
     }
-    if(!validateFields(data)) return;
+    if (!validateFields(data)) return;
     try {
       const payload: RequestType = pickBy(data, identity) as any;
       const res = isEdit
@@ -164,7 +164,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           });
       snackbar.show(
         "success",
-        `Request ${isEdit ? "updated" : "created"} successfully!`
+        `Request ${
+          isEdit ? "updated" : "created"
+        } successfully! Please also keep an eye on your post comment thread and useful links tab`
       );
       // message.success('Request created successfully!')
       history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
@@ -184,10 +186,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     history.push(getHomeRoute());
   };
 
-  const renderSelectPlaceholder = (text: string) =>{
-    return <Typography style={{ color: 'rgba(0, 0, 0, 0.40)' }}>
-      {text}
-    </Typography>
+  const renderSelectPlaceholder = (text: string) => {
+    return (
+      <Typography style={{ color: "rgba(0, 0, 0, 0.40)" }}>{text}</Typography>
+    );
   };
 
   const renderTitle = () => {
@@ -297,7 +299,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder={renderSelectPlaceholder("Select Gender of the patient")}
+            placeholder={renderSelectPlaceholder(
+              "Select Gender of the patient"
+            )}
             options={[
               { value: "male", label: "Male" },
               { value: "femal", label: "Female" },
@@ -316,7 +320,9 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder={renderSelectPlaceholder("Select Blood Group of the patient")}
+            placeholder={renderSelectPlaceholder(
+              "Select Blood Group of the patient"
+            )}
             options={[
               { value: "a+", label: "A+" },
               { value: "a-", label: "A-" },
