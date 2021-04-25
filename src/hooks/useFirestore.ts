@@ -61,11 +61,6 @@ const useFirestore = () => {
 
   const getUsefulLinks = async () => {
       const ret = await db.collection("usefulLinks").get();
-            const data  = ret 
-        console.log(data.docs.map(el => ({
-          docId: el.id,
-          ...el.data()
-        })))
     return ret.docs.map(el => ({
       docId: el.id,
       ...el.data()

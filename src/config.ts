@@ -13,6 +13,8 @@ const config = process.env as unknown as {
   WDS_SOCKET_HOST: undefined
   WDS_SOCKET_PATH: undefined
   WDS_SOCKET_PORT: undefined
+  REACT_APP_PUBLIC_KEY : string;
+  REACT_APP_PRIVATE_KEY : string;
 };
 
 export default config;
