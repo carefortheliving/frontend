@@ -49,7 +49,6 @@ const useFirestore = () => {
       requestsRef =
         requestsRef.where('requestStatus.value', '==', requestStatus);
     }
-
     const requests = await requestsRef.get();
     const ret = requests.docs?.map((doc) => ({
       id: doc.id,
