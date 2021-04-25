@@ -23,6 +23,7 @@ module.exports = {
     '@typescript-eslint',
     'import',
     "react-hooks",
+    "simple-import-sort",
   ],
   'rules': {
     'react-hooks/exhaustive-deps': 'off',
@@ -35,6 +36,10 @@ module.exports = {
     "indent": ["error", "tab"],
     "no-tabs": "off",
     "max-len": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
   },
   'settings': {
     'import/resolver': {
@@ -43,24 +48,6 @@ module.exports = {
     "react": {
       "version": "detect"
     },
-    "import/order": [
-      "error",
-      {
-        "groups": ["builtin", "external", "internal"],
-        "pathGroups": [
-          {
-            "pattern": "react",
-            "group": "external",
-            "position": "before"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": ["react"],
-        "newlines-between": "always",
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        }
-      }
-    ],
   },
+  "ignorePatterns": ["**/node_modules/**"],
 };

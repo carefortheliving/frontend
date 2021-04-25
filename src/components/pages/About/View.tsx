@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
 import { Container, Grid, Typography } from '@material-ui/core';
 import HearingIcon from '@material-ui/icons/Hearing';
+import React, { useEffect } from 'react';
 import {
-	useAppContext,
-	changeTitle,
 	changeBackButton,
+	changeTitle,
+	useAppContext,
 } from 'src/contexts/AppContext';
 
 interface SayAbout {}

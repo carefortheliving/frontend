@@ -1,7 +1,7 @@
-import React from 'react';
-import { useState, useEffect, useContext, createContext } from 'react';
-import firebase from 'firebase/app';
 import 'firebase/auth';
+
+import firebase from 'firebase/app';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import config from 'src/config';
 
 // Initialize Firebase

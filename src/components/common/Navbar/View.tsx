@@ -14,9 +14,10 @@ import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from 'src/components/common/AuthProvider/View';
+import { useAppContext } from 'src/contexts/AppContext';
 import useBreakpoint from 'src/hooks/useBreakpoint';
 import useRoutes from 'src/hooks/useRoutes';
-import { useAppContext } from 'src/contexts/AppContext';
+
 import {
 	getAboutRoute,
 	getCreateRequestRoute,

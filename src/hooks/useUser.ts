@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
-import useFirestore from 'src/hooks/useFirestore';
 import useFirebase from 'src/hooks/useFirebase';
+import useFirestore from 'src/hooks/useFirestore';
 
 const useUser = () => {
 	const { auth } = useFirebase();

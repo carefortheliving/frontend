@@ -1,6 +1,7 @@
 import { FiltersType, RequestType, UsefulLink } from 'src/types';
-import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
+
+import useFirebase from './useFirebase';
 
 const useFirestore = () => {
 	const { db, auth } = useFirebase();

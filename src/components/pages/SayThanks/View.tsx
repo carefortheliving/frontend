@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, memo, FC } from 'react';
 import {
 	Button,
 	Container,
@@ -8,18 +7,19 @@ import {
 	Typography,
 } from '@material-ui/core';
 import { TextField } from '@material-ui/core';
-import withAuth from 'src/components/common/withAuth/View';
+import React, { FC, memo, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
-import { Controller, useForm } from 'react-hook-form';
-import useFirestore from 'src/hooks/useFirestore';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
-import { RequestType } from 'src/types';
+import withAuth from 'src/components/common/withAuth/View';
 import {
-	useAppContext,
-	changeTitle,
 	changeBackButton,
+	changeTitle,
+	useAppContext,
 } from 'src/contexts/AppContext';
+import useFirestore from 'src/hooks/useFirestore';
+import { RequestType } from 'src/types';
 
 const useStyles = makeStyles((theme) => ({
 	buttons: {

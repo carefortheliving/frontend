@@ -1,19 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from 'src/components/common/AuthProvider/View';
 import {
 	getCreateRequestRoute,
 } from 'src/components/common/RouterOutlet/routerUtils';
 import {
-	useAppContext,
-	changeTitle,
 	changeBackButton,
+	changeTitle,
+	useAppContext,
 } from 'src/contexts/AppContext';
 
 const useStyles = makeStyles((theme) => ({

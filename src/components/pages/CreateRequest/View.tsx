@@ -8,8 +8,10 @@ import {
 	TextField,
 	Typography,
 } from '@material-ui/core';
+import identity from 'lodash/identity';
+import pickBy from 'lodash/pickBy';
 import MuiPhoneNumber from 'material-ui-phone-number';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import Select from 'react-select';
@@ -19,18 +21,16 @@ import {
 	getViewRequestRoute,
 } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
-import useFirestore from 'src/hooks/useFirestore';
+import withAuth from 'src/components/common/withAuth/View';
+import {
+	changeBackButton,
+	changeTitle,
+	useAppContext,
+} from 'src/contexts/AppContext';
 import useFirebase from 'src/hooks/useFirebase';
+import useFirestore from 'src/hooks/useFirestore';
 import useGeo from 'src/hooks/useGeo';
 import { RequestType } from 'src/types';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import {
-	useAppContext,
-	changeTitle,
-	changeBackButton,
-} from 'src/contexts/AppContext';
-import withAuth from 'src/components/common/withAuth/View';
 
 const useStyles = makeStyles((theme) => ({
 	buttons: {

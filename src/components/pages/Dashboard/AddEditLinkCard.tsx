@@ -1,21 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-	Grid,
 	Button,
 	Card,
 	CardContent,
 	Container,
+	Grid,
 	makeStyles,
+	TextareaAutosize,
 	TextField,
 	Typography,
-	TextareaAutosize,
 } from '@material-ui/core';
-import React, { useState, useEffect, FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { UsefulLink } from '../../../types';
-import useFirestore from 'src/hooks/useFirestore';
-import useUser from '../../../hooks/useUser';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import useFirestore from 'src/hooks/useFirestore';
+
+import useUser from '../../../hooks/useUser';
+import { UsefulLink } from '../../../types';
 
 const useStyles = makeStyles((theme) => ({
 	openCard: {

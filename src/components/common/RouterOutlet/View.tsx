@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Suspense } from 'react';
-import { Switch, Route } from 'react-router';
+import { Route, Switch } from 'react-router';
+
 import AppLoader from '../AppLoader/View';
 
 const Login = React.lazy(() => import('../../pages/Login/View'));
