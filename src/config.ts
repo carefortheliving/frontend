@@ -1,6 +1,6 @@
 const config = process.env as unknown as {
   AST_REFRESH: boolean;
-  NODE_ENV: "development" | "production";
+  NODE_ENV: 'development' | 'production';
   PUBLIC_URL: string;
   REACT_APP_FIREBASE_APIKEY: string;
   REACT_APP_FIREBASE_APPID: string;

@@ -1,16 +1,16 @@
-import * as React from "react";
-import { Suspense } from "react";
-import { Switch, Route } from "react-router";
-import AppLoader from "../AppLoader/View";
+import * as React from 'react';
+import { Suspense } from 'react';
+import { Switch, Route } from 'react-router';
+import AppLoader from '../AppLoader/View';
 
-const Login = React.lazy(() => import("../../pages/Login/View"));
-const Dashboard = React.lazy(() => import("../../pages/Dashboard/View"));
+const Login = React.lazy(() => import('../../pages/Login/View'));
+const Dashboard = React.lazy(() => import('../../pages/Dashboard/View'));
 const CreateRequest = React.lazy(
-  () => import("../../pages/CreateRequest/View")
+    () => import('../../pages/CreateRequest/View'),
 );
-const ViewRequest = React.lazy(() => import("../../pages/ViewRequest/View"));
-const SayThanks = React.lazy(() => import("../../pages/SayThanks/View"));
-const About = React.lazy(() => import("../../pages/About/View"));
+const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
+const SayThanks = React.lazy(() => import('../../pages/SayThanks/View'));
+const About = React.lazy(() => import('../../pages/About/View'));
 
 const RouterOutlet = (props) => {
   return (

@@ -1,18 +1,19 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
-  makeStyles
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
-import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
-import * as React from "react";
-import { useHistory } from "react-router-dom";
-import { getCreateRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
+  makeStyles,
+} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
+import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
+import * as React from 'react';
+import { useHistory } from 'react-router-dom';
+import {
+  getCreateRequestRoute,
+} from 'src/components/common/RouterOutlet/routerUtils';
 
 const useStyles = makeStyles((theme) => ({
   fab: {
-    position: "fixed",
-    bottom: theme.spacing(4),
+    position: 'fixed',
+    bottom: theme.spacing(10),
     right: theme.spacing(3),
   },
 }));
@@ -40,7 +41,7 @@ const FabIcon: React.FC<FabIconProps> = () => {
           onClick={() => history.push(getCreateRequestRoute())}
         />
       ),
-      name: "Request",
+      name: 'Create Request',
     },
   ];
 
@@ -49,12 +50,11 @@ const FabIcon: React.FC<FabIconProps> = () => {
       color="secondary"
       ariaLabel="FAB"
       className={classes.fab}
-      // hidden={hidden}
       icon={<AddIcon />}
       onClose={handleClose}
       onOpen={handleOpen}
       open={isOpen}
-      direction={"up"}
+      direction={'up'}
     >
       {actions.map((action) => (
         <SpeedDialAction

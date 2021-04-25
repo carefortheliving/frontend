@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
-import { Container, Grid, Typography } from "@material-ui/core";
-import HearingIcon from "@material-ui/icons/Hearing";
+import React, { useEffect } from 'react';
+import { Container, Grid, Typography } from '@material-ui/core';
+import HearingIcon from '@material-ui/icons/Hearing';
 import {
   useAppContext,
   changeTitle,
   changeBackButton,
-} from "src/contexts/AppContext";
+} from 'src/contexts/AppContext';
 
 interface SayAbout {}
 
@@ -15,7 +15,7 @@ const About: React.FC<SayAbout> = () => {
 
   useEffect(() => {
     dispatch(changeBackButton(true));
-    dispatch(changeTitle("About"));
+    dispatch(changeTitle('About'));
   }, []);
 
   const renderHeader = () => {
@@ -58,7 +58,7 @@ const About: React.FC<SayAbout> = () => {
   const renderContent = () => {
     return (
       <Grid item md={9}>
-        <Container maxWidth="lg">{/**Content goes here */}</Container>
+        <Container maxWidth="lg">{/** Content goes here */}</Container>
       </Grid>
     );
   };

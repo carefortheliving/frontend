@@ -9,29 +9,29 @@ import {
   TextField,
   Typography,
   TextareaAutosize,
-} from "@material-ui/core";
-import React, { useState, useEffect, FC } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { UsefulLink } from "../../../types";
-import useFirestore from "src/hooks/useFirestore";
-import useUser from "../../../hooks/useUser";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
+} from '@material-ui/core';
+import React, { useState, useEffect, FC } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { UsefulLink } from '../../../types';
+import useFirestore from 'src/hooks/useFirestore';
+import useUser from '../../../hooks/useUser';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 
 const useStyles = makeStyles((theme) => ({
   openCard: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    cursor: "pointer",
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    cursor: 'pointer',
   },
   cardMedia: {
-    paddingTop: "56.25%",
+    paddingTop: '56.25%',
   },
   cardContent: {
     flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "column",
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
 }));
 
@@ -43,7 +43,7 @@ type AddEditLinkCardProps = {
 
 const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
   const { prefillData, onReloadRequested } = props;
-  const type = prefillData ? "view" : "add";
+  const type = prefillData ? 'view' : 'add';
   const classes = useStyles();
   const [isEdit, setIsEdit] = useState(false);
   const defaultValues = {
@@ -62,7 +62,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
 
     return () => {
       setIsEdit(false);
-    }
+    };
   }, [prefillData]);
 
   const handlePrefillData = async () => {
@@ -74,27 +74,27 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
 
   const onSubmit = async (data: typeof defaultValues) => {
     if (!data.link) {
-      snackbar.show("error", `Link is mandatory!`);
+      snackbar.show('error', `Link is mandatory!`);
       return;
     }
     try {
-        type === "view"
-          ? await updateUsefulLink((prefillData as any)?.docId, data as any)
-          : await addUsefulLink({
-              ...(data as any),
-              addedBy: email,
-            });
-      snackbar.show(
-        "success",
-        `Request ${type === "view" ? "updated" : "added"} successfully!`
-      );
-      setIsEdit(false);
-      if (typeof onReloadRequested === "function") {
-        onReloadRequested();
-      }
+        type === 'view' ?
+          await updateUsefulLink((prefillData as any)?.docId, data as any) :
+          await addUsefulLink({
+            ...(data as any),
+            addedBy: email,
+          });
+        snackbar.show(
+            'success',
+            `Request ${type === 'view' ? 'updated' : 'added'} successfully!`,
+        );
+        setIsEdit(false);
+        if (typeof onReloadRequested === 'function') {
+          onReloadRequested();
+        }
     } catch (e) {
-      console.error("Error adding document: ", e);
-      snackbar.show("error", `Couldn't ${isEdit ? "update" : "add"} link!`);
+      console.error('Error adding document: ', e);
+      snackbar.show('error', `Couldn't ${isEdit ? 'update' : 'add'} link!`);
     }
   };
 
@@ -105,7 +105,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
         control={control}
         defaultValue=""
         render={({ field }) => (
-          <TextField {...field} style={{ width: "100%" }} placeholder={key} />
+          <TextField {...field} style={{ width: '100%' }} placeholder={key} />
         )}
       />
     );
@@ -120,7 +120,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
         render={({ field }) => (
           <TextareaAutosize
             {...field}
-            style={{ width: "100%", height: "100px" }}
+            style={{ width: '100%', height: '100px' }}
             placeholder={key}
           />
         )}
@@ -149,7 +149,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
         // color="primary"
         size="small"
         onClick={() => setIsEdit(false)}
-        style={{ marginLeft: "10px" }}
+        style={{ marginLeft: '10px' }}
       >
         Cancel
       </Button>
@@ -160,10 +160,10 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
     return (
       <>
         {/* <Typography variant="h6">Name</Typography> */}
-        {renderInput("name")}
-        {renderInput("link")}
-        {renderTextArea("description")}
-        <Grid container style={{ marginTop: "20px" }}>
+        {renderInput('name')}
+        {renderInput('link')}
+        {renderTextArea('description')}
+        <Grid container style={{ marginTop: '20px' }}>
           {renderAddButton()}
           {renderCancelButton()}
         </Grid>
@@ -189,7 +189,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
 
   const renderAddCard = () => {
     return (
-      <Container style={{ margin: "auto" }}>
+      <Container style={{ margin: 'auto' }}>
         <Typography gutterBottom variant="h6" component="h2">
           + Add Link
         </Typography>
@@ -206,9 +206,9 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
         {(() => {
           if (isEdit) return renderEdit();
           switch (type) {
-            case "view":
+            case 'view':
               return prefillData ? renderLink(prefillData) : null;
-            case "add":
+            case 'add':
             default:
               return renderAddCard();
           }

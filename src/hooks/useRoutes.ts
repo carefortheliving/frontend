@@ -9,8 +9,8 @@ const useRoutes = () => {
   return {
     isHome,
     isCreateRequest,
-    isLogin
-  }
+    isLogin,
+  };
 };
 
 export default useRoutes;

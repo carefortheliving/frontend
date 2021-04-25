@@ -1,9 +1,9 @@
-import { Snackbar } from "@material-ui/core";
-import { Alert, AlertProps } from "@material-ui/lab";
-import * as React from "react";
+import { Snackbar } from '@material-ui/core';
+import { Alert, AlertProps } from '@material-ui/lab';
+import * as React from 'react';
 
 interface SnackbarContextValues {
-  show: (severity: AlertProps["severity"], message: string) => Promise<void>;
+  show: (severity: AlertProps['severity'], message: string) => Promise<void>;
 }
 const SnackbarContext = React.createContext({} as any);
 export const useSnackbar = () => {
@@ -13,10 +13,10 @@ interface SnackbarProviderProps {}
 const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
   const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState({
-    severity: "success",
-    message: "",
+    severity: 'success',
+    message: '',
   } as {
-    severity: AlertProps["severity"];
+    severity: AlertProps['severity'];
     message: string;
   });
 
@@ -24,7 +24,7 @@ const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
     setOpen(false);
   };
 
-  const show: SnackbarContextValues["show"] = async (severity, message) => {
+  const show: SnackbarContextValues['show'] = async (severity, message) => {
     setContent({
       severity,
       message,
