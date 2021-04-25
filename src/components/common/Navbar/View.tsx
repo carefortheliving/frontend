@@ -231,13 +231,11 @@ function Navbar(props: NavbarProps) {
   return (
     <AppBar position="absolute">
       <Toolbar className={classes.toolbar}>
-        {
-          state.backButton && (
+        {state.backButton && (
           <IconButton size="small" color="inherit" onClick={handleRedirectHome}>
             <ArrowBackIosIcon className={classes.btnStyle} />
           </IconButton>
-          )
-        }
+        )}
         {renderTitle()}
         {renderActions()}
         {renderMenu()}
