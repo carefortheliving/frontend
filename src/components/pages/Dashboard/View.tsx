@@ -1,4 +1,4 @@
-// import React from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Accordion,
   AccordionDetails,
@@ -6,42 +6,42 @@ import {
   Badge,
   CircularProgress,
   Tooltip,
-} from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
-import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Chip from "@material-ui/core/Chip";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/core/styles";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
-import Typography from "@material-ui/core/Typography";
-import PanToolIcon from "@material-ui/icons/PanTool";
-import FilterList from "@material-ui/icons/FilterList";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import React, { useState, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import { useAuth } from "src/components/common/AuthProvider/View";
-import { getViewRequestRoute } from "src/components/common/RouterOutlet/routerUtils";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import useBreakpoint from "src/hooks/useBreakpoint";
-import useFirestore from "src/hooks/useFirestore";
-import { FiltersType, RequestType, UsefulLink } from "src/types";
-import { parseTime } from "src/utils/commonUtils";
-import useUser from "../../../hooks/useUser";
-import AddEditLinkCard from "./AddEditLinkCard";
-import RequestFilters from "./RequestFilters";
-import pickBy from "lodash/pickBy";
-import identity from "lodash/identity";
+} from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Chip from '@material-ui/core/Chip';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import Typography from '@material-ui/core/Typography';
+import PanToolIcon from '@material-ui/icons/PanTool';
+import FilterList from '@material-ui/icons/FilterList';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useAuth } from 'src/components/common/AuthProvider/View';
+import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import useBreakpoint from 'src/hooks/useBreakpoint';
+import useFirestore from 'src/hooks/useFirestore';
+import { FiltersType, RequestType, UsefulLink } from 'src/types';
+import { parseTime } from 'src/utils/commonUtils';
+import useUser from '../../../hooks/useUser';
+import AddEditLinkCard from './AddEditLinkCard';
+import RequestFilters from './RequestFilters';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
 import {
   useAppContext,
   changeTitle,
   changeBackButton,
-} from "src/contexts/AppContext";
-import Disqus from "src/components/common/Disqus/View";
+} from 'src/contexts/AppContext';
+import Disqus from 'src/components/common/Disqus/View';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -54,45 +54,45 @@ const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(8),
-    paddingLeft: "0px",
-    paddingRight: "0px",
+    paddingLeft: '0px',
+    paddingRight: '0px',
   },
   openCard: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    cursor: "pointer",
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    cursor: 'pointer',
   },
   closedCard: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    cursor: "pointer",
-    background: "#efefef",
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    cursor: 'pointer',
+    background: '#efefef',
   },
   cardMedia: {
-    paddingTop: "56.25%",
+    paddingTop: '56.25%',
   },
   cardContent: {
     flexGrow: 1,
   },
   filter_Heading: {
-    textAlign: "center",
-    margin: "1rem 0 1rem 0",
+    textAlign: 'center',
+    margin: '1rem 0 1rem 0',
   },
   filter_Container: {
-    position: "relative",
+    position: 'relative',
   },
   filterCollapsed: {
     marginTop: theme.spacing(4),
   },
   filterCount: {
-    marginLeft: "10px",
+    marginLeft: '10px',
   },
   filter: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   table: {
     // minWidth: 650,
@@ -105,54 +105,54 @@ function Dashboard() {
   const { user } = useAuth();
   const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
-  const [pageURL, setPageURL] = useState("");
+  const [pageURL, setPageURL] = useState('');
   const [requests, setRequests] = useState(
-    [] as (RequestType & { id: string })[]
+    [] as (RequestType & { id: string })[],
   );
   const [usefulLinks, setUsefulLinks] = useState([
     {
-      name: "Realtime Leads",
+      name: 'Realtime Leads',
       link:
-        "https://docs.google.com/document/d/1rgHki3hQF_Q8SR_nfj6MtUN5JYN0DNnZMtrOUHKQA78/edit?usp=sharing",
-      description: "This link contains leads of covid resources in realtime.",
+        'https://docs.google.com/document/d/1rgHki3hQF_Q8SR_nfj6MtUN5JYN0DNnZMtrOUHKQA78/edit?usp=sharing',
+      description: 'This link contains leads of covid resources in realtime.',
     },
     {
-      name: "CrowdSourcing of Data [CovidsFacts]",
-      link: "https://covidfacts.in/",
+      name: 'CrowdSourcing of Data [CovidsFacts]',
+      link: 'https://covidfacts.in/',
       description:
-        "This link contains information regarding leads of medical requirements",
+        'This link contains information regarding leads of medical requirements',
     },
     {
-      name: "EDGE | Covid Action - India",
+      name: 'EDGE | Covid Action - India',
       link:
-        "https://www.notion.so/EDGE-Covid-Action-India-20APR21-01-30-100d217d90a04d1fbb46e2455de46722",
-      description: "EDGE | Covid Action - India",
+        'https://www.notion.so/EDGE-Covid-Action-India-20APR21-01-30-100d217d90a04d1fbb46e2455de46722',
+      description: 'EDGE | Covid Action - India',
     },
     {
-      name: "so.city/covid19",
-      link: "https://so.city/covid19",
-      description: "Covid resources for Delhi",
+      name: 'so.city/covid19',
+      link: 'https://so.city/covid19',
+      description: 'Covid resources for Delhi',
     },
     {
-      name: "covidresource.glideapp.io",
-      link: "https://covidresource.glideapp.io/",
-      description: "Covid Useful Rescources",
+      name: 'covidresource.glideapp.io',
+      link: 'https://covidresource.glideapp.io/',
+      description: 'Covid Useful Rescources',
     },
     {
-      name: "bhopalcovidbeds.in",
-      link: "https://http://www.bhopalcovidbeds.in/",
-      description: "To check bed availability in Bhopal",
+      name: 'bhopalcovidbeds.in',
+      link: 'https://http://www.bhopalcovidbeds.in/',
+      description: 'To check bed availability in Bhopal',
     },
     {
-      name: "external.sprinklr.com",
+      name: 'external.sprinklr.com',
       link:
-        "https://external.sprinklr.com/insights/explorer/dashboard/601b9e214c7a6b689d76f493/tab/1?id=DASHBOARD_601b9e214c7a6b689d76f493",
-      description: "Covid Resources",
+        'https://external.sprinklr.com/insights/explorer/dashboard/601b9e214c7a6b689d76f493/tab/1?id=DASHBOARD_601b9e214c7a6b689d76f493',
+      description: 'Covid Resources',
     },
     {
-      name: "dhoondh.com",
-      link: "https://www.dhoondh.com/",
-      description: "To search for plasma donors.",
+      name: 'dhoondh.com',
+      link: 'https://www.dhoondh.com/',
+      description: 'To search for plasma donors.',
     },
   ] as UsefulLink[]);
   const [loading, setLoading] = useState(false);
@@ -166,17 +166,15 @@ function Dashboard() {
     requesterEmail: undefined,
   };
   const [appliedFilters, setAppliedFilters] = useState(
-    defaultFilters as Partial<FiltersType>
+    defaultFilters as Partial<FiltersType>,
   );
-  const isUpSm = useBreakpoint("sm");
+  const isUpSm = useBreakpoint('sm');
   const { isAdmin } = useUser();
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
-    return Number(currentUrlParams.get("tab") || "0");
+    return Number(currentUrlParams.get('tab') || '0');
   };
-
-  /* eslint-disable react-hooks/exhaustive-deps */
 
   useEffect(() => {
     resetFilters();
@@ -190,7 +188,7 @@ function Dashboard() {
 
   useEffect(() => {
     dispatch(changeBackButton(false));
-    dispatch(changeTitle("Care for the Living"));
+    dispatch(changeTitle('Care for the Living'));
     setPageURL(window.location.href);
   }, []);
 
@@ -209,7 +207,7 @@ function Dashboard() {
           case 0:
             return await getRequests({
               ...appliedFilters,
-              requestStatus: "open",
+              requestStatus: 'open',
             });
           case 1:
             return (
@@ -225,8 +223,9 @@ function Dashboard() {
       setRequests(requests);
     } catch (e) {
       snackbar.show(
-        "error",
-        `Data fetch failed due to huge traffic load. Meanwhile please use comment thread.`
+          'error',
+          `Data fetch failed due to huge traffic load.
+          Meanwhile please use comment thread.`,
       );
     }
     setLoading(false);
@@ -238,10 +237,10 @@ function Dashboard() {
 
   const handleTabChange = (event, newValue: number) => {
     const currentUrlParams = new URLSearchParams(location.search);
-    currentUrlParams.set("tab", newValue?.toString());
+    currentUrlParams.set('tab', newValue?.toString());
     history.push({
       pathname: location.pathname,
-      search: "?" + currentUrlParams.toString(),
+      search: '?' + currentUrlParams.toString(),
     });
   };
 
@@ -302,9 +301,9 @@ function Dashboard() {
       <Grid item key={card.id} xs={12} sm={6} md={4}>
         <Card
           className={`${
-            card.requestStatus?.value === "open"
-              ? classes.openCard
-              : classes.closedCard
+            card.requestStatus?.value === 'open' ?
+              classes.openCard :
+              classes.closedCard
           }`}
           onClick={() => handleCardClick(card.id)}
         >
@@ -319,7 +318,7 @@ function Dashboard() {
             </Typography>
             <hr />
             <Tooltip
-              style={{ width: "250px" }}
+              style={{ width: '250px' }}
               enterDelay={500}
               title={
                 <>
@@ -333,14 +332,14 @@ function Dashboard() {
               <Typography noWrap>{card.requestDescription}</Typography>
             </Tooltip>
             <br />
-            <Box style={{ display: "flex", color: "rgba(0, 0, 0, 0.54)" }}>
-              <Typography style={{ marginRight: "10px" }}>
+            <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
+              <Typography style={{ marginRight: '10px' }}>
                 <i>Requested By:</i>
               </Typography>
               <Typography>{card.requesterName}</Typography>
             </Box>
-            <Box style={{ display: "flex", color: "rgba(0, 0, 0, 0.54)" }}>
-              <Typography style={{ marginRight: "10px" }}>
+            <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
+              <Typography style={{ marginRight: '10px' }}>
                 <i>Address:</i>
               </Typography>
               <Typography>
@@ -361,8 +360,8 @@ function Dashboard() {
             <Chip
               label={card.patientBloodGroup?.label}
               variant="outlined"
-            />{" "}
-            <Chip label={card.requestCategory?.label} variant="outlined" />{" "}
+            />{' '}
+            <Chip label={card.requestCategory?.label} variant="outlined" />{' '}
             <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
             <br />
             <Button
@@ -382,7 +381,7 @@ function Dashboard() {
 
   const renderNoRequests = () => {
     return (
-      <Container style={{ marginTop: "20px" }}>
+      <Container style={{ marginTop: '20px' }}>
         <Alert severity="info">
           <AlertTitle>No requests created yet</AlertTitle>
           Click on the <strong>Create Request</strong> button to get started!
@@ -396,7 +395,7 @@ function Dashboard() {
       <Container maxWidth="md">
         <Typography
           component="h2"
-          variant={isUpSm ? "h3" : "h6"}
+          variant={isUpSm ? 'h3' : 'h6'}
           align="center"
           color="textPrimary"
           gutterBottom
@@ -404,12 +403,12 @@ function Dashboard() {
           Care for the Living <br></br>
         </Typography>
         <Typography
-          variant={isUpSm ? "h6" : "subtitle1"}
+          variant={isUpSm ? 'h6' : 'subtitle1'}
           align="center"
           color="textSecondary"
           paragraph
         >
-          "If you truly loved yourself, you could never hurt another."
+          &#34;If you truly loved yourself, you could never hurt another.&#34;
           <br />
           {/* - Buddha */}
         </Typography>
@@ -419,7 +418,7 @@ function Dashboard() {
 
   const renderLinkCard = (data?: UsefulLink, index?: number) => {
     return (
-      <Grid item key={`add-link-${index || "*"}`} xs={12} sm={6} md={4}>
+      <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
         <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks} />
       </Grid>
     );
@@ -433,14 +432,14 @@ function Dashboard() {
             {loading ? (
               <Box
                 style={{
-                  width: "300px",
-                  display: "flex",
-                  alignItems: "center",
-                  margin: "auto",
+                  width: '300px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  margin: 'auto',
                 }}
               >
                 <CircularProgress
-                  style={{ margin: "auto", marginTop: "100px" }}
+                  style={{ margin: 'auto', marginTop: '100px' }}
                 />
               </Box>
             ) : (
@@ -450,15 +449,15 @@ function Dashboard() {
                     return (
                       <>
                         {usefulLinks?.map((link, index) =>
-                          renderLinkCard(link, index)
+                          renderLinkCard(link, index),
                         )}
                         {isAdmin ? renderLinkCard() : null}
                       </>
                     );
                   default:
-                    return requests?.length
-                      ? requests.map((card) => renderSingleCard(card))
-                      : renderNoRequests();
+                    return requests?.length ?
+                      requests.map((card) => renderSingleCard(card)) :
+                      renderNoRequests();
                 }
               })()
             )}
@@ -497,11 +496,11 @@ function Dashboard() {
           {renderTabs()}
         </Grid>
         <Grid container spacing={4}>
-          {getCurrentTabFromUrl() === 0
-            ? isUpSm
-              ? renderFilters()
-              : renderFiltersCollapsed()
-            : null}
+          {getCurrentTabFromUrl() === 0 ?
+            isUpSm ?
+              renderFilters() :
+              renderFiltersCollapsed() :
+            null}
           {renderContent()}
         </Grid>
         <Grid item sm={12}>

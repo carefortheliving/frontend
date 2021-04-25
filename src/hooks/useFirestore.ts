@@ -6,7 +6,7 @@ const useFirestore = () => {
   const { db, auth } = useFirebase();
 
   const addRequest = async (request: RequestType) => {
-    const requests = await db.collection("requests").add({
+    const requests = await db.collection('requests').add({
       ...request,
       createdAt: getCurrentTime(),
       updatedAt: getCurrentTime(),
@@ -15,7 +15,7 @@ const useFirestore = () => {
   };
 
   const updateRequest = async (docId: string, request: RequestType) => {
-    const res = await db.collection("requests").doc(docId)?.update({
+    const res = await db.collection('requests').doc(docId)?.update({
       ...request,
       updatedAt: getCurrentTime(),
     });
@@ -29,25 +29,29 @@ const useFirestore = () => {
     patientDistrict,
     patientState,
   } : FiltersType) => {
-    let requestsRef: any = db.collection("requests")
+    let requestsRef: any = db.collection('requests');
     if (requesterEmail) {
-      requestsRef = requestsRef.where('requesterEmail', '==', requesterEmail);
+      requestsRef =
+        requestsRef.where('requesterEmail', '==', requesterEmail);
     }
     if (requestCategory) {
-      requestsRef = requestsRef.where('requestCategory.value', '==', requestCategory);
+      requestsRef =
+        requestsRef.where('requestCategory.value', '==', requestCategory);
     }
     if (patientDistrict) {
-      requestsRef = requestsRef.where('patientDistrict.value', '==', patientDistrict);
+      requestsRef =
+        requestsRef.where('patientDistrict.value', '==', patientDistrict);
     }
     if (patientState) {
       requestsRef = requestsRef.where('patientState.value', '==', patientState);
     }
     if (requestStatus) {
-      requestsRef = requestsRef.where('requestStatus.value', '==', requestStatus);
+      requestsRef =
+        requestsRef.where('requestStatus.value', '==', requestStatus);
     }
-    console.log(requestsRef)
+
     const requests = await requestsRef.get();
-    const ret = requests.docs?.map(doc => ({
+    const ret = requests.docs?.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
@@ -55,20 +59,22 @@ const useFirestore = () => {
   };
 
   const getRequest = async (docId: string) => {
-    const request = await (await db.collection("requests").doc(docId).get()).data();
+    const request = await (
+      await db.collection('requests').doc(docId).get()
+    ).data();
     return request;
   };
 
   const getUsefulLinks = async () => {
-    const ret = await db.collection("usefulLinks").get();
-    return ret.docs.map(el => ({
+    const ret = await db.collection('usefulLinks').get();
+    return ret.docs.map((el) => ({
       docId: el.id,
-      ...el.data()
+      ...el.data(),
     })) as unknown as UsefulLink[];
   };
 
   const addUsefulLink = async (data: UsefulLink) => {
-    const requests = await db.collection("usefulLinks").add({
+    const requests = await db.collection('usefulLinks').add({
       ...data,
       createdAt: getCurrentTime(),
       updatedAt: getCurrentTime(),
@@ -77,7 +83,7 @@ const useFirestore = () => {
   };
 
   const updateUsefulLink = async (docId: string, data: UsefulLink) => {
-    const res = await db.collection("usefulLinks").doc(docId)?.update({
+    const res = await db.collection('usefulLinks').doc(docId)?.update({
       ...data,
       updatedAt: getCurrentTime(),
     });
@@ -85,9 +91,9 @@ const useFirestore = () => {
   };
 
   const isCurrentUserAdmin = async () => {
-    if(!auth?.user?.email) return false;
+    if (!auth?.user?.email) return false;
 
-    let requestsRef: any = await db.collection("users")
+    let requestsRef: any = await db.collection('users');
     requestsRef = await requestsRef.where('email', '==', auth?.user?.email);
     requestsRef = await requestsRef.where('role', '==', 'admin');
     const adminDocs = await requestsRef.get();

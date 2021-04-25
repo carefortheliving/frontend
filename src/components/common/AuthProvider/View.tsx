@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext, createContext } from "react";
+import React from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
 import firebase from 'firebase/app';
-import "firebase/auth";
-import config from 'src/config'
+import 'firebase/auth';
+import config from 'src/config';
 
 // Initialize Firebase
 firebase.initializeApp({
@@ -30,6 +31,7 @@ export const useAuth = () => {
 };
 
 // Provider hook that creates auth object and handles state
+// eslint-disable-next-line react/prop-types
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({} as any);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
@@ -40,11 +42,11 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     return firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        setUser(null);
-      });
+        .auth()
+        .signOut()
+        .then(() => {
+          setUser(null);
+        });
   };
 
   // Subscribe to user on mount

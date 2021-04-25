@@ -1,30 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, memo, FC, CSSProperties } from "react";
-import { Button, Container, Grid, Typography } from "@material-ui/core";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useState, useEffect, memo, FC, CSSProperties } from 'react';
+import { Button, Container, Grid, Typography } from '@material-ui/core';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   getEditRequestRoute,
   getSayThanksRoute,
-} from "src/components/common/RouterOutlet/routerUtils";
-import useFirestore from "src/hooks/useFirestore";
-import useFirebase from "src/hooks/useFirebase";
-import { RequestType } from "src/types";
-import { parseTime } from "src/utils/commonUtils";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import Disqus from "src/components/common/Disqus/View";
+} from 'src/components/common/RouterOutlet/routerUtils';
+import useFirestore from 'src/hooks/useFirestore';
+import useFirebase from 'src/hooks/useFirebase';
+import { RequestType } from 'src/types';
+import { parseTime } from 'src/utils/commonUtils';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import Disqus from 'src/components/common/Disqus/View';
 import {
   useAppContext,
   changeTitle,
   changeBackButton,
-} from "src/contexts/AppContext";
-import CardContent from "@material-ui/core/CardContent";
-import Card from "@material-ui/core/Card";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItem from "@material-ui/core/ListItem";
-import List from "@material-ui/core/List";
-import Box from "@material-ui/core/Box";
-import ShareThis from "src/components/common/ShareThis";
+} from 'src/contexts/AppContext';
+import CardContent from '@material-ui/core/CardContent';
+import Card from '@material-ui/core/Card';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@material-ui/core/ListItem';
+import List from '@material-ui/core/List';
+import Box from '@material-ui/core/Box';
+import ShareThis from 'src/components/common/ShareThis';
 
 interface ViewRequestProps {}
 
@@ -35,21 +35,21 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   const { getRequest } = useFirestore();
   const [data, setData] = useState(undefined as undefined | RequestType);
   const { auth } = useFirebase();
-  const [pageURL, setPageURL] = useState("");
-  const [pageID, setPageID] = useState("");
+  const [pageURL, setPageURL] = useState('');
+  const [pageID, setPageID] = useState('');
 
   useEffect(() => {
     setPageURL(window.location.href);
-    const parts = window.location.href.split("/");
+    const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
     prefillData();
     dispatch(changeBackButton(true));
-    dispatch(changeTitle("Request Details"));
+    dispatch(changeTitle('Request Details'));
   }, []);
 
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
-    if (typeof existingRequest === "object") {
+    if (typeof existingRequest === 'object') {
       setData(existingRequest as any);
     }
   };
@@ -81,7 +81,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
         variant="contained"
         // color="primary"
         onClick={handleEditClick}
-        style={{ marginRight: "5px" }}
+        style={{ marginRight: '5px' }}
       >
         Edit
       </Button>
@@ -89,12 +89,12 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   };
 
   const renderFieldValue = (
-    value: string | undefined,
-    style = {} as CSSProperties
+      value: string | undefined,
+      style = {} as CSSProperties,
   ) => {
     return (
       <Typography variant="subtitle2" style={style}>
-        {value || "-"}
+        {value || '-'}
       </Typography>
     );
   };
@@ -116,14 +116,16 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                 <Grid item xs={12}>
                   <Typography variant="h6" component="h3">
                     <strong>
-                      {data.requesterName} ({data.patientGender?.value || ""})
-                    </strong>{" "}
-                    of age: <strong>{data.patientAge || "-"}</strong>, blood
-                    group:{" "}
-                    <strong>{data.patientBloodGroup?.value || "-"}</strong> from{" "}
+                      {data.requesterName} ({data.patientGender?.value || ''})
+                    </strong>{' '}
+                    of age: <strong>{data.patientAge || '-'}</strong>, blood
+                    group:{' '}
+                    <strong>
+                      {data.patientBloodGroup?.value || '-'}
+                    </strong> from{' '}
                     <strong>
                       {data.patientDistrict?.value}, {data.patientState?.value}
-                    </strong>{" "}
+                    </strong>{' '}
                     requires <strong>{data.requestCategory?.value}</strong>
                   </Typography>
                 </Grid>
@@ -168,7 +170,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                     </ListItem>
                   </List>
                 </Grid>
-                {data.requestStatus?.value === "open" ? (
+                {data.requestStatus?.value === 'open' ? (
                   data?.requesterEmail === auth?.user?.email && (
                     <Grid item xs={12} md={6} spacing={2}>
                       {renderEditButton()}
@@ -179,17 +181,17 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                   <>
                     <Grid container>
                       <Grid item xs={6}>
-                        {renderFieldValue("Donor Name")}
+                        {renderFieldValue('Donor Name')}
                       </Grid>
                       <Grid item xs={6}>
-                        <span style={{ display: "flex", alignItems: "center" }}>
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
                           {renderFieldValue(data?.donorName, {
                             fontWeight: 600,
                           })}
                           <FavoriteIcon
                             color="secondary"
                             fontSize="small"
-                            style={{ marginLeft: "5px" }}
+                            style={{ marginLeft: '5px' }}
                           />
                         </span>
                       </Grid>
@@ -197,7 +199,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
 
                     <Grid container>
                       <Grid item xs={6}>
-                        {renderFieldValue("Donor Email")}
+                        {renderFieldValue('Donor Email')}
                       </Grid>
                       <Grid item xs={6}>
                         {renderFieldValue(data?.donorEmail, {
@@ -208,10 +210,10 @@ const ViewRequest: FC<ViewRequestProps> = () => {
 
                     <Grid container>
                       <Grid item xs={6}>
-                        {renderFieldValue("Status")}
+                        {renderFieldValue('Status')}
                       </Grid>
                       <Grid item xs={6}>
-                        {renderFieldValue("Closed", {
+                        {renderFieldValue('Closed', {
                           fontWeight: 600,
                         })}
                       </Grid>

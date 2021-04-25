@@ -7,41 +7,41 @@ import {
   TextareaAutosize,
   TextField,
   Typography,
-} from "@material-ui/core";
-import MuiPhoneNumber from "material-ui-phone-number";
-import React, { useState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useHistory, useParams } from "react-router-dom";
-import Select from "react-select";
+} from '@material-ui/core';
+import MuiPhoneNumber from 'material-ui-phone-number';
+import React, { useState, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useHistory, useParams } from 'react-router-dom';
+import Select from 'react-select';
 import {
   getHomeRoute,
   getLoginRoute,
   getViewRequestRoute,
-} from "src/components/common/RouterOutlet/routerUtils";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import useFirestore from "src/hooks/useFirestore";
-import useFirebase from "src/hooks/useFirebase";
-import useGeo from "src/hooks/useGeo";
-import { RequestType } from "src/types";
-import pickBy from "lodash/pickBy";
-import identity from "lodash/identity";
+} from 'src/components/common/RouterOutlet/routerUtils';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import useFirestore from 'src/hooks/useFirestore';
+import useFirebase from 'src/hooks/useFirebase';
+import useGeo from 'src/hooks/useGeo';
+import { RequestType } from 'src/types';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
 import {
   useAppContext,
   changeTitle,
   changeBackButton,
-} from "src/contexts/AppContext";
-import withAuth from "src/components/common/withAuth/View";
+} from 'src/contexts/AppContext';
+import withAuth from 'src/components/common/withAuth/View';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
-    marginTop: "50px",
+    marginTop: '50px',
   },
   input: {
-    width: "100%",
-    border: "solid hsl(0, 0%, 80%) 1px",
-    borderRadius: "4px",
-    paddingLeft: "10px",
-    paddingRight: "10px",
+    width: '100%',
+    border: 'solid hsl(0, 0%, 80%) 1px',
+    borderRadius: '4px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
   },
 }));
 interface CreateRequestProps {
@@ -63,7 +63,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     patientState: undefined,
     patientDistrict: undefined,
     requesterContactNumber: undefined,
-    // donor: ''
   } as Partial<RequestType>;
   const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { states } = useGeo();
@@ -80,7 +79,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   }, []);
 
   useEffect(() => {
-    setValue("requesterName", auth?.user?.displayName);
+    setValue('requesterName', auth?.user?.displayName);
   }, [auth?.user?.displayName]);
 
   useEffect(() => {
@@ -92,13 +91,13 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   }, [data]);
 
   useEffect(() => {
-    dispatch(changeTitle(isEdit ? "Edit Request" : "Create Request"));
+    dispatch(changeTitle(isEdit ? 'Edit Request' : 'Create Request'));
   }, [isEdit]);
 
   const isValidUser = () => {
-    return data?.requesterEmail
-      ? data?.requesterEmail === auth?.user?.email
-      : !!auth?.user?.email;
+    return data?.requesterEmail ?
+      data?.requesterEmail === auth?.user?.email :
+      !!auth?.user?.email;
   };
 
   const ensurePermissions = () => {
@@ -108,10 +107,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   };
 
   const loadData = async () => {
-    const existingRequest = isEdit
-      ? await getRequest(params?.docId)
-      : undefined;
-    if (typeof existingRequest === "object") {
+    const existingRequest = isEdit ?
+      await getRequest(params?.docId) :
+      undefined;
+    if (typeof existingRequest === 'object') {
       setData(existingRequest as any);
     }
   };
@@ -128,20 +127,20 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     const newDistricts =
       states[state]?.map((el) => ({ value: el.city, label: el.city })) || [];
     setDistricts(newDistricts);
-    setValue("patientDistrict", newDistricts[0]);
+    setValue('patientDistrict', newDistricts[0]);
   };
 
   const validateFields = (data: RequestType) => {
     const requiredKeys: (keyof Partial<RequestType>)[] = [
-      "requestTitle",
-      "requestCategory",
-      "patientBloodGroup",
-      "requestDescription",
-      "requesterContactNumber",
+      'requestTitle',
+      'requestCategory',
+      'patientBloodGroup',
+      'requestDescription',
+      'requesterContactNumber',
     ];
     const missingKey = requiredKeys.find((key) => !data?.[key]);
     if (missingKey) {
-      snackbar.show("error", `Field "${missingKey}" must not be empty!`);
+      snackbar.show('error', `Field "${missingKey}" must not be empty!`);
       return false;
     }
     return true;
@@ -149,34 +148,33 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const onSubmit = async (data: RequestType) => {
     if (!isValidUser()) {
-      snackbar.show("error", `You're not authorized for the action!`);
+      snackbar.show('error', `You're not authorized for the action!`);
       return;
     }
     if (!validateFields(data)) return;
     try {
       const payload: RequestType = pickBy(data, identity) as any;
-      const res = isEdit
-        ? await updateRequest(params?.docId, payload)
-        : await addRequest({
-            ...payload,
-            requestStatus: { value: "open", label: "Open" },
-            requesterEmail: auth?.user?.email,
-          });
+      const res = isEdit ?
+        await updateRequest(params?.docId, payload) :
+        await addRequest({
+          ...payload,
+          requestStatus: { value: 'open', label: 'Open' },
+          requesterEmail: auth?.user?.email,
+        });
       snackbar.show(
-        "success",
-        `Request ${
-          isEdit ? "updated" : "created"
-        } successfully! Please also keep an eye on your post comment thread and useful links tab`
+          'success',
+          `Request 
+          ${ isEdit ? 'updated' : 'created' } successfully! Please also keep an eye on your post comment thread and useful links tab`,
       );
       // message.success('Request created successfully!')
       history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error('Error adding document: ', e);
       snackbar.show(
-        "error",
-        `Couldn't ${
-          isEdit ? "update" : "create"
-        } request!\n All the fields are mandatory!`
+          'error',
+          `Couldn't ${
+          isEdit ? 'update' : 'create'
+          } request!\n All the fields are mandatory!`,
       );
       // message.error(`Couldn't create request!`);
     }
@@ -188,14 +186,14 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
   const renderSelectPlaceholder = (text: string) => {
     return (
-      <Typography style={{ color: "rgba(0, 0, 0, 0.40)" }}>{text}</Typography>
+      <Typography style={{ color: 'rgba(0, 0, 0, 0.40)' }}>{text}</Typography>
     );
   };
 
   const renderTitle = () => {
     return (
       <Controller
-        name={"requestTitle"}
+        name={'requestTitle'}
         control={control}
         defaultValue=""
         render={({ field }) => (
@@ -213,14 +211,14 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderDescription = () => {
     return (
       <Controller
-        name={"requestDescription"}
+        name={'requestDescription'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextareaAutosize
             {...field}
             placeholder="Situation description goes here ..."
-            style={{ width: "100%", height: "100px" }}
+            style={{ width: '100%', height: '100px' }}
             className={classes.input}
           />
         )}
@@ -231,13 +229,13 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderRequester = () => {
     return (
       <Controller
-        name={"requesterName"}
+        name={'requesterName'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             placeholder="Requester's Name"
             className={classes.input}
             InputProps={{ disableUnderline: true }}
@@ -250,13 +248,13 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderAge = () => {
     return (
       <Controller
-        name={"patientAge"}
+        name={'patientAge'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             placeholder="Patient's Age"
             className={classes.input}
             InputProps={{ disableUnderline: true }}
@@ -275,14 +273,14 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           return (
             <Select
               {...field}
-              placeholder={renderSelectPlaceholder("Select Category")}
+              placeholder={renderSelectPlaceholder('Select Category')}
               options={[
-                { value: "plasma", label: "Plasma" },
-                { value: "oxygen", label: "Oxygen" },
-                { value: "medicine", label: "Medicine" },
-                { value: "blood", label: "Blood" },
-                { value: "money", label: "Monetary" },
-                { value: "other", label: "Other" },
+                { value: 'plasma', label: 'Plasma' },
+                { value: 'oxygen', label: 'Oxygen' },
+                { value: 'medicine', label: 'Medicine' },
+                { value: 'blood', label: 'Blood' },
+                { value: 'money', label: 'Monetary' },
+                { value: 'other', label: 'Other' },
               ]}
             />
           );
@@ -300,11 +298,11 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           <Select
             {...field}
             placeholder={renderSelectPlaceholder(
-              "Select Gender of the patient"
+                'Select Gender of the patient',
             )}
             options={[
-              { value: "male", label: "Male" },
-              { value: "femal", label: "Female" },
+              { value: 'male', label: 'Male' },
+              { value: 'femal', label: 'Female' },
             ]}
           />
         )}
@@ -321,19 +319,19 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           <Select
             {...field}
             placeholder={renderSelectPlaceholder(
-              "Select Blood Group of the patient"
+                'Select Blood Group of the patient',
             )}
             options={[
-              { value: "a+", label: "A+" },
-              { value: "a-", label: "A-" },
-              { value: "b+", label: "B+" },
-              { value: "b-", label: "B-" },
-              { value: "c+", label: "C+" },
-              { value: "c-", label: "C-" },
-              { value: "o+", label: "O+" },
-              { value: "o-", label: "O-" },
-              { value: "ab+", label: "AB+" },
-              { value: "ab+", label: "AB+" },
+              { value: 'a+', label: 'A+' },
+              { value: 'a-', label: 'A-' },
+              { value: 'b+', label: 'B+' },
+              { value: 'b-', label: 'B-' },
+              { value: 'c+', label: 'C+' },
+              { value: 'c-', label: 'C-' },
+              { value: 'o+', label: 'O+' },
+              { value: 'o-', label: 'O-' },
+              { value: 'ab+', label: 'AB+' },
+              { value: 'ab+', label: 'AB+' },
             ]}
           />
         )}
@@ -344,17 +342,17 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderContactNumber = () => {
     return (
       <Controller
-        name={"requesterContactNumber"}
+        name={'requesterContactNumber'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <MuiPhoneNumber
             {...field}
-            defaultCountry={"in"}
-            onlyCountries={["in"]}
+            defaultCountry={'in'}
+            onlyCountries={['in']}
             disableCountryCode
             disableDropdown
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             placeholder="Contact Number"
             className={classes.input}
             InputProps={{ disableUnderline: true }}
@@ -372,7 +370,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder={renderSelectPlaceholder("Select State")}
+            placeholder={renderSelectPlaceholder('Select State')}
             onChange={(option) => {
               handleStateChange(option.value);
               field?.onChange(option);
@@ -395,7 +393,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder={renderSelectPlaceholder("Select District")}
+            placeholder={renderSelectPlaceholder('Select District')}
             options={districts}
           />
         )}
@@ -409,7 +407,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         variant="contained"
         color="primary"
         onClick={handleSubmit(onSubmit)}
-        style={{ marginRight: "10px" }}
+        style={{ marginRight: '10px' }}
       >
         Submit
       </Button>
@@ -430,7 +428,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         <Grid container spacing={1}>
           <Grid container>
             <Grid item xs>
-              <Typography variant="h6">Requester's Email</Typography>
+              <Typography variant="h6">Requester&apos;s Email</Typography>
             </Grid>
             <Grid item xs>
               <Typography variant="h6">
@@ -441,7 +439,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
           <Grid container>
             <Grid item xs>
-              <Typography variant="h6">Requester's Name</Typography>
+              <Typography variant="h6">Requester&apos;s Name</Typography>
             </Grid>
             <Grid item xs>
               {renderRequester()}
@@ -468,7 +466,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
           <Grid container>
             <Grid item xs>
-              <Typography variant="h6">Patient's Gender</Typography>
+              <Typography variant="h6">Patient&apos;s Gender</Typography>
             </Grid>
             <Grid item xs>
               {renderGender()}
@@ -477,7 +475,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
           <Grid container>
             <Grid item xs>
-              <Typography variant="h6">Patient's Blood Group</Typography>
+              <Typography variant="h6">Patient&apos;s Blood Group</Typography>
             </Grid>
             <Grid item xs>
               {renderBloodGroup()}
@@ -486,7 +484,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
 
           <Grid container>
             <Grid item xs>
-              <Typography variant="h6">Patient's Age</Typography>
+              <Typography variant="h6">Patient&apos;s Age</Typography>
             </Grid>
             <Grid item xs>
               {renderAge()}
