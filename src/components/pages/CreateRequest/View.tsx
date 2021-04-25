@@ -30,6 +30,7 @@ import {
   changeTitle,
   changeBackButton,
 } from "src/contexts/AppContext";
+import withAuth from "src/components/common/withAuth/View"
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -74,7 +75,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const [data, setData] = useState(undefined as undefined | RequestType);
 
   useEffect(() => {
-    ensureLoggedIn();
     loadData();
     dispatch(changeBackButton(true));
   }, []);
@@ -94,12 +94,6 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   useEffect(() => {
     dispatch(changeTitle(isEdit ? "Edit Request" : "Create Request"));
   }, [isEdit]);
-
-  const ensureLoggedIn = async () => {
-    if (!auth?.user?.email) {
-      history.replace(getLoginRoute());
-    }
-  };
 
   const isValidUser = () => {
     return data?.requesterEmail
@@ -548,5 +542,4 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   );
 };
 
-// export default withAuth(CreateRequest);
-export default CreateRequest;
+export default withAuth(CreateRequest);
