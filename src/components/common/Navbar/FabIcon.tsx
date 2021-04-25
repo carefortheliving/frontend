@@ -13,7 +13,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   fab: {
     position: 'fixed',
-    bottom: theme.spacing(4),
+    bottom: theme.spacing(10),
     right: theme.spacing(3),
   },
 }));
@@ -41,7 +41,7 @@ const FabIcon: React.FC<FabIconProps> = () => {
           onClick={() => history.push(getCreateRequestRoute())}
         />
       ),
-      name: 'Request',
+      name: 'Create Request',
     },
   ];
 
@@ -50,7 +50,6 @@ const FabIcon: React.FC<FabIconProps> = () => {
       color="secondary"
       ariaLabel="FAB"
       className={classes.fab}
-      // hidden={hidden}
       icon={<AddIcon />}
       onClose={handleClose}
       onOpen={handleOpen}

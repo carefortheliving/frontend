@@ -155,7 +155,7 @@ function Navbar(props: NavbarProps) {
               size="small"
               onClick={() => history.push(getAboutRoute())}
             >
-              Info
+              About us
             </Button>
           </>
         ) : (
