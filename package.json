@@ -8,6 +8,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/** --fix",
+    "emulator:login": "firebase login",
+    "emulator:init": "firebase init emulators",
+    "emulator:start": "firebase emulators:start",
     "firebase-token": "npm install -g firebase-tools@8 && firebase login:ci",
     "firebase-login": "firebase login",
     "firebase-deploy": "npm run build && firebase deploy --only hosting"
@@ -52,6 +55,7 @@
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.23.2",
+    "firebase-tools": "^9.10.0",
     "husky": "^6.0.0",
     "typescript": "^4.2.4"
   },

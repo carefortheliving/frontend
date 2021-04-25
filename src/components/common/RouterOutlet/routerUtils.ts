@@ -1,27 +1,27 @@
 export const getHomeRoute = () => {
-  return `/`;
+	return `/`;
 };
 
 export const getLoginRoute = () => {
-  return `/login`;
+	return `/login`;
 };
 
 export const getCreateRequestRoute = () => {
-  return `/request/create`;
+	return `/request/create`;
 };
 
 export const getEditRequestRoute = (docId: string) => {
-  return `/request/edit/${docId}`;
+	return `/request/edit/${docId}`;
 };
 
 export const getViewRequestRoute = (docId: string) => {
-  return `/request/view/${docId}`;
+	return `/request/view/${docId}`;
 };
 
 export const getSayThanksRoute = (docId: string) => {
-  return `/thank/${docId}`;
+	return `/thank/${docId}`;
 };
 
 export const getAboutRoute = () => {
-  return `/about`;
+	return `/about`;
 };

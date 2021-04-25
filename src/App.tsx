@@ -12,22 +12,22 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 
 const App = () => (
-  <AppProvider>
-    <ThemeProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <SnackbarProvider>
-            <CssBaseline />
-            <Navbar />
-            <Box mt={10} minHeight="70vh">
-              <RouterOutlet />
-            </Box>
-            <Footer />
-          </SnackbarProvider>
-        </AuthProvider>
-      </BrowserRouter>
-    </ThemeProvider>
-  </AppProvider>
+	<AppProvider>
+		<ThemeProvider>
+			<BrowserRouter>
+				<AuthProvider>
+					<SnackbarProvider>
+						<CssBaseline />
+						<Navbar />
+						<Box mt={10} minHeight="70vh">
+							<RouterOutlet />
+						</Box>
+						<Footer />
+					</SnackbarProvider>
+				</AuthProvider>
+			</BrowserRouter>
+		</ThemeProvider>
+	</AppProvider>
 );
 
 export default App;

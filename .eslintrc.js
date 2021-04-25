@@ -31,7 +31,10 @@ module.exports = {
     'array-callback-return': 'off',
     'linebreak-style': 'off',
     'max-len': ["error", { "ignoreStrings": true }],
-    'object-curly-spacing': ["error", "always", { "arraysInObjects": false }]
+    'object-curly-spacing': ["error", "always", { "arraysInObjects": false }],
+    "indent": ["error", "tab"],
+    "no-tabs": "off",
+    "max-len": "off",
   },
   'settings': {
     'import/resolver': {
@@ -40,5 +43,24 @@ module.exports = {
     "react": {
       "version": "detect"
     },
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
   },
 };

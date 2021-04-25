@@ -3,8 +3,8 @@ import React, { createContext, useReducer, useContext } from 'react';
 export const AppContext = createContext({} as any);
 
 const initialState = {
-  backButton: false,
-  title: 'Care for the Living',
+	backButton: false,
+	title: 'Care for the Living',
 };
 
 // Actions
@@ -17,26 +17,26 @@ export const changeTitle = (payload) => ({ type: CHANGE_TITLE, payload });
 
 // Reducer
 export const appReducer = (state, action) => {
-  switch (action.type) {
-    case CHANGE_TITLE:
-      return { ...state, title: action.payload };
-    case BACK_BUTTON:
-      return { ...state, backButton: action.payload };
-    default:
-      return state;
-  }
+	switch (action.type) {
+	case CHANGE_TITLE:
+		return { ...state, title: action.payload };
+	case BACK_BUTTON:
+		return { ...state, backButton: action.payload };
+	default:
+		return state;
+	}
 };
 
 const AppProvider = (props) => {
-  const [state, dispatch] = useReducer(appReducer, initialState);
+	const [state, dispatch] = useReducer(appReducer, initialState);
 
-  const appData = { state, dispatch };
+	const appData = { state, dispatch };
 
-  return <AppContext.Provider value={appData} {...props} />;
+	return <AppContext.Provider value={appData} {...props} />;
 };
 
 function useAppContext() {
-  return useContext(AppContext);
+	return useContext(AppContext);
 }
 
 export { AppProvider, useAppContext };
