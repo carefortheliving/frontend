@@ -210,6 +210,13 @@ function Dashboard() {
               requestStatus: 'open',
             });
           case 1:
+            return await getRequests({
+              ...appliedFilters,
+              requestStatus: 'closed',
+            });
+          case 2:
+            return;
+          case 3:
             return (
               user?.email &&
               (await getRequests({
@@ -364,15 +371,17 @@ function Dashboard() {
             <Chip label={card.requestCategory?.label} variant="outlined" />{' '}
             <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
             <br />
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              endIcon={<PanToolIcon />}
-              onClick={() => handleCardClick(card.id)}
-            >
-              I want to help
-            </Button>
+            {card.requestStatus?.value === 'open' ?
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                endIcon={<PanToolIcon />}
+                onClick={() => handleCardClick(card.id)}
+              >
+                I want to help
+              </Button> :
+            null }
           </CardContent>
         </Card>
       </Grid>
@@ -445,7 +454,7 @@ function Dashboard() {
             ) : (
               (() => {
                 switch (getCurrentTabFromUrl()) {
-                  case 1:
+                  case 2:
                     return (
                       <>
                         {usefulLinks?.map((link, index) =>
@@ -480,7 +489,8 @@ function Dashboard() {
           // aria-label="disabled tabs example"
           // variant="fullWidth"
         >
-          <Tab label="All Requests" />
+          <Tab label="Open Requests" />
+          <Tab label="Closed Requests" />
           <Tab label="Useful links" />
           {user?.email && <Tab label="My Requests" />}
         </Tabs>

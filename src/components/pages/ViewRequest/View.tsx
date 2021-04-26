@@ -18,6 +18,7 @@ import {
   changeBackButton,
 } from 'src/contexts/AppContext';
 import CardContent from '@material-ui/core/CardContent';
+import useUser from 'src/hooks/useUser';
 import Card from '@material-ui/core/Card';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -36,6 +37,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   const { auth } = useFirebase();
   const [pageURL, setPageURL] = useState('');
   const [pageID, setPageID] = useState('');
+  const { isAdmin } = useUser();
 
   useEffect(() => {
     setPageURL(window.location.href);
@@ -170,7 +172,9 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                   </List>
                 </Grid>
                 {data.requestStatus?.value === 'open' ? (
-                  data?.requesterEmail === auth?.user?.email && (
+                  ( (data?.requesterEmail === auth?.user?.email) ||
+                  (isAdmin) ) &&
+                  (
                     <Grid item xs={12} md={6} spacing={2}>
                       {renderEditButton()}
                       {renderCloseButton()}
