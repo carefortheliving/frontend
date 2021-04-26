@@ -44,3 +44,9 @@ export interface DisqusProps {
   title: string;
   language: string;
 }
+
+export interface UserInfo {
+  isAdmin: boolean;
+  email: string;
+  displayName: string;
+}

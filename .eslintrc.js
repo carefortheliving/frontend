@@ -30,8 +30,10 @@ module.exports = {
     'react/prop-types': 'off',
     'array-callback-return': 'off',
     'linebreak-style': 'off',
-    'max-len': ["error", { "ignoreStrings": true }],
-    'object-curly-spacing': ["error", "always", { "arraysInObjects": false }]
+    'max-len': "off",
+    'object-curly-spacing': ["error", "always", { "arraysInObjects": false }],
+    "no-unused-vars": "off",
+    "indent": "off"
   },
   'settings': {
     'import/resolver': {
