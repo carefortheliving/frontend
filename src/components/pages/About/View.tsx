@@ -48,8 +48,21 @@ const About: React.FC<SayAbout> = () => {
             request. <br />
             We will do our best to make it visible to the world. <br />
             <br />
+            If you wish to contribute to the good cause, <br/>
+            kindly checkout <strong>requests</strong> on the dashboard and <br/>
+            see what you can do to help.
           </i>
           {/* - Buddha */}
+          <br/><br/><br/>
+        </Typography>
+        <Typography
+          component="h5"
+          variant="h4"
+          align="center"
+          color="textPrimary"
+          gutterBottom
+        >
+          <strong>&quot;Let&apos;s fight this together. 💪&quot;</strong>
         </Typography>
       </Container>
     );

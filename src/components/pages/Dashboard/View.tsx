@@ -42,6 +42,10 @@ import {
   changeBackButton,
 } from 'src/contexts/AppContext';
 import Disqus from 'src/components/common/Disqus/View';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import CancelIcon from '@material-ui/icons/Cancel';
+import BeenhereIcon from '@material-ui/icons/Beenhere';
+import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -489,10 +493,10 @@ function Dashboard() {
           // aria-label="disabled tabs example"
           // variant="fullWidth"
         >
-          <Tab label="Open Requests" />
-          <Tab label="Closed Requests" />
-          <Tab label="Useful links" />
-          {user?.email && <Tab label="My Requests" />}
+          <Tab icon={<EnhancedEncryptionIcon />} label="Open Requests" />
+          <Tab icon={<CancelIcon />} label="Closed Requests" />
+          <Tab icon={<BeenhereIcon />} label="Useful links" />
+          {user?.email && <Tab icon={<NotificationsActiveIcon />} label="My Requests" />}
         </Tabs>
       </AppBar>
     );
