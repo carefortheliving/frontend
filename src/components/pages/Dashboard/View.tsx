@@ -173,6 +173,7 @@ function Dashboard() {
   const [appliedFilters, setAppliedFilters] = useState(
     defaultFilters as Partial<FiltersType>,
   );
+  const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
   const isUpSm = useBreakpoint('sm');
   const { isAdmin } = useUser();
 
@@ -214,7 +215,7 @@ function Dashboard() {
             return await getRequests({
               ...appliedFilters,
               requestStatus: 'open',
-              sortBy: {
+              sortBy: filtersCount ? undefined : {
                 key: 'updatedAt',
                 direction: 'desc',
               },
@@ -223,7 +224,7 @@ function Dashboard() {
             return await getRequests({
               ...appliedFilters,
               requestStatus: 'closed',
-              sortBy: {
+              sortBy: filtersCount ? undefined : {
                 key: 'updatedAt',
                 direction: 'desc',
               },
@@ -301,7 +302,6 @@ function Dashboard() {
   };
 
   const renderFiltersCollapsed = () => {
-    const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
     return (
       <Grid item md={12}>
         <Accordion className={classes.filterCollapsed}>
