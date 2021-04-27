@@ -54,6 +54,7 @@ const useFirestore = () => {
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
+    ret.sort((a, b) => b.createdAt - a.createdAt);
     return ret;
   };
 
