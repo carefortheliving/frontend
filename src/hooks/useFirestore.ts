@@ -1,7 +1,8 @@
 import { FiltersType, RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
-import firestore from 'firebase/firestore';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
 
 const useFirestore = () => {
   const { db, auth } = useFirebase();
@@ -24,13 +25,16 @@ const useFirestore = () => {
   };
 
   const getRequests = async ({
-    requesterEmail,
-    requestStatus,
-    requestCategory,
-    patientDistrict,
-    patientState,
     sortBy,
+    ...filters
   } : FiltersType) => {
+    const {
+      requesterEmail,
+      requestStatus,
+      requestCategory,
+      patientDistrict,
+      patientState,
+    } = filters;
     let requestsRef = db.collection('requests');
     if (requesterEmail) {
       requestsRef =
@@ -59,7 +63,8 @@ const useFirestore = () => {
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
-    // ret.sort((a, b) => b.createdAt - a.createdAt);
+    const filtersCount = Object.keys(pickBy(filters, identity)).length;
+    filtersCount && ret.sort((a, b) => b.createdAt - a.createdAt);
     return ret;
   };
 
