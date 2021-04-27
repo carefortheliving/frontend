@@ -1,0 +1,56 @@
+.cr--body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cr--container{
+    width:70%;
+    height:auto;
+    background-color: rgb(231, 244, 248);
+
+}
+
+@media screen and (max-width: 800px) {
+    .cr--container{
+        width:90%;
+        height:auto;
+    }
+  }
+.header{
+    position: relative;
+    width:100%;
+    height:30vh;
+    margin-bottom: 10px;
+}
+.cr--image{
+    height: 100%;
+    width: 100%;    
+}
+
+.cr--image__heading{
+    position: absolute;
+    bottom:0;
+    right:0;
+    font-size: 1.5rrem;
+    background-image: linear-gradient(to right bottom, rgba(124, 241, 250, 0.85), rgba(48, 69, 255, 0.85));
+    padding: 20px 20px;
+    color: white;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition:  all 0.3s ease-in-out ;
+    opacity: 0.7;
+}
+
+.cr--image__heading:hover{
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    height: inherit;
+    width: inherit;
+    transform:scale(1);
+    opacity: 1.1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

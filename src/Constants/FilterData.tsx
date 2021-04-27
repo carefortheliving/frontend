@@ -1,8 +1,8 @@
 import useGeo from '../hooks/useGeo';
 
-const CATEGORIES = ['Blood', 'Plasma', 'Financial Aid', 'Transport'];
-const STATUS = ['Active', 'Completed'];
-
+export const CATEGORIES = ['Oxygen', 'Plasma', 'Medicine', 'Blood', 'Monetary', 'Other'];
+export const STATUS = ['Active', 'Completed'];
+export const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 export const FilterData = () => {
   const { states } = useGeo();
   delete states['Pondicherry'];
@@ -36,4 +36,16 @@ export const AllLocations = () => {
     states[state].map((city) => location.push(city.city));
   });
   return location;
+};
+
+export const locations = () => {
+  const { states } = useGeo();
+  const indianStates: any = [];
+  Object.keys(states).map((state) => {
+    indianStates.push(state);
+  });
+  return ({
+    indianStates,
+    allStates: states,
+  });
 };
