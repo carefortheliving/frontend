@@ -46,6 +46,7 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import CancelIcon from '@material-ui/icons/Cancel';
 import BeenhereIcon from '@material-ui/icons/Beenhere';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -181,6 +182,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('dashboard_page_visited');
     resetFilters();
     loadData();
     loadLinks();

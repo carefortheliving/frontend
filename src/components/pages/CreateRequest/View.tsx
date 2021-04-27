@@ -31,6 +31,7 @@ import {
   changeBackButton,
 } from 'src/contexts/AppContext';
 import withAuth from 'src/components/common/withAuth/View';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -74,6 +75,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const [data, setData] = useState(undefined as undefined | RequestType);
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('create/edit_request_visited');
     loadData();
     dispatch(changeBackButton(true));
   }, []);
