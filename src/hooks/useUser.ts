@@ -2,26 +2,30 @@
 import * as React from 'react';
 import useFirestore from 'src/hooks/useFirestore';
 import useFirebase from 'src/hooks/useFirebase';
+import { setUserInfo, useAppContext } from 'src/contexts/AppContext';
+import { UserInfo } from 'src/types';
 
 const useUser = () => {
   const { auth } = useFirebase();
-  const [isAdmin, setIsAdmin] = React.useState(false);
   const { isCurrentUserAdmin } = useFirestore();
+  const { dispatch, state: { userInfo } } = useAppContext();
 
   React.useEffect(() => {
-    ensureAdmin();
+    if (auth?.user?.email !== userInfo?.email) {
+      storeUserInfo();
+    }
   }, [auth?.user?.email]);
 
-  const ensureAdmin = async () => {
+  const storeUserInfo = async () => {
     const isAdmin = await isCurrentUserAdmin();
-    setIsAdmin(isAdmin);
+    dispatch(setUserInfo({
+      isAdmin,
+      email: auth?.user?.email,
+      displayName: auth?.user?.displayName,
+    }));
   };
 
-  return {
-    isAdmin,
-    email: auth?.user?.email,
-    displayName: auth?.user?.displayName,
-  };
+  return userInfo || ({} as UserInfo);
 };
 
 export default useUser;

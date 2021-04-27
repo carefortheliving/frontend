@@ -214,11 +214,19 @@ function Dashboard() {
             return await getRequests({
               ...appliedFilters,
               requestStatus: 'open',
+              sortBy: {
+                key: 'updatedAt',
+                direction: 'desc',
+              },
             });
           case 1:
             return await getRequests({
               ...appliedFilters,
               requestStatus: 'closed',
+              sortBy: {
+                key: 'updatedAt',
+                direction: 'desc',
+              },
             });
           case 2:
             return;
@@ -235,6 +243,9 @@ function Dashboard() {
       })();
       setRequests(requests);
     } catch (e) {
+      if (isAdmin) {
+        console.log({ e });
+      }
       snackbar.show(
           'error',
           `Data fetch failed due to huge traffic load.

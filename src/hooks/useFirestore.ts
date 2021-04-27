@@ -1,6 +1,7 @@
 import { FiltersType, RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
+import firestore from 'firebase/firestore';
 
 const useFirestore = () => {
   const { db, auth } = useFirebase();
@@ -28,26 +29,30 @@ const useFirestore = () => {
     requestCategory,
     patientDistrict,
     patientState,
+    sortBy,
   } : FiltersType) => {
-    let requestsRef: any = db.collection('requests');
+    let requestsRef = db.collection('requests');
     if (requesterEmail) {
       requestsRef =
-        requestsRef.where('requesterEmail', '==', requesterEmail);
+        requestsRef.where('requesterEmail', '==', requesterEmail) as any;
     }
     if (requestCategory) {
       requestsRef =
-        requestsRef.where('requestCategory.value', '==', requestCategory);
+        requestsRef.where('requestCategory.value', '==', requestCategory) as any;
     }
     if (patientDistrict) {
       requestsRef =
-        requestsRef.where('patientDistrict.value', '==', patientDistrict);
+        requestsRef.where('patientDistrict.value', '==', patientDistrict) as any;
     }
     if (patientState) {
-      requestsRef = requestsRef.where('patientState.value', '==', patientState);
+      requestsRef = requestsRef.where('patientState.value', '==', patientState) as any;
     }
     if (requestStatus) {
       requestsRef =
-        requestsRef.where('requestStatus.value', '==', requestStatus);
+        requestsRef.where('requestStatus.value', '==', requestStatus) as any;
+    }
+    if (sortBy) {
+      requestsRef = requestsRef.orderBy(sortBy.key, sortBy.direction === 'desc' ? 'desc' : undefined) as any;
     }
     const requests = await requestsRef.get();
     const ret = requests.docs?.map((doc) => ({
