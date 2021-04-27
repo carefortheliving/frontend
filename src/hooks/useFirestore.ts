@@ -26,15 +26,15 @@ const useFirestore = () => {
 
   const getRequests = async ({
     sortBy,
-    ...filters
+    requestStatus,
+    ...unindexedFilters // to be indexed on demand in firebase
   } : FiltersType) => {
     const {
       requesterEmail,
-      requestStatus,
       requestCategory,
       patientDistrict,
       patientState,
-    } = filters;
+    } = unindexedFilters;
     let requestsRef = db.collection('requests');
     if (requesterEmail) {
       requestsRef =
@@ -63,7 +63,7 @@ const useFirestore = () => {
       id: doc.id,
       ...doc.data(),
     })) as unknown as (RequestType & { id: string })[];
-    const filtersCount = Object.keys(pickBy(filters, identity)).length;
+    const filtersCount = Object.keys(pickBy(unindexedFilters, identity)).length;
     filtersCount && ret.sort((a, b) => b.createdAt - a.createdAt);
     return ret;
   };
