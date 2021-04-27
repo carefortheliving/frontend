@@ -30,6 +30,10 @@ export interface FiltersType {
   patientState?: string;
   patientDistrict?: string;
   requestCategory?: string;
+  sortBy?: {
+    key: 'createdAt' | 'updatedAt' | 'patientAge',
+    direction: 'asc' | 'desc'
+  }
 }
 
 export interface UsefulLink {
