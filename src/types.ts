@@ -5,6 +5,7 @@ export interface StylesProps<T> {
   };
   theme: Record<string, string>;
 }
+
 export interface RequestType {
   donorEmail?: string;
   donorName?: string;
