@@ -20,6 +20,7 @@ import {
   changeTitle,
   changeBackButton,
 } from 'src/contexts/AppContext';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -43,6 +44,7 @@ const SayThanks: FC<SayThanksProps> = () => {
   const snackbar = useSnackbar();
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('thank_you_page_visited');
     prefillData();
     dispatch(changeBackButton(true));
     dispatch(changeTitle('Say Thanks'));

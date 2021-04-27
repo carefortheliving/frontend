@@ -7,6 +7,7 @@ import {
   changeTitle,
   changeBackButton,
 } from 'src/contexts/AppContext';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 interface SayAbout {}
 
@@ -14,6 +15,7 @@ const About: React.FC<SayAbout> = () => {
   const { dispatch } = useAppContext();
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('about_page_visited');
     dispatch(changeBackButton(true));
     dispatch(changeTitle('About'));
   }, []);

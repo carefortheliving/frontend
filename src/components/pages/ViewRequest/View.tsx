@@ -25,6 +25,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 interface ViewRequestProps {}
 
@@ -40,6 +41,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   const { isAdmin } = useUser();
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('request_details_page_visited');
     setPageURL(window.location.href);
     const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
