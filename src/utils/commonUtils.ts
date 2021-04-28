@@ -19,3 +19,8 @@ export const downloadFile = (content, fileName, contentType = mime.lookup(fileNa
   a.download = fileName;
   a.click();
 };
+
+export const getUrlKey = (key: string, defaultVal?: any) => {
+  const currentUrlParams = new URLSearchParams(window.location.search);
+  return currentUrlParams.get(key) || defaultVal;
+};
