@@ -33,7 +33,7 @@ import {
 import useBreakpoint from 'src/hooks/useBreakpoint';
 import { FiltersType, UsefulLink } from 'src/types';
 import useUser from '../../../hooks/useUser';
-import AddEditLinkCard from './AddEditLinkCard';
+import LinkCard from './LinkCard';
 import { dashboardTabs, defaultFilters } from './constants';
 import RequestFilters from './RequestFilters';
 import { useStyles } from './styles';
@@ -197,7 +197,7 @@ const Dashboard = () => {
   const renderLinkCard = (data?: UsefulLink, index?: number) => {
     return (
       <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
-        <AddEditLinkCard prefillData={data} onReloadRequested={() => usefulLinks.loadData(handleFirebaseFailure)} />
+        <LinkCard prefillData={data} onReloadRequested={() => usefulLinks.loadData(handleFirebaseFailure)} />
       </Grid>
     );
   };

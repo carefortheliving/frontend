@@ -36,13 +36,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type AddEditLinkCardProps = {
+type LinkCardProps = {
   // type: 'add' | 'view';
   prefillData?: UsefulLink;
   onReloadRequested?: () => void;
 };
 
-const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
+const LinkCard: FC<LinkCardProps> = (props) => {
   const { prefillData, onReloadRequested } = props;
   const type = prefillData ? 'view' : 'add';
   const classes = useStyles();
@@ -59,7 +59,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
   const snackbar = useSnackbar();
 
   useEffect(() => {
-    firebaseAnalytics.logEvent('AddEditLinkCard_visited');
+    firebaseAnalytics.logEvent('LinkCard_visited');
     handlePrefillData();
 
     return () => {
@@ -220,4 +220,4 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
   );
 };
 
-export default AddEditLinkCard;
+export default LinkCard;
