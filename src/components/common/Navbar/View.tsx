@@ -19,10 +19,12 @@ import useRoutes from 'src/hooks/useRoutes';
 import { useAppContext } from 'src/contexts/AppContext';
 import {
   getAboutRoute,
+  getAdminPortalRoute,
   getCreateRequestRoute,
   getHomeRoute,
 } from '../RouterOutlet/routerUtils';
 import FabIcon from './FabIcon';
+import useUser from 'src/hooks/useUser';
 
 const drawerWidth = 240;
 
@@ -119,6 +121,7 @@ function Navbar(props: NavbarProps) {
   const [profileBtn, setProfileBtn] = React.useState(null);
   const isUpSm = useBreakpoint('sm');
   const { isCreateRequest, isLogin } = useRoutes();
+  const { isAdmin } = useUser();
 
   const isLogged = !!(user && user.uid);
 
@@ -134,6 +137,9 @@ function Navbar(props: NavbarProps) {
   };
   const handleRedirectHome = () => {
     history.push(getHomeRoute());
+  };
+  const handleAdminPortalClick = () => {
+    history.push(getAdminPortalRoute());
   };
 
   const renderActions = () => {
@@ -159,16 +165,16 @@ function Navbar(props: NavbarProps) {
             </Button>
           </>
         ) : (
-          <>
-            <FabIcon />
-            <IconButton
-              color="inherit"
-              onClick={() => history.push(getAboutRoute())}
-            >
-              <InfoIcon />
-            </IconButton>
-          </>
-        )}
+            <>
+              <FabIcon />
+              <IconButton
+                color="inherit"
+                onClick={() => history.push(getAboutRoute())}
+              >
+                <InfoIcon />
+              </IconButton>
+            </>
+          )}
       </>
     ) : null;
   };
@@ -189,8 +195,8 @@ function Navbar(props: NavbarProps) {
             {isUpSm ? user?.displayName : null}
           </Box>
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         <Menu
           id="simple-menu"
           anchorEl={profileBtn}
@@ -208,6 +214,10 @@ function Navbar(props: NavbarProps) {
               Send Feedback
             </a>
           </MenuItem>
+          {isAdmin ?
+            <MenuItem onClick={handleAdminPortalClick}>
+              Admin Portal
+            </MenuItem> : null}
           <MenuItem onClick={handleLogOut}>Logout</MenuItem>
         </Menu>
       </>

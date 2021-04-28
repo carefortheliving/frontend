@@ -9,6 +9,7 @@ export const serviceWorker = () => {
       navigator.geolocation.getCurrentPosition((showPosition) => {
         const { latitude, longitude } = showPosition.coords;
         // console.log(latitude , longitude)
+        // eslint-disable-next-line max-len
         fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
             .then((res) => res.json())
             .then((data) => {

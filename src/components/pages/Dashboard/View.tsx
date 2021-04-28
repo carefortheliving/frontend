@@ -41,7 +41,12 @@ import {
   changeTitle,
   changeBackButton,
 } from 'src/contexts/AppContext';
-import Disqus from 'src/components/common/Disqus/View';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import CancelIcon from '@material-ui/icons/Cancel';
+import BeenhereIcon from '@material-ui/icons/Beenhere';
+import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
+import { defaultUsefulLinks } from './constants';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -105,56 +110,10 @@ function Dashboard() {
   const { user } = useAuth();
   const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
-  const [pageURL, setPageURL] = useState('');
   const [requests, setRequests] = useState(
     [] as (RequestType & { id: string })[],
   );
-  const [usefulLinks, setUsefulLinks] = useState([
-    {
-      name: 'Realtime Leads',
-      link:
-        'https://docs.google.com/document/d/1rgHki3hQF_Q8SR_nfj6MtUN5JYN0DNnZMtrOUHKQA78/edit?usp=sharing',
-      description: 'This link contains leads of covid resources in realtime.',
-    },
-    {
-      name: 'CrowdSourcing of Data [CovidsFacts]',
-      link: 'https://covidfacts.in/',
-      description:
-        'This link contains information regarding leads of medical requirements',
-    },
-    {
-      name: 'EDGE | Covid Action - India',
-      link:
-        'https://www.notion.so/EDGE-Covid-Action-India-20APR21-01-30-100d217d90a04d1fbb46e2455de46722',
-      description: 'EDGE | Covid Action - India',
-    },
-    {
-      name: 'so.city/covid19',
-      link: 'https://so.city/covid19',
-      description: 'Covid resources for Delhi',
-    },
-    {
-      name: 'covidresource.glideapp.io',
-      link: 'https://covidresource.glideapp.io/',
-      description: 'Covid Useful Rescources',
-    },
-    {
-      name: 'bhopalcovidbeds.in',
-      link: 'https://http://www.bhopalcovidbeds.in/',
-      description: 'To check bed availability in Bhopal',
-    },
-    {
-      name: 'external.sprinklr.com',
-      link:
-        'https://external.sprinklr.com/insights/explorer/dashboard/601b9e214c7a6b689d76f493/tab/1?id=DASHBOARD_601b9e214c7a6b689d76f493',
-      description: 'Covid Resources',
-    },
-    {
-      name: 'dhoondh.com',
-      link: 'https://www.dhoondh.com/',
-      description: 'To search for plasma donors.',
-    },
-  ] as UsefulLink[]);
+  const [usefulLinks, setUsefulLinks] = useState([] as UsefulLink[]);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const location = useLocation();
@@ -168,6 +127,7 @@ function Dashboard() {
   const [appliedFilters, setAppliedFilters] = useState(
     defaultFilters as Partial<FiltersType>,
   );
+  const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
   const isUpSm = useBreakpoint('sm');
   const { isAdmin } = useUser();
 
@@ -177,20 +137,24 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('dashboard_page_visited');
+    dispatch(changeBackButton(false));
+    dispatch(changeTitle('Care for the Living'));
+  }, []);
+
+  useEffect(() => {
     resetFilters();
-    loadData();
-    loadLinks();
+    if (getCurrentTabFromUrl() !== 2) {
+      loadRequests();
+    }
+    if (getCurrentTabFromUrl() === 2) {
+      loadLinks();
+    }
   }, [getCurrentTabFromUrl()]);
 
   useEffect(() => {
-    loadData();
+    loadRequests();
   }, [appliedFilters]);
-
-  useEffect(() => {
-    dispatch(changeBackButton(false));
-    dispatch(changeTitle('Care for the Living'));
-    setPageURL(window.location.href);
-  }, []);
 
   const loadLinks = async () => {
     setLoading(true);
@@ -199,8 +163,9 @@ function Dashboard() {
     setUsefulLinks(links);
   };
 
-  const loadData = async () => {
+  const loadRequests = async () => {
     setLoading(true);
+    setRequests([]);
     try {
       const requests = await (async () => {
         switch (getCurrentTabFromUrl()) {
@@ -208,8 +173,23 @@ function Dashboard() {
             return await getRequests({
               ...appliedFilters,
               requestStatus: 'open',
+              sortBy: filtersCount ? undefined : {
+                key: 'updatedAt',
+                direction: 'desc',
+              },
             });
           case 1:
+            return await getRequests({
+              ...appliedFilters,
+              requestStatus: 'closed',
+              sortBy: filtersCount ? undefined : {
+                key: 'updatedAt',
+                direction: 'desc',
+              },
+            });
+          case 2:
+            return;
+          case 3:
             return (
               user?.email &&
               (await getRequests({
@@ -222,9 +202,13 @@ function Dashboard() {
       })();
       setRequests(requests);
     } catch (e) {
+      if (isAdmin) {
+        console.log({ e });
+      }
+      setUsefulLinks(defaultUsefulLinks);
       snackbar.show(
-          'error',
-          `Data fetch failed due to huge traffic load.
+        'error',
+        `Data fetch failed due to huge traffic load.
           Meanwhile please use comment thread.`,
       );
     }
@@ -236,6 +220,7 @@ function Dashboard() {
   };
 
   const handleTabChange = (event, newValue: number) => {
+    console.log({ event });
     const currentUrlParams = new URLSearchParams(location.search);
     currentUrlParams.set('tab', newValue?.toString());
     history.push({
@@ -277,7 +262,6 @@ function Dashboard() {
   };
 
   const renderFiltersCollapsed = () => {
-    const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
     return (
       <Grid item md={12}>
         <Accordion className={classes.filterCollapsed}>
@@ -300,11 +284,10 @@ function Dashboard() {
     return (
       <Grid item key={card.id} xs={12} sm={6} md={4}>
         <Card
-          className={`${
-            card.requestStatus?.value === 'open' ?
-              classes.openCard :
-              classes.closedCard
-          }`}
+          className={`${card.requestStatus?.value === 'open' ?
+            classes.openCard :
+            classes.closedCard
+            }`}
           onClick={() => handleCardClick(card.id)}
         >
           {/* <CardMedia
@@ -364,15 +347,17 @@ function Dashboard() {
             <Chip label={card.requestCategory?.label} variant="outlined" />{' '}
             <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
             <br />
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              endIcon={<PanToolIcon />}
-              onClick={() => handleCardClick(card.id)}
-            >
-              I want to help
-            </Button>
+            {card.requestStatus?.value === 'open' ?
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                endIcon={<PanToolIcon />}
+                onClick={() => handleCardClick(card.id)}
+              >
+                I want to help
+              </Button> :
+              null}
           </CardContent>
         </Card>
       </Grid>
@@ -443,24 +428,24 @@ function Dashboard() {
                 />
               </Box>
             ) : (
-              (() => {
-                switch (getCurrentTabFromUrl()) {
-                  case 1:
-                    return (
-                      <>
-                        {usefulLinks?.map((link, index) =>
-                          renderLinkCard(link, index),
-                        )}
-                        {isAdmin ? renderLinkCard() : null}
-                      </>
-                    );
-                  default:
-                    return requests?.length ?
-                      requests.map((card) => renderSingleCard(card)) :
-                      renderNoRequests();
-                }
-              })()
-            )}
+                (() => {
+                  switch (getCurrentTabFromUrl()) {
+                    case 2:
+                      return (
+                        <>
+                          {usefulLinks?.map((link, index) =>
+                            renderLinkCard(link, index),
+                          )}
+                          {isAdmin ? renderLinkCard() : null}
+                        </>
+                      );
+                    default:
+                      return requests?.length ?
+                        requests.map((card) => renderSingleCard(card)) :
+                        renderNoRequests();
+                  }
+                })()
+              )}
           </Grid>
         </Container>
       </Grid>
@@ -477,12 +462,21 @@ function Dashboard() {
           indicatorColor="primary"
           textColor="primary"
           onChange={handleTabChange}
-          // aria-label="disabled tabs example"
-          // variant="fullWidth"
+        // aria-label="disabled tabs example"
+        // variant="fullWidth"
         >
-          <Tab label="All Requests" />
-          <Tab label="Useful links" />
-          {user?.email && <Tab label="My Requests" />}
+          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 0 ? requests?.length : 0} color="primary">
+            <EnhancedEncryptionIcon />
+          </Badge>} label="Open Requests" />
+          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 1 ? requests?.length : 0} color="primary">
+            <CancelIcon />
+          </Badge>} label="Closed Requests" />
+          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 2 ? usefulLinks?.length : 0} color="primary">
+            <BeenhereIcon />
+          </Badge>} label="Useful links" />
+          {user?.email && <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 3 ? requests?.length : 0} color="primary">
+            <NotificationsActiveIcon />
+          </Badge>} label="My Requests" />}
         </Tabs>
       </AppBar>
     );
@@ -502,14 +496,6 @@ function Dashboard() {
               renderFiltersCollapsed() :
             null}
           {renderContent()}
-        </Grid>
-        <Grid item sm={12}>
-          <Disqus
-            url={pageURL}
-            id="73yyr7h3h718yr37y8****72ye73873wd3y8"
-            title="Care for the Living Homepage"
-            language="en"
-          />
         </Grid>
       </Container>
     </>

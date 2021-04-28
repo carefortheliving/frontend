@@ -15,6 +15,7 @@ import {
   changeTitle,
   changeBackButton,
 } from 'src/contexts/AppContext';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,6 +44,7 @@ function LogIn() {
   const history = useHistory();
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('login_view_visited');
     if (user?.uid) {
       history.push(getCreateRequestRoute());
     }

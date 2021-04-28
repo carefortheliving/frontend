@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect, useContext, createContext } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/analytics';
 import config from 'src/config';
 
 // Initialize Firebase
@@ -14,6 +15,8 @@ firebase.initializeApp({
   messagingSenderId: config.REACT_APP_FIREBASE_MESSAGINGSENDERID,
   appId: config.REACT_APP_FIREBASE_APPID,
 });
+
+export const firebaseAnalytics = firebase.analytics();
 
 const AuthContext = createContext({} as any);
 

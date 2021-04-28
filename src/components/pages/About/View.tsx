@@ -7,6 +7,7 @@ import {
   changeTitle,
   changeBackButton,
 } from 'src/contexts/AppContext';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 interface SayAbout {}
 
@@ -14,6 +15,7 @@ const About: React.FC<SayAbout> = () => {
   const { dispatch } = useAppContext();
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('about_page_visited');
     dispatch(changeBackButton(true));
     dispatch(changeTitle('About'));
   }, []);
@@ -48,8 +50,21 @@ const About: React.FC<SayAbout> = () => {
             request. <br />
             We will do our best to make it visible to the world. <br />
             <br />
+            If you wish to contribute to the good cause, <br/>
+            kindly checkout <strong>requests</strong> on the dashboard and <br/>
+            see what you can do to help.
           </i>
           {/* - Buddha */}
+          <br/><br/><br/>
+        </Typography>
+        <Typography
+          component="h5"
+          variant="h4"
+          align="center"
+          color="textPrimary"
+          gutterBottom
+        >
+          <strong>&quot;Let&apos;s fight this together. 💪&quot;</strong>
         </Typography>
       </Container>
     );

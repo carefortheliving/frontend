@@ -16,6 +16,7 @@ import { UsefulLink } from '../../../types';
 import useFirestore from 'src/hooks/useFirestore';
 import useUser from '../../../hooks/useUser';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
   openCard: {
@@ -58,6 +59,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
   const snackbar = useSnackbar();
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('AddEditLinkCard_visited');
     handlePrefillData();
 
     return () => {

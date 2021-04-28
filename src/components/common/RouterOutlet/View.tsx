@@ -11,6 +11,7 @@ const CreateRequest = React.lazy(
 const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
 const SayThanks = React.lazy(() => import('../../pages/SayThanks/View'));
 const About = React.lazy(() => import('../../pages/About/View'));
+const AdminPortal = React.lazy(() => import('../../pages/AdminPortal/View'));
 
 const RouterOutlet = (props) => {
   return (
@@ -27,6 +28,7 @@ const RouterOutlet = (props) => {
         <Route path="/request/view/:docId" exact component={ViewRequest} />
         <Route path="/thank/:docId" exact component={SayThanks} />
         <Route path="/about" exact component={About} />
+        <Route path="/admin" exact component={AdminPortal} />
       </Switch>
     </Suspense>
   );

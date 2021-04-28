@@ -18,12 +18,14 @@ import {
   changeBackButton,
 } from 'src/contexts/AppContext';
 import CardContent from '@material-ui/core/CardContent';
+import useUser from 'src/hooks/useUser';
 import Card from '@material-ui/core/Card';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 interface ViewRequestProps {}
 
@@ -36,8 +38,10 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   const { auth } = useFirebase();
   const [pageURL, setPageURL] = useState('');
   const [pageID, setPageID] = useState('');
+  const { isAdmin } = useUser();
 
   useEffect(() => {
+    firebaseAnalytics.logEvent('request_details_page_visited');
     setPageURL(window.location.href);
     const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
@@ -170,7 +174,9 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                   </List>
                 </Grid>
                 {data.requestStatus?.value === 'open' ? (
-                  data?.requesterEmail === auth?.user?.email && (
+                  ( (data?.requesterEmail === auth?.user?.email) ||
+                  (isAdmin) ) &&
+                  (
                     <Grid item xs={12} md={6} spacing={2}>
                       {renderEditButton()}
                       {renderCloseButton()}

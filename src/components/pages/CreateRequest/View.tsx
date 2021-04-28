@@ -22,6 +22,8 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { RequestType } from 'src/types';
 import validations from './Validations';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
+
 const ValidationTextField = withStyles({
   root: {
     '& input:valid + fieldset': {
@@ -78,6 +80,7 @@ function View() {
     if (!email) {
       history.push(getLoginRoute());
     }
+    firebaseAnalytics.logEvent('create/edit_request_visited');
     dispatch(changeTitle('My Request'));
     dispatch(changeBackButton(true));
   }, []);
@@ -124,33 +127,6 @@ function View() {
           `Error while creating the request !`,
       );
     }
-
-    // if (!validateFields(data)) return;
-    // try {
-    //   const payload: RequestType = pickBy(data, identity) as any;
-    //   const res = isEdit ?
-    //     await updateRequest(params?.docId, payload) :
-    //     await addRequest({
-    //       ...payload,
-    //       requestStatus: { value: 'open', label: 'Open' },
-    //       requesterEmail: auth?.user?.email,
-    //     });
-    //   snackbar.show(
-    //       'success',
-    //       `Request
-    //       ${ isEdit ? 'updated' : 'created' } successfully! Please also keep an eye on your post comment thread and useful links tab`,
-    //   );
-    //   // message.success('Request created successfully!')
-    //   history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
-    // } catch (e) {
-    //   console.error('Error adding document: ', e);
-    //   snackbar.show(
-    //       'error',
-    //       `Couldn't ${
-    //       isEdit ? 'update' : 'create'
-    //       } request!\n All the fields are mandatory!`,
-    //   );
-    // }
   };
   return (
     <div className="cr--body">
