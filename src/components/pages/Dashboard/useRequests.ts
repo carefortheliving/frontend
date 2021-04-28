@@ -1,18 +1,17 @@
 import * as React from 'react';
-import { FiltersType, RequestType } from 'src/types';
+import { ExistingRequestType, FiltersType, RequestType } from 'src/types';
 import useFirestore from 'src/hooks/useFirestore';
 import useUrlKeys from './useUrlKeys';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 import useUser from 'src/hooks/useUser';
-
 interface UseRequestsProps {
   appliedFilters: Partial<FiltersType>;
 }
 
 const useRequests = (props: UseRequestsProps) => {
   const { appliedFilters } = props;
-  const [data, setData] = React.useState([] as (RequestType & { id: string })[]);
+  const [data, setData] = React.useState([] as ExistingRequestType[]);
   const [loading, setLoading] = React.useState(false);
   const { getRequests } = useFirestore();
   const urlKeys = useUrlKeys();

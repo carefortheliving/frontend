@@ -5,52 +5,42 @@ import {
   AccordionSummary,
   Badge,
   CircularProgress,
-  Tooltip,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
-import PanToolIcon from '@material-ui/icons/PanTool';
+import BeenhereIcon from '@material-ui/icons/Beenhere';
+import CancelIcon from '@material-ui/icons/Cancel';
+import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import FilterList from '@material-ui/icons/FilterList';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import React, { useState, useEffect } from 'react';
+import identity from 'lodash/identity';
+import pickBy from 'lodash/pickBy';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useAuth } from 'src/components/common/AuthProvider/View';
+import { firebaseAnalytics, useAuth } from 'src/components/common/AuthProvider/View';
 import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import {
+  changeBackButton, changeTitle, useAppContext,
+} from 'src/contexts/AppContext';
 import useBreakpoint from 'src/hooks/useBreakpoint';
 import { FiltersType, UsefulLink } from 'src/types';
-import { parseTime } from 'src/utils/commonUtils';
 import useUser from '../../../hooks/useUser';
 import AddEditLinkCard from './AddEditLinkCard';
+import { dashboardTabs, defaultFilters } from './constants';
 import RequestFilters from './RequestFilters';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import CancelIcon from '@material-ui/icons/Cancel';
-import BeenhereIcon from '@material-ui/icons/Beenhere';
-import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
-import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
-import { defaultFilters } from './constants';
 import { useStyles } from './styles';
-import useUrlKeys from './useUrlKeys';
-import { dashboardTabs } from './constants';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import useRequests from './useRequests';
+import useUrlKeys from './useUrlKeys';
 import useUsefulLinks from './useUsefulLinks';
+import RequestCard from './RequestCard';
 
 const Dashboard = () => {
   const { dispatch } = useAppContext();
@@ -167,90 +157,6 @@ const Dashboard = () => {
     );
   };
 
-  const renderSingleCard = (card: typeof requests.data[0]) => {
-    return (
-      <Grid item key={card.id} xs={12} sm={6} md={4}>
-        <Card
-          className={`${card.requestStatus?.value === 'open' ?
-            classes.openCard :
-            classes.closedCard
-            }`}
-          onClick={() => handleCardClick(card.id)}
-        >
-          {/* <CardMedia
-            className={classes.cardMedia}
-            image={card.image}
-            title="Image title"
-          /> */}
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h5" component="h2">
-              {card.requestTitle}
-            </Typography>
-            <hr />
-            <Tooltip
-              style={{ width: '250px' }}
-              enterDelay={500}
-              title={
-                <>
-                  <Typography color="inherit">
-                    {card.requestDescription}
-                  </Typography>
-                </>
-              }
-              placement="top"
-            >
-              <Typography noWrap>{card.requestDescription}</Typography>
-            </Tooltip>
-            <br />
-            <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
-              <Typography style={{ marginRight: '10px' }}>
-                <i>Requested By:</i>
-              </Typography>
-              <Typography>{card.requesterName}</Typography>
-            </Box>
-            <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
-              <Typography style={{ marginRight: '10px' }}>
-                <i>Address:</i>
-              </Typography>
-              <Typography>
-                {card.patientDistrict?.label}, {card.patientState?.label}
-              </Typography>
-            </Box>
-            {/* {card.requestStatus?.value === "closed" ? (
-              <Typography style={{ display: "flex", alignItems: "center" }}>
-                Donor: {card.donorName}
-                <FavoriteIcon
-                  color="secondary"
-                  fontSize="small"
-                  style={{ marginLeft: "5px" }}
-                />
-              </Typography>
-            ) : null} */}
-            <br />
-            <Chip
-              label={card.patientBloodGroup?.label}
-              variant="outlined"
-            />{' '}
-            <Chip label={card.requestCategory?.label} variant="outlined" />{' '}
-            <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
-            <br />
-            {card.requestStatus?.value === 'open' ?
-              <Button
-                variant="contained"
-                color="secondary"
-                size="small"
-                endIcon={<PanToolIcon />}
-                onClick={() => handleCardClick(card.id)}
-              >
-                I want to help
-              </Button> :
-              null}
-          </CardContent>
-        </Card>
-      </Grid>
-    );
-  };
-
   const renderNoRequests = () => {
     return (
       <Container style={{ marginTop: '20px' }}>
@@ -333,7 +239,7 @@ const Dashboard = () => {
                     case 'my_requests':
                     default:
                       return requests.data?.length ?
-                      requests.data?.map((card) => renderSingleCard(card)) :
+                        requests.data?.map((card) => <RequestCard key={card.id} data={card} onClick={handleCardClick} />) :
                         renderNoRequests();
                   }
                 })()
