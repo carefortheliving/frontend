@@ -75,26 +75,6 @@ const useFirestore = () => {
     return request;
   };
 
-  const getCount = async () => {
-    const obj = {
-      total: 0,
-      open: 0,
-      closed: 0,
-    };
-    const requestsRef = db.collection('requests');
-    const data = await requestsRef.get();
-    data.forEach((doc) => {
-      if (doc.data()?.requestStatus.value === 'closed') {
-        obj['closed'] += 1;
-      }
-      if (doc.data()?.requestStatus.value === 'open') {
-        obj['open'] += 1;
-      }
-      obj['total'] += 1;
-    });
-    return obj;
-  };
-
   const getUsefulLinks = async () => {
     const ret = await db.collection('usefulLinks').get();
     return ret.docs.map((el) => ({
@@ -139,7 +119,6 @@ const useFirestore = () => {
     addUsefulLink,
     updateUsefulLink,
     isCurrentUserAdmin,
-    getCount,
   };
 };
 
