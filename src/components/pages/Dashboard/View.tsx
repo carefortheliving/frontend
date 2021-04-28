@@ -47,6 +47,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import BeenhereIcon from '@material-ui/icons/Beenhere';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
+import CaseCount from 'src/components/common/CaseCount/View';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -108,7 +109,7 @@ function Dashboard() {
   const { dispatch } = useAppContext();
   const classes = useStyles();
   const { user } = useAuth();
-  const { getRequests, getUsefulLinks } = useFirestore();
+  const { getRequests, getUsefulLinks, getCount } = useFirestore();
   const snackbar = useSnackbar();
   const [pageURL, setPageURL] = useState('');
   const [requests, setRequests] = useState(
@@ -176,6 +177,7 @@ function Dashboard() {
   const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
   const isUpSm = useBreakpoint('sm');
   const { isAdmin } = useUser();
+  const [count, setCount] = useState({});
 
   const getCurrentTabFromUrl = () => {
     const currentUrlParams = new URLSearchParams(location.search);
@@ -185,6 +187,7 @@ function Dashboard() {
   useEffect(() => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
     resetFilters();
+    loadCount();
     loadData();
     loadLinks();
   }, [getCurrentTabFromUrl()]);
@@ -204,6 +207,11 @@ function Dashboard() {
     const links = await getUsefulLinks();
     setLoading(false);
     setUsefulLinks(links);
+  };
+
+  const loadCount = async () => {
+    const resp: any = await getCount();
+    setCount(resp);
   };
 
   const loadData = async () => {
@@ -438,6 +446,7 @@ function Dashboard() {
           <br />
           {/* - Buddha */}
         </Typography>
+        <CaseCount count={count} />
       </Container>
     );
   };
