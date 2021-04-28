@@ -97,15 +97,6 @@ const Dashboard = () => {
     history.push(getViewRequestRoute(docId));
   };
 
-  const handleTabChange = (event, newValue: number) => {
-    const currentUrlParams = new URLSearchParams(location.search);
-    currentUrlParams.set('tab', newValue?.toString());
-    history.push({
-      pathname: location.pathname,
-      search: '?' + currentUrlParams.toString(),
-    });
-  };
-
   const resetFilters = () => {
     handleFilterChange(defaultFilters);
   };
@@ -259,7 +250,7 @@ const Dashboard = () => {
           value={urlKeys.tab.key}
           indicatorColor="primary"
           textColor="primary"
-          onChange={handleTabChange}>
+          onChange={(e, tabKey) => urlKeys.setTab(tabKey)}>
 
           <Tab label="Open Requests"
             value={dashboardTabs.open_requests.key}
@@ -271,14 +262,14 @@ const Dashboard = () => {
             }
           />
 
-          <Tab
+          {user?.email ? <Tab
             label="Donors"
             value={dashboardTabs.donors.key}
             icon={
               <Badge badgeContent={urlKeys.tab.key === 'donors' ? 0 /* TODO: */ : 0} color="primary">
                 <FavoriteIcon />
               </Badge>
-            } />
+            } /> : null}
 
           <Tab
             label="Useful links"
