@@ -15,7 +15,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
@@ -23,13 +22,12 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 import FilterList from '@material-ui/icons/FilterList';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useAuth } from 'src/components/common/AuthProvider/View';
 import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import useBreakpoint from 'src/hooks/useBreakpoint';
-import useFirestore from 'src/hooks/useFirestore';
-import { FiltersType, RequestType, UsefulLink } from 'src/types';
+import { FiltersType, UsefulLink } from 'src/types';
 import { parseTime } from 'src/utils/commonUtils';
 import useUser from '../../../hooks/useUser';
 import AddEditLinkCard from './AddEditLinkCard';
@@ -46,95 +44,30 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import BeenhereIcon from '@material-ui/icons/Beenhere';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
-import { defaultUsefulLinks } from './constants';
+import { defaultFilters } from './constants';
+import { useStyles } from './styles';
+import useUrlKeys from './useUrlKeys';
+import { dashboardTabs } from './constants';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import useRequests from './useRequests';
+import useUsefulLinks from './useUsefulLinks';
 
-const useStyles = makeStyles((theme) => ({
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
-  cardGrid: {
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(8),
-    paddingLeft: '0px',
-    paddingRight: '0px',
-  },
-  openCard: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    cursor: 'pointer',
-  },
-  closedCard: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    cursor: 'pointer',
-    background: '#efefef',
-  },
-  cardMedia: {
-    paddingTop: '56.25%',
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  filter_Heading: {
-    textAlign: 'center',
-    margin: '1rem 0 1rem 0',
-  },
-  filter_Container: {
-    position: 'relative',
-  },
-  filterCollapsed: {
-    marginTop: theme.spacing(4),
-  },
-  filterCount: {
-    marginLeft: '10px',
-  },
-  filter: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  table: {
-    // minWidth: 650,
-  },
-}));
-
-function Dashboard() {
+const Dashboard = () => {
   const { dispatch } = useAppContext();
   const classes = useStyles();
   const { user } = useAuth();
-  const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
-  const [requests, setRequests] = useState(
-    [] as (RequestType & { id: string })[],
-  );
-  const [usefulLinks, setUsefulLinks] = useState([] as UsefulLink[]);
-  const [loading, setLoading] = useState(false);
-  const history = useHistory();
-  const location = useLocation();
-  const defaultFilters = {
-    patientDistrict: undefined,
-    patientState: undefined,
-    requestCategory: undefined,
-    requestStatus: undefined,
-    requesterEmail: undefined,
-  };
   const [appliedFilters, setAppliedFilters] = useState(
     defaultFilters as Partial<FiltersType>,
   );
+  const requests = useRequests({ appliedFilters });
+  const usefulLinks = useUsefulLinks({});
+  const history = useHistory();
+  const urlKeys = useUrlKeys();
   const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
   const isUpSm = useBreakpoint('sm');
   const { isAdmin } = useUser();
-
-  const getCurrentTabFromUrl = () => {
-    const currentUrlParams = new URLSearchParams(location.search);
-    return Number(currentUrlParams.get('tab') || '0');
-  };
+  const loading = requests.loading || usefulLinks.loading;
 
   useEffect(() => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
@@ -144,75 +77,30 @@ function Dashboard() {
 
   useEffect(() => {
     resetFilters();
-    if (getCurrentTabFromUrl() !== 2) {
-      loadRequests();
+    if (urlKeys.tab.key === 'closed_requests' ||
+      urlKeys.tab.key === 'open_requests' ||
+      urlKeys.tab.key === 'my_requests') {
+      requests.loadData(handleFirebaseFailure);
     }
-    if (getCurrentTabFromUrl() === 2) {
-      loadLinks();
+    if (urlKeys.tab.key === 'useful_links') {
+      usefulLinks.loadData(handleFirebaseFailure);
     }
-  }, [getCurrentTabFromUrl()]);
+  }, [urlKeys.tab.key]);
 
   useEffect(() => {
-    loadRequests();
+    requests.loadData(handleFirebaseFailure);
   }, [appliedFilters]);
 
-  const loadLinks = async () => {
-    setLoading(true);
-    const links = await getUsefulLinks();
-    setLoading(false);
-    setUsefulLinks(links);
-  };
-
-  const loadRequests = async () => {
-    setLoading(true);
-    setRequests([]);
-    try {
-      const requests = await (async () => {
-        switch (getCurrentTabFromUrl()) {
-          case 0:
-            return await getRequests({
-              ...appliedFilters,
-              requestStatus: 'open',
-              sortBy: filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 1:
-            return await getRequests({
-              ...appliedFilters,
-              requestStatus: 'closed',
-              sortBy: filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 2:
-            return;
-          case 3:
-            return (
-              user?.email &&
-              (await getRequests({
-                requesterEmail: user?.email,
-              }))
-            );
-          default:
-            return;
-        }
-      })();
-      setRequests(requests);
-    } catch (e) {
-      if (isAdmin) {
-        console.log({ e });
-      }
-      setUsefulLinks(defaultUsefulLinks);
-      snackbar.show(
-        'error',
-        `Data fetch failed due to huge traffic load.
-          Meanwhile please use comment thread.`,
-      );
+  const handleFirebaseFailure = (e: any) => {
+    if (isAdmin) {
+      console.log({ e });
     }
-    setLoading(false);
+    usefulLinks.loadFallbackData();
+    snackbar.show(
+      'error',
+      `Data fetch failed due to huge traffic load.
+        Meanwhile please use comment thread.`,
+    );
   };
 
   const handleCardClick = (docId: string) => {
@@ -220,7 +108,6 @@ function Dashboard() {
   };
 
   const handleTabChange = (event, newValue: number) => {
-    console.log({ event });
     const currentUrlParams = new URLSearchParams(location.search);
     currentUrlParams.set('tab', newValue?.toString());
     history.push({
@@ -280,7 +167,7 @@ function Dashboard() {
     );
   };
 
-  const renderSingleCard = (card: typeof requests[0]) => {
+  const renderSingleCard = (card: typeof requests.data[0]) => {
     return (
       <Grid item key={card.id} xs={12} sm={6} md={4}>
         <Card
@@ -404,7 +291,7 @@ function Dashboard() {
   const renderLinkCard = (data?: UsefulLink, index?: number) => {
     return (
       <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
-        <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks} />
+        <AddEditLinkCard prefillData={data} onReloadRequested={() => usefulLinks.loadData(handleFirebaseFailure)} />
       </Grid>
     );
   };
@@ -429,19 +316,24 @@ function Dashboard() {
               </Box>
             ) : (
                 (() => {
-                  switch (getCurrentTabFromUrl()) {
-                    case 2:
+                  switch (urlKeys.tab.key) {
+                    case 'useful_links':
                       return (
                         <>
-                          {usefulLinks?.map((link, index) =>
+                          {usefulLinks?.data?.map((link, index) =>
                             renderLinkCard(link, index),
                           )}
                           {isAdmin ? renderLinkCard() : null}
                         </>
                       );
+                    case 'donors':
+                      return null;
+                    case 'open_requests':
+                    case 'closed_requests':
+                    case 'my_requests':
                     default:
-                      return requests?.length ?
-                        requests.map((card) => renderSingleCard(card)) :
+                      return requests.data?.length ?
+                      requests.data?.map((card) => renderSingleCard(card)) :
                         renderNoRequests();
                   }
                 })()
@@ -458,25 +350,56 @@ function Dashboard() {
         <Tabs
           variant="scrollable"
           scrollButtons="auto"
-          value={getCurrentTabFromUrl()}
+          value={urlKeys.tab.key}
           indicatorColor="primary"
           textColor="primary"
-          onChange={handleTabChange}
-        // aria-label="disabled tabs example"
-        // variant="fullWidth"
-        >
-          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 0 ? requests?.length : 0} color="primary">
-            <EnhancedEncryptionIcon />
-          </Badge>} label="Open Requests" />
-          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 1 ? requests?.length : 0} color="primary">
-            <CancelIcon />
-          </Badge>} label="Closed Requests" />
-          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 2 ? usefulLinks?.length : 0} color="primary">
-            <BeenhereIcon />
-          </Badge>} label="Useful links" />
-          {user?.email && <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 3 ? requests?.length : 0} color="primary">
-            <NotificationsActiveIcon />
-          </Badge>} label="My Requests" />}
+          onChange={handleTabChange}>
+
+          <Tab label="Open Requests"
+            value={dashboardTabs.open_requests.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests.data?.length : 0}
+                color="primary">
+                <EnhancedEncryptionIcon />
+              </Badge>
+            }
+          />
+
+          <Tab
+            label="Donors"
+            value={dashboardTabs.donors.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'donors' ? 0 /* TODO: */ : 0} color="primary">
+                <FavoriteIcon />
+              </Badge>
+            } />
+
+          <Tab
+            label="Useful links"
+            value={dashboardTabs.useful_links.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'useful_links' ? usefulLinks?.data?.length : 0} color="primary">
+                <BeenhereIcon />
+              </Badge>
+            } />
+
+          {user?.email ?
+            <Tab label="My Requests"
+              value={dashboardTabs.my_requests.key}
+              icon={
+                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests.data?.length : 0} color="primary">
+                  <NotificationsActiveIcon />
+                </Badge>
+              } /> : null}
+
+          <Tab label="Closed Requests"
+            value={dashboardTabs.closed_requests.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests.data?.length : 0} color="primary">
+                <CancelIcon />
+              </Badge>
+            } />
+
         </Tabs>
       </AppBar>
     );
@@ -490,7 +413,7 @@ function Dashboard() {
           {renderTabs()}
         </Grid>
         <Grid container spacing={4}>
-          {getCurrentTabFromUrl() === 0 ?
+          {urlKeys.tab.key === 'open_requests' ?
             isUpSm ?
               renderFilters() :
               renderFiltersCollapsed() :
@@ -500,6 +423,6 @@ function Dashboard() {
       </Container>
     </>
   );
-}
+};
 
 export default Dashboard;

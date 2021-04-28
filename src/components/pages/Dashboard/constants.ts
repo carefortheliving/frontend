@@ -1,5 +1,33 @@
 import { UsefulLink } from '../../../types';
 
+export const dashboardTabs = {
+  open_requests: {
+    key: 'open_requests',
+    label: 'Open Requsts',
+    index: 0,
+  },
+  closed_requests: {
+    key: 'closed_requests',
+    label: 'Closed Requsts',
+    index: 1,
+  },
+  useful_links: {
+    key: 'useful_links',
+    label: 'Useful Links',
+    index: 2,
+  },
+  my_requests: {
+    key: 'my_requests',
+    label: 'My Requsts',
+    index: 3,
+  },
+  donors: {
+    key: 'donors',
+    label: 'Donors',
+    index: 4,
+  },
+};
+
 export const defaultUsefulLinks: UsefulLink[] = [
   {
     name: 'Realtime Leads',
@@ -46,3 +74,11 @@ export const defaultUsefulLinks: UsefulLink[] = [
     description: 'To search for plasma donors.',
   },
 ];
+
+export const defaultFilters = {
+  patientDistrict: undefined,
+  patientState: undefined,
+  requestCategory: undefined,
+  requestStatus: undefined,
+  requesterEmail: undefined,
+};
