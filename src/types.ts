@@ -25,6 +25,8 @@ export interface RequestType {
   updatedAt: number;
 }
 
+export type ExistingRequestType = RequestType & { id: string };
+
 export interface FiltersType {
   requesterEmail?: string;
   requestStatus?: ('open' | 'closed');
