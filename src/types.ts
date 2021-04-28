@@ -8,20 +8,20 @@ export interface StylesProps<T> {
 export interface RequestType {
   donorEmail?: string;
   donorName?: string;
-  patientBloodGroup?: { value: string, label: string };
-  patientAge?: string;
-  patientDistrict?: { value: string, label: string };
-  patientGender?: { value: string, label: string };
-  patientState?: { value: string, label: string };
-  requestCategory?: { value: string, label: string };
+  patientBloodGroup: { value: string, label: string };
+  patientAge: string;
+  patientDistrict: { value: string, label: string };
+  patientGender: { value: string, label: string };
+  patientState: { value: string, label: string };
+  requestCategory: { value: string, label: string };
   requestTitle: string;
   requestDescription?: string;
-  requestStatus?: { value: string, label: string };
+  requestStatus: { value: string, label: string };
   requesterContactNumber: string;
   requesterName: string;
   requesterEmail: string;
-  createdAt: number;
-  updatedAt: number;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface FiltersType {
