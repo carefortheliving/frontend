@@ -5,11 +5,11 @@ import Paper from '@material-ui/core/Paper';
 import HelpImage from './help.jpg';
 import Grid from '@material-ui/core/Grid';
 import { useAppContext, changeTitle, changeBackButton } from 'src/contexts/AppContext';
-import { getLoginRoute, getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { getLoginRoute, getHomeRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import useFirebase from 'src/hooks/useFirebase';
 import useFirestore from 'src/hooks/useFirestore';
 import withAuth from 'src/components/common/withAuth/View';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,6 +23,8 @@ import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { RequestType } from 'src/types';
 import validations from './Validations';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
+import TurnedInIcon from '@material-ui/icons/TurnedIn';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const ValidationTextField = withStyles({
   root: {
@@ -55,7 +57,7 @@ const useStyles = makeStyles(() => ({
     marginTop: '10px',
   },
 }));
-function View() {
+function View(props) {
   const classes = useStyles();
   const history = useHistory();
   const { displayName, email, phoneNumber } = useFirebase()?.auth?.user || { displayName: null, email: null, phoneNumber: null };
@@ -73,24 +75,43 @@ function View() {
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
   const snackbar = useSnackbar();
-  const { addRequest } = useFirestore();
-
-
+  const { addRequest, getRequest, updateRequest } = useFirestore();
+  const { isEdit } = props;
+  const params = useParams();
   useEffect(() => {
     if (!email) {
       history.push(getLoginRoute());
     }
     firebaseAnalytics.logEvent('create/edit_request_visited');
-    dispatch(changeTitle('My Request'));
+    isEdit?dispatch(changeTitle('Edit Request')):dispatch(changeTitle('My Request'));
     dispatch(changeBackButton(true));
+    isEdit&&loadData();
   }, []);
-
-  const handleSubmit = async () => {
-    if (!email) {
-      snackbar.show('error', `You're not authorized for the action!`);
-      return;
+  useEffect(() => {
+    if ( ['Plasma', 'Blood'].includes(category) ) {
+      setWidth(true);
     }
-    const payload:RequestType = {
+  }, [category]);
+  const loadData = async () => {
+    try {
+      const data:any = await getRequest(params?.docId);
+      setAge(data.patientAge);
+      setBlood(data.patientBloodGroup.value);
+      setIndianState(data.patientState.value);
+      setGender(data.patientGender.value);
+      setCategory(data.requestCategory.value);
+      setDescription(data.requestDescription);
+      setSubject(data.requestTitle);
+      setName(data.requesterName);
+      setMobile(data.requesterContactNumber);
+      setIndianCity(data.patientDistrict.value);
+    } catch ( e ) {
+      snackbar.show('error', 'Some Error occured !!');
+      history.push(getHomeRoute());
+    }
+  };
+  const payload = ():RequestType =>{
+    return ({
       donorEmail: '',
       donorName: '',
       patientBloodGroup: { value: blood||'', label: blood||'' },
@@ -105,22 +126,48 @@ function View() {
       requesterName: name,
       requesterEmail: email,
       patientAge: age,
-    };
-    const validation = validations(payload);
+    });
+  };
+  const handleSubmit = async () => {
+    if (!email) {
+      snackbar.show('error', `You're not authorized for the action!`);
+      return;
+    }
+
+    const validation = validations(payload());
     if ( validation !== 'true' ) {
       snackbar.show('error', validation);
       return;
     }
-    console.log(payload);
     try {
-      const res = await addRequest(payload);
+      const res = await addRequest(payload());
       console.log(res);
       snackbar.show(
           'success',
           `Request 
         created successfully! Please also keep an eye on your post comment thread and useful links tab`,
       );
-    // history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
+    } catch (e) {
+      snackbar.show(
+          'error',
+          `Error while creating the request !`,
+      );
+    }
+  };
+  const handleChanges = async ()=>{
+    const validation = validations(payload());
+    if ( validation !== 'true' ) {
+      snackbar.show('error', validation);
+      return;
+    }
+    try {
+      const res = await updateRequest(params?.docId, payload());
+      snackbar.show(
+          'success',
+          `Request 
+        created successfully! Please also keep an eye on your post comment thread and useful links tab`,
+      );
+      history.push('/?tab=3');
     } catch (e) {
       snackbar.show(
           'error',
@@ -305,8 +352,8 @@ function View() {
             }}
             value={description}
           />
-        </Grid>
-        <Grid container xs={12} className='cr--buttob__container' >
+        </Grid >
+        {!isEdit ? <Grid container xs={12} className='cr--buttob__container' >
           <Grid item xs={6} className={classes.centerElement} >
             <Button
               variant="contained"
@@ -327,7 +374,30 @@ function View() {
         Submit
             </Button>
           </Grid>
+        </Grid> :
+      <Grid container xs={12} className='cr--buttob__container' >
+        <Grid item xs={6} className={classes.centerElement} >
+          <Button
+            variant="contained"
+            startIcon={<TurnedInIcon style={{ fill: 'yellow' }} />}
+            className='cr--save__button'
+            onClick={handleChanges}
+          >
+      Save Changes
+          </Button>
         </Grid>
+        <Grid item xs={6} className={classes.centerElement}>
+          <Button
+            variant="contained"
+            endIcon={<FavoriteIcon style={{ fill: 'red' }}/>}
+            className='cr--resolve__button'
+            onClick={()=>history.push(getSayThanksRoute(params?.docId))}
+          >
+      Issue is Resolved
+          </Button>
+        </Grid>
+      </Grid>
+        }
       </Paper>
     </div>
   );
@@ -336,6 +406,9 @@ function View() {
 export default withAuth(View);
 
 
+function updateRequest(docId: any, arg1: RequestType) {
+  throw new Error('Function not implemented.');
+}
 // /Image optimise
 // /inline styling
 // /put image under src/assets/images

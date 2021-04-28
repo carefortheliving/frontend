@@ -207,8 +207,8 @@ function Dashboard() {
       }
       setUsefulLinks(defaultUsefulLinks);
       snackbar.show(
-        'error',
-        `Data fetch failed due to huge traffic load.
+          'error',
+          `Data fetch failed due to huge traffic load.
           Meanwhile please use comment thread.`,
       );
     }
@@ -287,7 +287,7 @@ function Dashboard() {
           className={`${card.requestStatus?.value === 'open' ?
             classes.openCard :
             classes.closedCard
-            }`}
+          }`}
           onClick={() => handleCardClick(card.id)}
         >
           {/* <CardMedia
