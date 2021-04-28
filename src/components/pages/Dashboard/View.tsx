@@ -262,7 +262,7 @@ const Dashboard = () => {
             }
           />
 
-          {user?.email ? <Tab
+          {isAdmin /* TODO: */ ? <Tab
             label="Donors"
             value={dashboardTabs.donors.key}
             icon={
