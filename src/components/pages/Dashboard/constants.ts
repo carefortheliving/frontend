@@ -74,3 +74,11 @@ export const defaultUsefulLinks: UsefulLink[] = [
     description: 'To search for plasma donors.',
   },
 ];
+
+export const defaultFilters = {
+  patientDistrict: undefined,
+  patientState: undefined,
+  requestCategory: undefined,
+  requestStatus: undefined,
+  requesterEmail: undefined,
+};

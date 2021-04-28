@@ -27,8 +27,7 @@ import { useAuth } from 'src/components/common/AuthProvider/View';
 import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import useBreakpoint from 'src/hooks/useBreakpoint';
-import useFirestore from 'src/hooks/useFirestore';
-import { FiltersType, RequestType, UsefulLink } from 'src/types';
+import { FiltersType, UsefulLink } from 'src/types';
 import { parseTime } from 'src/utils/commonUtils';
 import useUser from '../../../hooks/useUser';
 import AddEditLinkCard from './AddEditLinkCard';
@@ -45,39 +44,30 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import BeenhereIcon from '@material-ui/icons/Beenhere';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
-import { defaultUsefulLinks } from './constants';
+import { defaultFilters } from './constants';
 import { useStyles } from './styles';
 import useUrlKeys from './useUrlKeys';
 import { dashboardTabs } from './constants';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import useRequests from './useRequests';
+import useUsefulLinks from './useUsefulLinks';
 
 const Dashboard = () => {
   const { dispatch } = useAppContext();
   const classes = useStyles();
   const { user } = useAuth();
-  const { getRequests, getUsefulLinks } = useFirestore();
   const snackbar = useSnackbar();
-  const [requests, setRequests] = useState(
-    [] as (RequestType & { id: string })[],
-  );
-  const [usefulLinks, setUsefulLinks] = useState([] as UsefulLink[]);
-  const [loading, setLoading] = useState(false);
-  const history = useHistory();
-  const urlKeys = useUrlKeys();
-
-  const defaultFilters = {
-    patientDistrict: undefined,
-    patientState: undefined,
-    requestCategory: undefined,
-    requestStatus: undefined,
-    requesterEmail: undefined,
-  };
   const [appliedFilters, setAppliedFilters] = useState(
     defaultFilters as Partial<FiltersType>,
   );
+  const requests = useRequests({ appliedFilters });
+  const usefulLinks = useUsefulLinks({});
+  const history = useHistory();
+  const urlKeys = useUrlKeys();
   const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
   const isUpSm = useBreakpoint('sm');
   const { isAdmin } = useUser();
+  const loading = requests.loading || usefulLinks.loading;
 
   useEffect(() => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
@@ -90,71 +80,22 @@ const Dashboard = () => {
     if (urlKeys.tab.key === 'closed_requests' ||
       urlKeys.tab.key === 'open_requests' ||
       urlKeys.tab.key === 'my_requests') {
-      loadRequests();
+      requests.loadData(handleFirebaseFailure);
     }
     if (urlKeys.tab.key === 'useful_links') {
-      loadLinks();
+      usefulLinks.loadData(handleFirebaseFailure);
     }
   }, [urlKeys.tab.key]);
 
   useEffect(() => {
-    loadRequests();
+    requests.loadData(handleFirebaseFailure);
   }, [appliedFilters]);
-
-  const loadLinks = async () => {
-    setLoading(true);
-    const links = await getUsefulLinks();
-    setLoading(false);
-    setUsefulLinks(links);
-  };
-
-  const loadRequests = async () => {
-    setLoading(true);
-    setRequests([]);
-    try {
-      const requests = await (async () => {
-        switch (urlKeys.tab.key) {
-          case 'open_requests':
-            return await getRequests({
-              ...appliedFilters,
-              requestStatus: 'open',
-              sortBy: filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 'closed_requests':
-            return await getRequests({
-              ...appliedFilters,
-              requestStatus: 'closed',
-              sortBy: filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 'my_requests':
-            return (
-              user?.email &&
-              (await getRequests({
-                requesterEmail: user?.email,
-              }))
-            );
-          default:
-            return;
-        }
-      })();
-      setRequests(requests);
-    } catch (e) {
-      handleFirebaseFailure(e);
-    }
-    setLoading(false);
-  };
 
   const handleFirebaseFailure = (e: any) => {
     if (isAdmin) {
       console.log({ e });
     }
-    setUsefulLinks(defaultUsefulLinks);
+    usefulLinks.loadFallbackData();
     snackbar.show(
       'error',
       `Data fetch failed due to huge traffic load.
@@ -226,7 +167,7 @@ const Dashboard = () => {
     );
   };
 
-  const renderSingleCard = (card: typeof requests[0]) => {
+  const renderSingleCard = (card: typeof requests.data[0]) => {
     return (
       <Grid item key={card.id} xs={12} sm={6} md={4}>
         <Card
@@ -350,7 +291,7 @@ const Dashboard = () => {
   const renderLinkCard = (data?: UsefulLink, index?: number) => {
     return (
       <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
-        <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks} />
+        <AddEditLinkCard prefillData={data} onReloadRequested={() => usefulLinks.loadData(handleFirebaseFailure)} />
       </Grid>
     );
   };
@@ -379,7 +320,7 @@ const Dashboard = () => {
                     case 'useful_links':
                       return (
                         <>
-                          {usefulLinks?.map((link, index) =>
+                          {usefulLinks?.data?.map((link, index) =>
                             renderLinkCard(link, index),
                           )}
                           {isAdmin ? renderLinkCard() : null}
@@ -391,8 +332,8 @@ const Dashboard = () => {
                     case 'closed_requests':
                     case 'my_requests':
                     default:
-                      return requests?.length ?
-                        requests.map((card) => renderSingleCard(card)) :
+                      return requests.data?.length ?
+                      requests.data?.map((card) => renderSingleCard(card)) :
                         renderNoRequests();
                   }
                 })()
@@ -417,7 +358,7 @@ const Dashboard = () => {
           <Tab label="Open Requests"
             value={dashboardTabs.open_requests.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests?.length : 0}
+              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests.data?.length : 0}
                 color="primary">
                 <EnhancedEncryptionIcon />
               </Badge>
@@ -437,7 +378,7 @@ const Dashboard = () => {
             label="Useful links"
             value={dashboardTabs.useful_links.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'useful_links' ? usefulLinks?.length : 0} color="primary">
+              <Badge badgeContent={urlKeys.tab.key === 'useful_links' ? usefulLinks?.data?.length : 0} color="primary">
                 <BeenhereIcon />
               </Badge>
             } />
@@ -446,7 +387,7 @@ const Dashboard = () => {
             <Tab label="My Requests"
               value={dashboardTabs.my_requests.key}
               icon={
-                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests?.length : 0} color="primary">
+                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests.data?.length : 0} color="primary">
                   <NotificationsActiveIcon />
                 </Badge>
               } /> : null}
@@ -454,7 +395,7 @@ const Dashboard = () => {
           <Tab label="Closed Requests"
             value={dashboardTabs.closed_requests.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests?.length : 0} color="primary">
+              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests.data?.length : 0} color="primary">
                 <CancelIcon />
               </Badge>
             } />
