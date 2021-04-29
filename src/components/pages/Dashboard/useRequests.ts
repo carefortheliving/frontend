@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ExistingRequestType, FiltersType, RequestType } from 'src/types';
+import { ExistingRequestType, FiltersType } from 'src/types';
 import useFirestore from 'src/hooks/useFirestore';
 import useUrlKeys from './useUrlKeys';
 import pickBy from 'lodash/pickBy';

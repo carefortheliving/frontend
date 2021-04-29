@@ -87,8 +87,8 @@ const Dashboard = () => {
     }
     usefulLinks.loadFallbackData();
     snackbar.show(
-      'error',
-      `Data fetch failed due to huge traffic load.
+        'error',
+        `Data fetch failed due to huge traffic load.
         Meanwhile please use comment thread.`,
     );
   };
