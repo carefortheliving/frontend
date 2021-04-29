@@ -30,7 +30,7 @@ const RequestCard = (props: RequestCardProps) => {
         className={`${card.requestStatus?.value === 'open' ?
           classes.openCard :
           classes.closedCard
-          }`}
+        }`}
         onClick={() => onClick && onClick(card.id)}
       >
         {/* <CardMedia

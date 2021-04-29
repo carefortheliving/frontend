@@ -10,6 +10,7 @@ import { AppProvider } from 'src/contexts/AppContext';
 import Footer from './components/common/Footer/View';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
+import ScrollToTop from 'react-scroll-to-top';
 
 const App = () => (
   <AppProvider>
@@ -20,6 +21,7 @@ const App = () => (
             <CssBaseline />
             <Navbar />
             <Box mt={10} minHeight="70vh">
+              <ScrollToTop smooth />
               <RouterOutlet />
             </Box>
             <Footer />
