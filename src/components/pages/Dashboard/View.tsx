@@ -287,7 +287,10 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className={classes.heroContent}>{renderHeader()}</div>
+      <div className={classes.heroContent}
+        style={{
+          padding: isUpSm ? '64px 0px 48px' : '40px 0px 20px',
+        }}>{renderHeader()}</div>
       <Container>
         <Grid item sm={12}>
           {renderTabs()}
