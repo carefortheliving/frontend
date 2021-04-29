@@ -119,17 +119,17 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                 <Grid item xs={12}>
                   <Typography variant="h6" component="h3">
                     <strong>
-                      {data.requesterName} ({data.patientGender?.value || ''})
+                      {data.requesterName} ({data.patientGender?.label || ''})
                     </strong>{' '}
                     of age: <strong>{data.patientAge || '-'}</strong>, blood
                     group:{' '}
                     <strong>
-                      {data.patientBloodGroup?.value || '-'}
+                      {data.patientBloodGroup?.label || '-'}
                     </strong> from{' '}
                     <strong>
-                      {data.patientDistrict?.value}, {data.patientState?.value}
+                      {data.patientDistrict?.label}, {data.patientState?.label}
                     </strong>{' '}
-                    requires <strong>{data.requestCategory?.value}</strong>
+                    requires <strong>{data.requestCategory?.label}</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -148,13 +148,6 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                         id="phone-number"
                         primary={data.requesterContactNumber}
                         secondary="Phone number"
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        id="email"
-                        primary={data.requesterEmail}
-                        secondary="Email"
                       />
                     </ListItem>
                     <ListItem>
@@ -184,7 +177,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                   )
                 ) : (
                   <>
-                    <Grid container>
+                    {data?.donorName ? <Grid container>
                       <Grid item xs={6}>
                         {renderFieldValue('Donor Name')}
                       </Grid>
@@ -200,18 +193,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                           />
                         </span>
                       </Grid>
-                    </Grid>
-
-                    <Grid container>
-                      <Grid item xs={6}>
-                        {renderFieldValue('Donor Email')}
-                      </Grid>
-                      <Grid item xs={6}>
-                        {renderFieldValue(data?.donorEmail, {
-                          fontWeight: 600,
-                        })}
-                      </Grid>
-                    </Grid>
+                    </Grid> : null }
 
                     <Grid container>
                       <Grid item xs={6}>

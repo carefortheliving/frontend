@@ -304,7 +304,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
             )}
             options={[
               { value: 'male', label: 'Male' },
-              { value: 'femal', label: 'Female' },
+              { value: 'female', label: 'Female' },
             ]}
           />
         )}
