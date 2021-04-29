@@ -23,10 +23,10 @@ const HeaderCarousel = () => {
   const classes = useStyles();
   const isUpSm = useBreakpoint('sm');
   const items = [
-    {
-      name: 'Care for the Living',
-      description: 'If you truly loved yourself, you could never hurt another.',
-    },
+    // {
+    //   name: 'Care for the Living',
+    //   description: 'If you truly loved yourself, you could never hurt another.',
+    // },
     {
       name: 'Find help on Twitter',
       description: `Here's a tool that would make your search more efficient with the right keywords!`,
