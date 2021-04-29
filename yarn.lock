@@ -10679,6 +10679,11 @@
   optionalDependencies:
     "fsevents" "^2.1.3"
 
+"react-scroll-to-top@^1.0.5":
+  "integrity" "sha512-e7n5LJXpUG9/gnHMHqrGY2UBebpqVaPpAnF4kLuR/e+SRtAGr+4UStvGsCiv6XBOC+dRyTe7ZbjdV9FaPdgUfg=="
+  "resolved" "https://registry.npmjs.org/react-scroll-to-top/-/react-scroll-to-top-1.0.5.tgz"
+  "version" "1.0.5"
+
 "react-select@^4.3.0":
   "integrity" "sha512-SBPD1a3TJqE9zoI/jfOLCAoLr/neluaeokjOixr3zZ1vHezkom8K0A9J4QG9IWDqIDE9K/Mv+0y1GjidC2PDtQ=="
   "resolved" "https://registry.npmjs.org/react-select/-/react-select-4.3.0.tgz"

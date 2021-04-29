@@ -93,7 +93,7 @@ const RequestCard = (props: RequestCardProps) => {
           {card.requestStatus?.value === 'open' ?
             <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               size="small"
               endIcon={<PanToolIcon />}
               onClick={() => onClick && onClick(card.id)}
