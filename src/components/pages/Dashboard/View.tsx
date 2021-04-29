@@ -41,6 +41,7 @@ import useRequests from './useRequests';
 import useUrlKeys from './useUrlKeys';
 import useUsefulLinks from './useUsefulLinks';
 import RequestCard from './RequestCard';
+import HeaderCarousel from './HeaderCarousel';
 
 const Dashboard = () => {
   const { dispatch } = useAppContext();
@@ -161,26 +162,8 @@ const Dashboard = () => {
 
   const renderHeader = () => {
     return (
-      <Container maxWidth="md">
-        <Typography
-          component="h2"
-          variant={isUpSm ? 'h3' : 'h6'}
-          align="center"
-          color="textPrimary"
-          gutterBottom
-        >
-          Care for the Living <br></br>
-        </Typography>
-        <Typography
-          variant={isUpSm ? 'h6' : 'subtitle1'}
-          align="center"
-          color="textSecondary"
-          paragraph
-        >
-          &#34;If you truly loved yourself, you could never hurt another.&#34;
-          <br />
-          {/* - Buddha */}
-        </Typography>
+      <Container maxWidth="lg">
+        <HeaderCarousel />
       </Container>
     );
   };
