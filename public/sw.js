@@ -1,5 +1,5 @@
-let staticCacheName = "cache-for-offline-pages-6";
-let dynamicCacheName = "cache-for-dynamic-data-6";
+let staticCacheName = "cache-for-offline-pages-7";
+let dynamicCacheName = "cache-for-dynamic-data-7";
 const OFFLINE_URL = "offline.html";
 
 self.addEventListener("install", (event) => {

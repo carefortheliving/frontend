@@ -43,6 +43,14 @@ const HeaderCarousel = () => {
         link: 'https://selfregistration.cowin.gov.in/',
       },
     },
+    {
+      name: 'We need your help',
+      description: `Follow the the link below to register as a Plasma donor.`,
+      button: {
+        text: 'Register!',
+        link: 'https://docs.google.com/forms/d/e/1FAIpQLSegE2m5H8l6Ey_KDJx0KWVRvlofTd4tW21v6WO4-5xeJfSwUg/viewform',
+      },
+    },
   ];
 
   const renderItem = (item: typeof items[0], key) => {
