@@ -1,16 +1,46 @@
-import { Container, Grid, Typography } from '@material-ui/core';
+import {
+  Container, Grid, Typography, Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Badge,
+  makeStyles,
+} from '@material-ui/core';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import useGeo from 'src/hooks/useGeo';
 import { FiltersType, RequestType } from 'src/types';
+import FilterList from '@material-ui/icons/FilterList';
+import useBreakpoint from 'src/hooks/useBreakpoint';
 
 interface RequestFiltersProps {
   onChangeFilter: (updatedFilters: Partial<FiltersType>) => void;
+  filtersCount: number;
 }
 
+const useStyles = makeStyles((theme) => ({
+  filterHeading: {
+    textAlign: 'center',
+    margin: '1rem 0 1rem 0',
+  },
+  filterContainer: {
+    position: 'relative',
+  },
+  filterCollapsed: {
+    marginTop: theme.spacing(4),
+  },
+  filterCount: {
+    marginLeft: '10px',
+  },
+  filter: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+}));
+
 const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
-  const { onChangeFilter } = props;
+  const { onChangeFilter, filtersCount } = props;
   const defaultValues = {
     requestCategory: undefined,
     patientState: undefined,
@@ -19,6 +49,8 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
   const { control } = useForm({ defaultValues });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
+  const isUpSm = useBreakpoint('sm');
+  const classes = useStyles();
 
   const handleStateChange = (state: string) => {
     const newDistricts =
@@ -110,8 +142,8 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
     );
   };
 
-  return (
-    <Container maxWidth="md">
+  const renderContent = () => {
+    return <Container maxWidth="md">
       <form>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -134,8 +166,53 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
           </Grid>
         </Grid>
       </form>
-    </Container>
-  );
+    </Container>;
+  };
+
+  const renderFiltersExpanded = () => {
+    return (
+      <Grid item md={3}>
+        {
+          <div className={classes.filterContainer}>
+            {isUpSm ? (
+              <Typography
+                component="h1"
+                variant="h5"
+                className={classes.filterHeading}
+              >
+                Filters
+              </Typography>
+            ) : null}
+            <div className={classes.filter}>
+              {renderContent()}
+              {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
+            </div>
+          </div>
+        }
+      </Grid>
+    );
+  };
+
+  const renderFiltersCollapsed = () => {
+    return (
+      <Grid item md={12}>
+        <Accordion className={classes.filterCollapsed}>
+          <AccordionSummary
+            expandIcon={<FilterList />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Badge badgeContent={filtersCount} color="primary">
+              <Typography>Filters</Typography>
+            </Badge>
+          </AccordionSummary>
+          <AccordionDetails>{renderContent()}</AccordionDetails>
+        </Accordion>
+      </Grid>
+    );
+  };
+
+  return isUpSm ? renderFiltersExpanded() : renderFiltersCollapsed();
 };
 
 export default RequestFilters;

@@ -32,24 +32,6 @@ export const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
   },
-  filter_Heading: {
-    textAlign: 'center',
-    margin: '1rem 0 1rem 0',
-  },
-  filter_Container: {
-    position: 'relative',
-  },
-  filterCollapsed: {
-    marginTop: theme.spacing(4),
-  },
-  filterCount: {
-    marginLeft: '10px',
-  },
-  filter: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   table: {
     // minWidth: 650,
   },
