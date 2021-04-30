@@ -4,7 +4,7 @@ import useFirestore from 'src/hooks/useFirestore';
 import useUrlKeys from './useUrlKeys';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
-import useUser from 'src/hooks/useUser';
+import { useAppStore } from 'src/stores/appStore';
 interface UseRequestsProps {
   appliedFilters: Partial<FiltersType>;
 }
@@ -15,7 +15,7 @@ const useRequests = (props: UseRequestsProps) => {
   const [loading, setLoading] = React.useState(false);
   const { getRequests } = useFirestore();
   const urlKeys = useUrlKeys();
-  const user = useUser();
+  const [app, appActions] = useAppStore();
 
   const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
 
@@ -45,9 +45,9 @@ const useRequests = (props: UseRequestsProps) => {
             });
           case 'my_requests':
             return (
-              user?.email &&
+              app.userInfo?.email &&
               (await getRequests({
-                requesterEmail: user?.email,
+                requesterEmail: app.userInfo?.email,
               }))
             );
           default:

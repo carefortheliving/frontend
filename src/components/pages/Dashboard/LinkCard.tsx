@@ -14,7 +14,7 @@ import React, { useState, useEffect, FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { UsefulLink } from '../../../types';
 import useFirestore from 'src/hooks/useFirestore';
-import useUser from '../../../hooks/useUser';
+import { useAppStore } from 'src/stores/appStore';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
@@ -55,7 +55,7 @@ const LinkCard: FC<LinkCardProps> = (props) => {
     addUsefulLink,
     updateUsefulLink,
   } = useFirestore();
-  const { isAdmin, email } = useUser();
+  const [app, appActions] = useAppStore();
   const snackbar = useSnackbar();
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const LinkCard: FC<LinkCardProps> = (props) => {
           await updateUsefulLink((prefillData as any)?.docId, data as any) :
           await addUsefulLink({
             ...(data as any),
-            addedBy: email,
+            addedBy: app.userInfo?.email,
           });
         snackbar.show(
             'success',
@@ -202,7 +202,7 @@ const LinkCard: FC<LinkCardProps> = (props) => {
   return (
     <Card
       className={classes.openCard}
-      onClick={() => !isEdit && isAdmin && setIsEdit(true)}
+      onClick={() => !isEdit && app.userInfo?.isAdmin && setIsEdit(true)}
     >
       <CardContent className={classes.cardContent}>
         {(() => {

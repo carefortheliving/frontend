@@ -1,6 +1,8 @@
 import { atom } from 'recoil';
 import useGenericRecoilState from 'src/hooks/useGenericRecoilState';
 import { UserInfo } from 'src/types';
+import useFirestore from 'src/hooks/useFirestore';
+import useFirebase from 'src/hooks/useFirebase';
 
 const appStore = atom({
   key: 'firebase',
@@ -14,29 +16,37 @@ const appStore = atom({
 
 export const useAppStore = () => {
   const [state, setState] = useGenericRecoilState(appStore);
+  const { isCurrentUserAdmin } = useFirestore();
+  const { auth } = useFirebase();
 
-  const setBackButton = (backButton: typeof state.backButton) => {
+  const setBackButton = async (backButton: typeof state.backButton) => {
     setState({
       backButton,
     });
   };
 
-  const setTitle = (title: typeof state.title) => {
+  const setTitle = async (title: typeof state.title) => {
     setState({
       title,
     });
   };
 
-  const setUserInfo = (userInfo: typeof state.userInfo) => {
+  const loadUserInfo = async () => {
+    if (auth?.user?.email === state.userInfo?.email) return;
+    const isAdmin = await isCurrentUserAdmin();
     setState({
-      userInfo,
+      userInfo: {
+        isAdmin,
+        email: auth?.user?.email,
+        displayName: auth?.user?.displayName,
+      },
     });
   };
 
   const actions = {
     setBackButton,
     setTitle,
-    setUserInfo,
+    loadUserInfo,
   };
   return [state, actions] as [typeof state, typeof actions];
 };

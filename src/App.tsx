@@ -11,6 +11,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import ScrollToTop from 'react-scroll-to-top';
 import RecoilProvider from 'src/components/common/RecoilProvider/View';
+import MasterDataLoader from 'src/components/common/MasterDataLoader/View';
 
 const App = () => (
   <ThemeProvider>
@@ -18,6 +19,7 @@ const App = () => (
       <RecoilProvider>
         <AuthProvider>
           <SnackbarProvider>
+            <MasterDataLoader />
             <CssBaseline />
             <Navbar />
             <Box mt={10} minHeight="70vh">

@@ -24,7 +24,6 @@ import {
   getHomeRoute,
 } from '../RouterOutlet/routerUtils';
 import FabIcon from './FabIcon';
-import useUser from 'src/hooks/useUser';
 
 const drawerWidth = 240;
 
@@ -121,7 +120,6 @@ function Navbar(props: NavbarProps) {
   const [profileBtn, setProfileBtn] = React.useState(null);
   const isUpSm = useBreakpoint('sm');
   const { isCreateRequest, isLogin } = useRoutes();
-  const { isAdmin } = useUser();
 
   const isLogged = !!(user && user.uid);
 
@@ -214,7 +212,7 @@ function Navbar(props: NavbarProps) {
               Send Feedback
             </a>
           </MenuItem>
-          {isAdmin ?
+          {app.userInfo?.isAdmin ?
             <MenuItem onClick={handleAdminPortalClick}>
               Admin Portal
             </MenuItem> : null}

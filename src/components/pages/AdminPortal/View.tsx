@@ -9,7 +9,6 @@ import { useHistory } from 'react-router-dom';
 import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import useFirestore from 'src/hooks/useFirestore';
 import { useAppStore } from 'src/stores/appStore';
-import useUser from 'src/hooks/useUser';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { downloadFile } from 'src/utils/commonUtils';
 
@@ -26,7 +25,6 @@ const AdminPortal: FC<AdminPortalProps> = () => {
   const classes = useStyles();
   const history = useHistory();
   const { getRequests, getUsefulLinks } = useFirestore();
-  const { isAdmin } = useUser();
 
   useEffect(() => {
     ensurePermissions();
@@ -35,7 +33,7 @@ const AdminPortal: FC<AdminPortalProps> = () => {
   }, []);
 
   const ensurePermissions = () => {
-    if (!isAdmin) {
+    if (!app.userInfo?.isAdmin) {
       history.push(getHomeRoute());
     }
   };

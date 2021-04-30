@@ -8,7 +8,6 @@ import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUt
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { useAppStore } from 'src/stores/appStore';
 import { FiltersType } from 'src/types';
-import useUser from '../../../hooks/useUser';
 import { defaultFilters } from './constants';
 import useRequests from './useRequests';
 import useUrlKeys from './useUrlKeys';
@@ -26,7 +25,6 @@ const useModel = () => {
   const history = useHistory();
   const urlKeys = useUrlKeys();
   const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
-  const { isAdmin, email } = useUser();
   const loading = requests.loading || usefulLinks.loading;
   const [dashboard, dashboardActions] = useDashboardStore();
 
@@ -34,8 +32,13 @@ const useModel = () => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
     appActions.setBackButton(false);
     appActions.setTitle('Care for the Living');
-    console.log(dashboard, dashboardActions);
   }, []);
+
+  console.log({ renderRequests: dashboard.requests });
+  useEffect(() => {
+    dashboardActions.loadLinks();
+    console.log({ effectRequests: dashboard.requests });
+  }, [dashboard.requests]);
 
   useEffect(() => {
     resetFilters();
@@ -54,7 +57,7 @@ const useModel = () => {
   }, [appliedFilters]);
 
   const handleFirebaseFailure = (e: any) => {
-    if (isAdmin) {
+    if (app.userInfo?.isAdmin) {
       console.log({ e });
     }
     usefulLinks.loadFallbackData();
@@ -84,8 +87,8 @@ const useModel = () => {
     handleFirebaseFailure,
     filtersCount,
     loading,
-    isAdmin,
-    email,
+    isAdmin: app.userInfo?.isAdmin,
+    email: app.userInfo?.email,
     urlKeys,
     usefulLinks,
     requests,

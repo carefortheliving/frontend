@@ -14,7 +14,6 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import Disqus from 'src/components/common/Disqus/View';
 import { useAppStore } from 'src/stores/appStore';
 import CardContent from '@material-ui/core/CardContent';
-import useUser from 'src/hooks/useUser';
 import Card from '@material-ui/core/Card';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -34,7 +33,6 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   const { auth } = useFirebase();
   const [pageURL, setPageURL] = useState('');
   const [pageID, setPageID] = useState('');
-  const { isAdmin } = useUser();
 
   useEffect(() => {
     firebaseAnalytics.logEvent('request_details_page_visited');
@@ -164,7 +162,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                 </Grid>
                 {data.requestStatus?.value === 'open' ? (
                   ( (data?.requesterEmail === auth?.user?.email) ||
-                  (isAdmin) ) &&
+                  (app.userInfo?.isAdmin) ) &&
                   (
                     <Grid item xs={12} md={6} spacing={2}>
                       {renderEditButton()}
