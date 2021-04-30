@@ -16,7 +16,7 @@ import { useHistory } from 'react-router-dom';
 import { useAuth } from 'src/components/common/AuthProvider/View';
 import useBreakpoint from 'src/hooks/useBreakpoint';
 import useRoutes from 'src/hooks/useRoutes';
-import { useAppContext } from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import {
   getAboutRoute,
   getAdminPortalRoute,
@@ -114,7 +114,7 @@ interface NavbarProps {
 }
 
 function Navbar(props: NavbarProps) {
-  const { state } = useAppContext();
+  const [app] = useAppStore();
   const { logout, user } = useAuth();
   const classes = useStyles();
   const history = useHistory();
@@ -233,7 +233,7 @@ function Navbar(props: NavbarProps) {
         noWrap
         className={classes.title}
       >
-        {state.title || 'Care for the Living'}
+        {app.title || 'Care for the Living'}
       </Typography>
     );
   };
@@ -241,7 +241,7 @@ function Navbar(props: NavbarProps) {
   return (
     <AppBar position="absolute">
       <Toolbar className={classes.toolbar}>
-        {state.backButton && (
+        {app.backButton && (
           <IconButton size="small" color="inherit" onClick={handleRedirectHome}>
             <ArrowBackIosIcon className={classes.btnStyle} />
           </IconButton>

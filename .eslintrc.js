@@ -31,7 +31,8 @@ module.exports = {
     'array-callback-return': 'off',
     'linebreak-style': 'off',
     'max-len': "off",
-    'object-curly-spacing': ["error", "always", { "arraysInObjects": false }]
+    'object-curly-spacing': ["error", "always", { "arraysInObjects": false }],
+    'no-unused-vars': "off"
   },
   'settings': {
     'import/resolver': {

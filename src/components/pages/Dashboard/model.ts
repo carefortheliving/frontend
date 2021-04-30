@@ -6,18 +6,17 @@ import { useHistory } from 'react-router-dom';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
-import {
-  changeBackButton, changeTitle, useAppContext,
-} from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import { FiltersType } from 'src/types';
 import useUser from '../../../hooks/useUser';
 import { defaultFilters } from './constants';
 import useRequests from './useRequests';
 import useUrlKeys from './useUrlKeys';
 import useUsefulLinks from './useUsefulLinks';
+import { useDashboardStore } from 'src/stores/dashboardStore';
 
 const useModel = () => {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
   const snackbar = useSnackbar();
   const [appliedFilters, setAppliedFilters] = useState(
     defaultFilters as Partial<FiltersType>,
@@ -29,11 +28,13 @@ const useModel = () => {
   const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
   const { isAdmin, email } = useUser();
   const loading = requests.loading || usefulLinks.loading;
+  const [dashboard, dashboardActions] = useDashboardStore();
 
   useEffect(() => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
-    dispatch(changeBackButton(false));
-    dispatch(changeTitle('Care for the Living'));
+    appActions.setBackButton(false);
+    appActions.setTitle('Care for the Living');
+    console.log(dashboard, dashboardActions);
   }, []);
 
   useEffect(() => {

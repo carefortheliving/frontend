@@ -12,11 +12,7 @@ import { RequestType } from 'src/types';
 import { parseTime } from 'src/utils/commonUtils';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Disqus from 'src/components/common/Disqus/View';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import CardContent from '@material-ui/core/CardContent';
 import useUser from 'src/hooks/useUser';
 import Card from '@material-ui/core/Card';
@@ -30,7 +26,7 @@ import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 interface ViewRequestProps {}
 
 const ViewRequest: FC<ViewRequestProps> = () => {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
   const history = useHistory();
   const params = useParams();
   const { getRequest } = useFirestore();
@@ -46,8 +42,8 @@ const ViewRequest: FC<ViewRequestProps> = () => {
     const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
     prefillData();
-    dispatch(changeBackButton(true));
-    dispatch(changeTitle('Request Details'));
+    appActions.setBackButton(true);
+    appActions.setTitle('Request Details');
   }, []);
 
   const prefillData = async () => {
