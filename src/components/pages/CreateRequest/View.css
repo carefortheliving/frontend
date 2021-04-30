@@ -7,8 +7,7 @@
 .cr--container{
     width:70%;
     height:auto;
-    background-color: rgb(231, 244, 248);
-
+    background-color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 800px) {

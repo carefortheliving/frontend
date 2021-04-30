@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import './View.css';
 import Paper from '@material-ui/core/Paper';
-import HelpImage from './help.jpg';
+import HelpImage from 'src/Assets/Images/help.jpg';
 import Grid from '@material-ui/core/Grid';
 import { useAppContext, changeTitle, changeBackButton } from 'src/contexts/AppContext';
 import { getLoginRoute, getHomeRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
@@ -405,12 +405,3 @@ function View(props) {
 
 export default withAuth(View);
 
-
-function updateRequest(docId: any, arg1: RequestType) {
-  throw new Error('Function not implemented.');
-}
-// /Image optimise
-// /inline styling
-// /put image under src/assets/images
-// /bg color
-// common form fields
