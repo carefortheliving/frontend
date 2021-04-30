@@ -35,6 +35,14 @@ const HeaderCarousel = () => {
         link: 'https://covid19-twitter.in',
       },
     },
+    {
+      name: 'Register for COVID Vaccine',
+      description: `Tip: Can also be done through "Arogya Setu" app.`,
+      button: {
+        text: 'Register!',
+        link: 'https://selfregistration.cowin.gov.in/',
+      },
+    },
   ];
 
   const renderItem = (item: typeof items[0], key) => {
@@ -55,7 +63,7 @@ const HeaderCarousel = () => {
           color="textSecondary"
           paragraph
         >
-          &#34;{item.description}&#34;
+          {item.description}
           <br />
           {/* - Buddha */}
         </Typography>
@@ -73,6 +81,7 @@ const HeaderCarousel = () => {
   return (
     <Container maxWidth="lg">
       <Carousel
+        autoPlay
         navButtonsAlwaysVisible={isUpSm}
         navButtonsProps={{
           className: classes.navButtons,
