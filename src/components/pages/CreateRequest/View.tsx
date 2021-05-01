@@ -4,8 +4,8 @@ import './View.css';
 import Paper from '@material-ui/core/Paper';
 import HelpImage from 'src/Assets/Images/help.jpg';
 import Grid from '@material-ui/core/Grid';
-import { useAppContext, changeTitle, changeBackButton } from 'src/contexts/AppContext';
-import { getLoginRoute, getHomeRoute, getSayThanksRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { useAppStore } from 'src/stores/appStore';
+import { getLoginRoute, getHomeRoute, getSayThanksRoute, getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import useFirebase from 'src/hooks/useFirebase';
 import useFirestore from 'src/hooks/useFirestore';
 import withAuth from 'src/components/common/withAuth/View';
@@ -62,7 +62,6 @@ function View(props) {
   const classes = useStyles();
   const history = useHistory();
   const { displayName, email, phoneNumber } = useFirebase()?.auth?.user || { displayName: null, email: null, phoneNumber: null };
-  const { dispatch } = useAppContext();
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [category, setCategory] = useState('');
@@ -79,13 +78,17 @@ function View(props) {
   const { addRequest, getRequest, updateRequest } = useFirestore();
   const { isEdit } = props;
   const params = useParams();
+  const [app, appActions] = useAppStore();
+
   useEffect(() => {
     if (!email) {
       history.push(getLoginRoute());
     }
     firebaseAnalytics.logEvent('create/edit_request_visited');
-    isEdit?dispatch(changeTitle('Edit Request')):dispatch(changeTitle('My Request'));
-    dispatch(changeBackButton(true));
+    // isEdit?dispatch(changeTitle('Edit Request')):dispatch(changeTitle('My Request'));
+    appActions.setTitle(isEdit ? 'Edit Request' : 'Create Request');
+    // dispatch(changeBackButton(true));
+    appActions.setBackButton(true);
     isEdit&&loadData();
   }, []);
   useEffect(() => {
@@ -148,6 +151,7 @@ function View(props) {
           `Request 
         created successfully! Please also keep an eye on your post comment thread and useful links tab`,
       );
+      history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
     } catch (e) {
       snackbar.show(
           'error',
