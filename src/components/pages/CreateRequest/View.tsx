@@ -25,6 +25,7 @@ import validations from './Validations';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 import TurnedInIcon from '@material-ui/icons/TurnedIn';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import Select from '@material-ui/core/Select';
 
 const ValidationTextField = withStyles({
   root: {
@@ -244,6 +245,7 @@ function View(props) {
               }}
               variant="outlined"
               className='cr--element__position5'
+              style={{ borderColor: 'green !important' }}
             >
               {['Male', 'Female', 'Other'].map((option) => (
                 <MenuItem key={option} value={option}>

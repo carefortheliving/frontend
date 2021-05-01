@@ -150,3 +150,140 @@ padding: 12px 25px;
   font-weight: 800;
   padding: 12px 25px;
   }
+
+  .st--container{
+    min-height: 75vh;
+    display: flex;
+    width:80%;
+    margin: 0 auto;
+    margin-top: 15vh;
+    position: relative;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    }
+    .st--container:hover{
+      box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+  .st--container__left{
+    background-color: rgb(255, 123, 0);
+    padding: 0 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('src/Assets/Images/nature.jpg');
+  }
+
+
+  .st--left__quote{
+    background-color: rgb(253, 209, 209);
+    box-shadow:rgb(64, 65, 77);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    width:70%;
+    margin: auto;
+  }
+  .quotesymbol::before {
+    content: "\201C";
+    position: absolute;
+    top: -2.75rem;
+    left: -1rem;
+    line-height: 1;
+    font-size: 20rem;
+    color: rgb(177, 185, 252);
+    font-family: sans-serif;
+    z-index: 1;
+}
+.st--left__text{
+  z-index: 10;
+  position: relative;
+  font-size: 1.05rem;
+  font-style: italic;
+}
+.st--container__right{
+  background-color: rgb(240, 244, 252);
+  text-align: center;
+  line-height: 1rem;
+position: relative;
+}
+.st--container__right h2{
+  font-size: 1.95rem;
+  /* font-style: oblique; */
+  margin-bottom: 15px !important;
+}
+.st--container__right h2:hover{
+  color: #1B98E0;
+  transition: all 1s ease;
+  transform: scale(1.05);
+}
+.st--container__right p{
+  font-size: 1.2rem;
+  font-style:oblique
+}
+.st--input{
+  width: 70%;
+  margin: 20px 0;
+}
+.marginTop{
+  margin-top: 40px;
+}
+@media screen and (min-width: 962px) {
+  .right_items{
+    transform: translate(0,25%);
+    }
+
+}
+@media screen and (max-width: 962px) {
+  .right_items{
+    font-size: 1.05rem;
+  }
+}
+.button-inputs{
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 15px;
+}
+.st--cancel__button{
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: #fd5151;
+  text-decoration: none;
+  border: none;
+  border-bottom: 2px solid #fd5151;
+  padding:10px;
+  transition: all ease-in-out .5s;
+  background: inherit;
+	filter: drop-shadow(.5px .5px .5px #fd5151);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.st--cancel__button:hover {
+  background-color: #fd5151;
+  color: #fff;
+  box-shadow: 0 1rem 2rem rgb(0 0 0 / 15%);
+  transform: scale(1.05) translateY(-3px);
+}
+:root{
+  --thanks: #03af03;
+}
+.st--thanks__button{
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--thanks);
+  text-decoration: none;
+  border: none;
+  border-bottom: 2px solid var(--thanks);
+  padding:10px;
+  transition: all ease-in-out .5s;
+  background: inherit;
+	filter: drop-shadow(.5px .5px .5px var(--thanks));
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+}
+.st--thanks__button:hover {
+  background-color: var(--thanks);
+  color: #fff;
+  box-shadow: 0 1rem 2rem rgb(0 0 0 / 15%);
+  transform: scale(1.05) translateY(-3px);
+}

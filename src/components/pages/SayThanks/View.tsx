@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, memo, FC } from 'react';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import NatureImage from 'src/Assets/Images/nature.jpg';
 import {
   Button,
   Container,
@@ -7,7 +10,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import { TextField } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import withAuth from 'src/components/common/withAuth/View';
 import { useHistory, useParams } from 'react-router-dom';
 import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
@@ -21,13 +24,35 @@ import {
   changeBackButton,
 } from 'src/contexts/AppContext';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
+import TextField from '@material-ui/core/TextField';
+import '../CreateRequest/View.css';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
     marginTop: '50px',
   },
+  centerElement: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 }));
-
+const ValidationTextField = withStyles({
+  root: {
+    '& input:valid + fieldset': {
+      borderColor: 'green',
+      borderWidth: 2,
+    },
+    '& input:invalid + fieldset': {
+      borderColor: 'blue',
+      borderWidth: 2,
+    },
+    '& input:valid:focus + fieldset': {
+      borderLeftWidth: 8,
+      padding: '4px !important',
+    },
+  },
+})(TextField);
 interface SayThanksProps {}
 
 const SayThanks: FC<SayThanksProps> = () => {
@@ -112,70 +137,84 @@ const SayThanks: FC<SayThanksProps> = () => {
 
   const renderSubmit = () => {
     return (
-      <Button
-        variant="contained"
-        color="primary"
+      <button
         onClick={handleSubmit(onSubmit)}
-        style={{ marginRight: '10px' }}
+        className='st--thanks__button'
       >
-        Submit
-      </Button>
+        Thanks &#10084;
+      </button>
     );
   };
 
   const renderCancel = () => {
     return (
-      <Button variant="contained" onClick={handleCancel}>
-        Cancel
-      </Button>
+      <button
+      onClick={handleCancel}
+      className='st--cancel__button'
+
+      >
+        Cancel &#10006;
+
+      </button>
     );
   };
 
   return (
-    <Container maxWidth="md">
-      {/* <Typography variant="h3" style={{ marginBottom: "50px" }}>
-              Say thanks
-            </Typography> */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={1}>
-          <Grid container>
-            <Grid item xs={6}>
-              <Typography variant="h5">Donors&apos;s Name</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              {renderDonor()}
-            </Grid>
+        <Grid container spacing={3} className="st--container">
+          <Grid item xs={12} md={6} className="st--container__left">
+            <div className='st--left__quote'>
+                <p className='quotesymbol'></p>
+                <p className='st--left__text'>The meaning of life is to find your gift. The purpose of life is to give it away.</p>
+            </div>
           </Grid>
+          <Grid item xs={12} md={6} className="st--container__right">
+            <div className="right_items">
+              <h2>
+                Thank the saviour
+              </h2>
+              <p>and also let the world know them...</p>
+              <Grid item xs={12}>
+                  <Controller
+                    name={'donorName'}
+                    control={control}
+                    render={({ field }) => (
+                      <ValidationTextField
+                        {...field}
+                        placeholder="John Doe"
+                        label= "Donor's Name"
+                        required={true}
+                        className="st--input marginTop"
+                      />
+                    )}
+                  />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name={'donorEmail'}
+                      control={control}
+                      render={({ field }) => (
+                        <ValidationTextField
+                          {...field}
+                          placeholder="Contact Number/ Email ID"
+                          label= "Donor's Contact"
+                          required={true}
+                          className="st--input"
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} className='button-inputs'>
 
-          <Grid container>
-            <Grid item xs={6}>
-              <Typography variant="h5">Donors&apos;s Email Id</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              {renderEmail()}
-            </Grid>
-          </Grid>
+                  {renderCancel()}
+                  {renderSubmit()}
 
-          <Grid
-            container
-            xs={12}
-            sm={12}
-            md={12}
-            // justify="flex-end"
-            className={classes.buttons}
-          >
-            <Grid item xs={12} sm={6} md={4} spacing={2}>
-              {renderSubmit()}
-              {renderCancel()}
-            </Grid>
-            {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
-                  {renderResolve()}
-                </Grid> */}
+                  </Grid>
+              </div>
           </Grid>
         </Grid>
-      </form>
-    </Container>
   );
 };
 
 export default memo(withAuth(SayThanks));
+
+
