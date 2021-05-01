@@ -2,8 +2,17 @@
   "name": "carefortheliving.com",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src/** --fix",
+    "firebase-token": "npm install -g firebase-tools@8 && firebase login:ci",
+    "firebase-login": "firebase login",
+    "firebase-deploy": "npm run build && firebase deploy --only hosting"
+  },
   "dependencies": {
-    "@date-io/moment": "^1.3.13",
     "@hookform/resolvers": "^2.4.0",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
@@ -11,42 +20,43 @@
     "@material-ui/pickers": "^3.3.10",
     "disqus-react": "^1.0.11",
     "firebase": "^8.4.1",
-    "indian-cities-database": "^1.0.5",
+    "lodash": "^4.17.21",
+    "material-ui-phone-number": "^2.2.6",
+    "mime-types": "^2.1.30",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.2.3",
     "react-jss": "^10.6.0",
+    "react-material-ui-carousel": "^2.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "typescript": "^4.2.4",
-    "material-ui-phone-number": "^2.2.6",
-    "moment": "^2.29.1",
-    "react-hook-form": "^7.2.1",
+    "react-scroll-to-top": "^1.0.5",
     "react-select": "^4.3.0",
     "styled-components": "^5.2.3",
+    "typescript": "^4.2.4",
     "web-vitals": "^1.1.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
     "@firebase/firestore-types": "^2.2.0",
-    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
-    "@testing-library/user-event": "^12.8.3",
+    "@testing-library/user-event": "^13.1.5",
     "@types/jest": "^26.0.22",
-    "@types/node": "^12.20.10",
+    "@types/node": "^14.14.41",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.25.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.23.2",
     "husky": "^6.0.0",
     "typescript": "^4.2.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "firebase-token": "npm install -g firebase-tools@8 && firebase login:ci",
-    "firebase-login": "firebase login",
-    "firebase-deploy": "npm run build && firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": [
@@ -73,7 +83,7 @@
   },
   "husky": {
     "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+      "pre-commit": "yarn && npm install"
     }
   }
 }

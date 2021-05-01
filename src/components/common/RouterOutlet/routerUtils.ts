@@ -25,3 +25,7 @@ export const getSayThanksRoute = (docId: string) => {
 export const getAboutRoute = () => {
   return `/about`;
 };
+
+export const getAdminPortalRoute = () => {
+  return `/admin`;
+};

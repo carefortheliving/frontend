@@ -1,18 +1,22 @@
-import { useState, useEffect, useContext, createContext } from "react";
-import firebase from "firebase/app";
-import "firebase/auth";
-import config from 'src/config'
+import React from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/analytics';
+import config from 'src/config';
 
 // Initialize Firebase
 firebase.initializeApp({
-  apiKey: config.REACT_APP_firebase_apiKey,
-  authDomain: config.REACT_APP_firebase_authDomain,
-  databaseURL: config.REACT_APP_firebase_databaseURL,
-  projectId: config.REACT_APP_firebase_projectId,
-  storageBucket: config.REACT_APP_firebase_storageBucket,
-  messagingSenderId: config.REACT_APP_firebase_messagingSenderId,
-  appId: config.REACT_APP_firebase_appId,
+  apiKey: config.REACT_APP_FIREBASE_APIKEY,
+  authDomain: config.REACT_APP_FIREBASE_AUTHDOMAIN,
+  databaseURL: config.REACT_APP_FIREBASE_DATABASEURL,
+  projectId: config.REACT_APP_FIREBASE_PROJECTID,
+  storageBucket: config.REACT_APP_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: config.REACT_APP_FIREBASE_MESSAGINGSENDERID,
+  appId: config.REACT_APP_FIREBASE_APPID,
 });
+
+export const firebaseAnalytics = firebase.analytics();
 
 const AuthContext = createContext({} as any);
 
@@ -30,6 +34,7 @@ export const useAuth = () => {
 };
 
 // Provider hook that creates auth object and handles state
+// eslint-disable-next-line react/prop-types
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({} as any);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
@@ -40,11 +45,11 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     return firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        setUser(null);
-      });
+        .auth()
+        .signOut()
+        .then(() => {
+          setUser(null);
+        });
   };
 
   // Subscribe to user on mount

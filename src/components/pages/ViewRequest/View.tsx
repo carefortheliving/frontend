@@ -1,76 +1,58 @@
-import * as React from "react";
-import {
-  Button,
-  Container,
-  Grid,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import withAuth from "src/components/common/withAuth/View";
-import { useHistory, useParams } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, memo, FC, CSSProperties } from 'react';
+import { Button, Container, Grid, Typography } from '@material-ui/core';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   getEditRequestRoute,
-  getHomeRoute,
   getSayThanksRoute,
-} from "src/components/common/RouterOutlet/routerUtils";
-import Navbar from "src/components/common/Navbar/View";
-import useFirestore from "src/hooks/useFirestore";
-import useFirebase from "src/hooks/useFirebase";
-import { RequestType } from "src/types";
-import moment from "moment";
-import { parseTime } from "src/utils/commonUtils";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import Box from "@material-ui/core/Box";
-import Footer from "src/components/common/Footer/View";
+} from 'src/components/common/RouterOutlet/routerUtils';
+import useFirestore from 'src/hooks/useFirestore';
+import useFirebase from 'src/hooks/useFirebase';
+import { RequestType } from 'src/types';
+import { parseTime } from 'src/utils/commonUtils';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import Disqus from 'src/components/common/Disqus/View';
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton,
+} from 'src/contexts/AppContext';
+import CardContent from '@material-ui/core/CardContent';
+import useUser from 'src/hooks/useUser';
+import Card from '@material-ui/core/Card';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@material-ui/core/ListItem';
+import List from '@material-ui/core/List';
+import Box from '@material-ui/core/Box';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
-  buttons: {
-    marginTop: "50px",
-  },
-}));
+interface ViewRequestProps {}
 
-interface ViewRequestProps { }
-
-const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
-  const classes = useStyles();
+const ViewRequest: FC<ViewRequestProps> = () => {
+  const { dispatch } = useAppContext();
   const history = useHistory();
   const params = useParams();
-  const { addRequest, updateRequest, getRequest } = useFirestore();
-  const [data, setData] = React.useState(undefined as undefined | RequestType);
+  const { getRequest } = useFirestore();
+  const [data, setData] = useState(undefined as undefined | RequestType);
   const { auth } = useFirebase();
-  const [pageURL, setPageURL] = React.useState('');
-  const [pageID, setPageID] = React.useState('');
+  const [pageURL, setPageURL] = useState('');
+  const [pageID, setPageID] = useState('');
+  const { isAdmin } = useUser();
 
-  React.useEffect(() => {
+  useEffect(() => {
+    firebaseAnalytics.logEvent('request_details_page_visited');
     setPageURL(window.location.href);
     const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
-  })
-
-  React.useEffect(() => {
     prefillData();
+    dispatch(changeBackButton(true));
+    dispatch(changeTitle('Request Details'));
   }, []);
 
   const prefillData = async () => {
     const existingRequest = await getRequest(params?.docId);
-    // console.log({ existingRequest });
-    if (typeof existingRequest === "object") {
+    if (typeof existingRequest === 'object') {
       setData(existingRequest as any);
     }
   };
@@ -83,18 +65,11 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
     history.push(getEditRequestRoute(params?.docId));
   };
 
-  const handleCancel = async () => {
-    history.push({
-      pathname: getHomeRoute(),
-      search: "?tab=1",
-    });
-  };
-
   const renderCloseButton = () => {
     return (
       <Button
         variant="contained"
-        color="secondary"
+        color="primary"
         onClick={handleCloseClick}
         // style={{ marginRight: "10px" }}
       >
@@ -103,21 +78,13 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
     );
   };
 
-  const renderCancelButton = () => {
-    return (
-      <Button variant="contained" onClick={handleCancel}>
-        Cancel
-      </Button>
-    );
-  };
-
   const renderEditButton = () => {
     return (
       <Button
         variant="contained"
-        color="primary"
+        // color="primary"
         onClick={handleEditClick}
-        style={{ marginRight: "5px" }}
+        style={{ marginRight: '5px' }}
       >
         Edit
       </Button>
@@ -125,244 +92,139 @@ const ViewRequest: React.FC<ViewRequestProps> = ({}) => {
   };
 
   const renderFieldValue = (
-    value: string | undefined,
-    style = {} as React.CSSProperties
+      value: string | undefined,
+      style = {} as CSSProperties,
   ) => {
     return (
-      <Typography variant="h5" style={style}>
-        {value || "-"}
+      <Typography variant="subtitle2" style={style}>
+        {value || '-'}
       </Typography>
     );
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-
-      <Navbar showBack title="Request Details" />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: "50px" }}>
-              Request Details
-            </Typography>
-            <Grid container spacing={1}>
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Requester's Name</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.requesterName)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Contact Number</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.requesterContactNumber)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Category</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.requestCategory?.label)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Gender</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.patientGender?.label)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Blood Group</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.patientBloodGroup?.label)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Patient's Age</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.patientAge)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">State</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.patientState?.label)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">District</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.patientDistrict?.label)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Title</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.requestTitle)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Description</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(data?.requestDescription)}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Created At</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(parseTime(data?.createdAt))}
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">Updated At</Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderFieldValue(parseTime(data?.updatedAt))}
-                </Grid>
-              </Grid>
-
-              {/* <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">
-                    Status
+    <Container maxWidth="md">
+      <Box marginBottom={5}>
+        <Card>
+          <CardContent>
+            {data && (
+              <Grid container spacing={2}>
+                {data.requestTitle && (
+                  <Grid item xs={12}>
+                    <Typography variant="h4" component="h1" align="center">
+                      {data.requestTitle}
+                    </Typography>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Typography variant="h6" component="h3">
+                    <strong>
+                      {data.requesterName} ({data.patientGender?.label || ''})
+                    </strong>{' '}
+                    of age: <strong>{data.patientAge || '-'}</strong>, blood
+                    group:{' '}
+                    <strong>
+                      {data.patientBloodGroup?.label || '-'}
+                    </strong> from{' '}
+                    <strong>
+                      {data.patientDistrict?.label}, {data.patientState?.label}
+                    </strong>{' '}
+                    requires <strong>{data.requestCategory?.label}</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs>
-                  {renderStatus()}
-                </Grid>
-              </Grid> */}
-
-              {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">
-                    Donor Details
-                  </Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderDonor()}
-                </Grid>
-              </Grid> : null} */}
-
-              {data?.requestStatus?.value === "open" ? (
-                data?.requesterEmail === auth?.user?.email ? (
-                  <Grid
-                    container
-                    xs={12}
-                    sm={12}
-                    md={12}
-                    // justify="flex-end"
-                    className={classes.buttons}
+                <Grid item xs={12}>
+                  <List
+                    subheader={<ListSubheader>More Details:</ListSubheader>}
                   >
+                    <ListItem>
+                      <ListItemText
+                        id="description"
+                        primary={data.requestDescription}
+                        secondary="Details"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="phone-number"
+                        primary={data.requesterContactNumber}
+                        secondary="Phone number"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="created-at"
+                        primary={parseTime(data.createdAt)}
+                        secondary="Created At"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="last-updated-at"
+                        primary={parseTime(data.updatedAt)}
+                        secondary="Last Updated At"
+                      />
+                    </ListItem>
+                  </List>
+                </Grid>
+                {data.requestStatus?.value === 'open' ? (
+                  ( (data?.requesterEmail === auth?.user?.email) ||
+                  (isAdmin) ) &&
+                  (
                     <Grid item xs={12} md={6} spacing={2}>
                       {renderEditButton()}
                       {renderCloseButton()}
                     </Grid>
+                  )
+                ) : (
+                  <>
+                    {data?.donorName ? <Grid container>
+                      <Grid item xs={6}>
+                        {renderFieldValue('Donor Name')}
+                      </Grid>
+                      <Grid item xs={6}>
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                          {renderFieldValue(data?.donorName, {
+                            fontWeight: 600,
+                          })}
+                          <FavoriteIcon
+                            color="secondary"
+                            fontSize="small"
+                            style={{ marginLeft: '5px' }}
+                          />
+                        </span>
+                      </Grid>
+                    </Grid> : null }
 
-                    {/* <Grid item xs={6} sm={6} md={4} spacing={2} justify="flex-end">
-                  {renderCancelButton()}
-                </Grid> */}
-                    {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
-                  {renderResolve()}
-                </Grid> */}
-                  </Grid>
-                ) : null
-              ) : (
-                <>
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Donor Name</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      <span style={{ display: "flex", alignItems: "center" }}>
-                        {renderFieldValue(data?.donorName, {
+                    <Grid container>
+                      <Grid item xs={6}>
+                        {renderFieldValue('Status')}
+                      </Grid>
+                      <Grid item xs={6}>
+                        {renderFieldValue('Closed', {
                           fontWeight: 600,
                         })}
-                        <FavoriteIcon
-                          color="secondary"
-                          fontSize="small"
-                          style={{ marginLeft: "5px" }}
-                        />
-                      </span>
+                      </Grid>
                     </Grid>
-                  </Grid>
-
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Donor Email</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderFieldValue(data?.donorEmail, {
-                        fontWeight: 600,
-                      })}
-                    </Grid>
-                  </Grid>
-
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Status</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderFieldValue("Closed", {
-                        fontWeight: 600,
-                      })}
-                    </Grid>
-                  </Grid>
-                </>
-              )}
-            </Grid>
-            {
-              data && data.requestTitle && (
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Disqus url={ pageURL } id={ pageID } title={ data.requestTitle } language="en" />
-                  </Grid>
-                </Grid>
-              )
-            }
-        </Container>
-        </div>
-        <Box mt={8}>
-          <Footer />
-        </Box>
-      </main>
-    </div>
+                  </>
+                )}
+              </Grid>
+            )}
+          </CardContent>
+        </Card>
+      </Box>
+      <Box>
+        {data && (
+          <Disqus
+            url={pageURL}
+            id={pageID}
+            title={data.requestTitle}
+            language="en"
+          />
+        )}
+      </Box>
+    </Container>
   );
 };
 
-// export default React.memo(withAuth(ViewRequest));
-export default React.memo(ViewRequest);
+// export default memo(withAuth(ViewRequest));
+export default memo(ViewRequest);

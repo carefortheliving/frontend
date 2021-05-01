@@ -1,16 +1,17 @@
-import * as React from "react";
-import { Suspense } from "react";
-import { Switch, Route } from "react-router";
-import AppLoader from "../AppLoader/View";
+import * as React from 'react';
+import { Suspense } from 'react';
+import { Switch, Route } from 'react-router';
+import AppLoader from '../AppLoader/View';
 
-const Login = React.lazy(() => import("../../pages/Login/View"));
-const Dashboard = React.lazy(() => import("../../pages/Dashboard/View"));
+const Login = React.lazy(() => import('../../pages/Login/View'));
+const Dashboard = React.lazy(() => import('../../pages/Dashboard/View'));
 const CreateRequest = React.lazy(
-  () => import("../../pages/CreateRequest/View")
+    () => import('../../pages/CreateRequest/View'),
 );
-const ViewRequest = React.lazy(() => import("../../pages/ViewRequest/View"));
-const SayThanks = React.lazy(() => import("../../pages/SayThanks/View"));
-const About = React.lazy(() => import("../../pages/About/View"));
+const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
+const SayThanks = React.lazy(() => import('../../pages/SayThanks/View'));
+const About = React.lazy(() => import('../../pages/About/View'));
+const AdminPortal = React.lazy(() => import('../../pages/AdminPortal/View'));
 
 const RouterOutlet = (props) => {
   return (
@@ -27,6 +28,7 @@ const RouterOutlet = (props) => {
         <Route path="/request/view/:docId" exact component={ViewRequest} />
         <Route path="/thank/:docId" exact component={SayThanks} />
         <Route path="/about" exact component={About} />
+        <Route path="/admin" exact component={AdminPortal} />
       </Switch>
     </Suspense>
   );

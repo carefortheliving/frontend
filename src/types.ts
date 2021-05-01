@@ -1,9 +1,11 @@
 export interface StylesProps<T> {
   classes: {
+    // eslint-disable-next-line no-unused-vars
     [X in keyof T]: string;
   };
   theme: Record<string, string>;
 }
+
 export interface RequestType {
   donorEmail?: string;
   donorName?: string;
@@ -23,11 +25,18 @@ export interface RequestType {
   updatedAt: number;
 }
 
+export type ExistingRequestType = RequestType & { id: string };
+
 export interface FiltersType {
-  requesterEmail?: string[];
-  requestStatus?: ('open' | 'closed')[];
-  requestState?: string[];
-  requestDistrict?: string[];
+  requesterEmail?: string;
+  requestStatus?: ('open' | 'closed');
+  patientState?: string;
+  patientDistrict?: string;
+  requestCategory?: string;
+  sortBy?: {
+    key: 'createdAt' | 'updatedAt' | 'patientAge',
+    direction: 'asc' | 'desc'
+  }
 }
 
 export interface UsefulLink {
@@ -41,4 +50,10 @@ export interface DisqusProps {
   id: string;
   title: string;
   language: string;
+}
+
+export interface UserInfo {
+  isAdmin: boolean;
+  email: string;
+  displayName: string;
 }

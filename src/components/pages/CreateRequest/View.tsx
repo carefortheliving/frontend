@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
   Container,
@@ -6,44 +7,42 @@ import {
   TextareaAutosize,
   TextField,
   Typography,
-} from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import MuiPhoneNumber from "material-ui-phone-number";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useHistory, useParams } from "react-router-dom";
-import Select from "react-select";
-import Navbar from "src/components/common/Navbar/View";
-import Box from "@material-ui/core/Box";
+} from '@material-ui/core';
+import MuiPhoneNumber from 'material-ui-phone-number';
+import React, { useState, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useHistory, useParams } from 'react-router-dom';
+import Select from 'react-select';
 import {
   getHomeRoute,
   getLoginRoute,
   getViewRequestRoute,
-} from "src/components/common/RouterOutlet/routerUtils";
-import Footer from "src/components/common/Footer/View";
-import { useSnackbar } from "src/components/common/SnackbarProvider/View";
-import useFirestore from "src/hooks/useFirestore";
-import useFirebase from "src/hooks/useFirebase";
-import useGeo from "src/hooks/useGeo";
-import { RequestType } from "src/types";
+} from 'src/components/common/RouterOutlet/routerUtils';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import useFirestore from 'src/hooks/useFirestore';
+import useFirebase from 'src/hooks/useFirebase';
+import useGeo from 'src/hooks/useGeo';
+import { RequestType } from 'src/types';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton,
+} from 'src/contexts/AppContext';
+import withAuth from 'src/components/common/withAuth/View';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
   buttons: {
-    marginTop: "50px",
+    marginTop: '50px',
+  },
+  input: {
+    width: '100%',
+    border: 'solid hsl(0, 0%, 80%) 1px',
+    borderRadius: '4px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
   },
 }));
 interface CreateRequestProps {
@@ -51,66 +50,56 @@ interface CreateRequestProps {
 }
 
 const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
+  const { dispatch } = useAppContext();
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
-    requestTitle: "",
-    requestDescription: "",
-    requesterName: "",
-    requestCategory: { value: "plasma", label: "Plasma" },
-    patientGender: { value: "male", label: "Male" },
-    patientBloodGroup: { value: "a+", label: "A+" },
-    patientAge: "",
-    patientState: { value: "Uttar Pradesh", label: "Uttar Pradesh" },
-    patientDistrict: { value: "Muzaffarnagar", label: "Muzaffarnagar" },
-    requesterContactNumber: "",
-    // donor: ''
-  } as RequestType;
-  const {
-    handleSubmit,
-    control,
-    reset,
-    register,
-    setValue,
-    getValues,
-  } = useForm({ defaultValues });
+    requestTitle: undefined,
+    requestDescription: undefined,
+    requesterName: undefined,
+    requestCategory: undefined,
+    patientGender: undefined,
+    patientBloodGroup: undefined,
+    patientAge: undefined,
+    patientState: undefined,
+    patientDistrict: undefined,
+    requesterContactNumber: undefined,
+  } as Partial<RequestType>;
+  const { handleSubmit, control, setValue } = useForm({ defaultValues });
   const { states } = useGeo();
-  const [districts, setDistricts] = React.useState([]);
-  // const [isDonorVisible, setIsDonorVisible] = React.useState(defaultValues.status.value === 'closed');
+  const [districts, setDistricts] = useState([]);
   const history = useHistory();
   const params = useParams();
-  // const match = useRouteMatch();
   const { addRequest, updateRequest, getRequest } = useFirestore();
   const snackbar = useSnackbar();
-  const [data, setData] = React.useState(undefined as undefined | RequestType);
+  const [data, setData] = useState(undefined as undefined | RequestType);
 
-  React.useEffect(() => {
-    ensureLoggedIn();
+  useEffect(() => {
+    firebaseAnalytics.logEvent('create/edit_request_visited');
     loadData();
+    dispatch(changeBackButton(true));
   }, []);
 
-  React.useEffect(() => {
-    setValue("requesterName", auth?.user?.displayName);
+  useEffect(() => {
+    setValue('requesterName', auth?.user?.displayName);
   }, [auth?.user?.displayName]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     ensurePermissions();
   }, [data?.requesterEmail]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     prefillData();
   }, [data]);
 
-  const ensureLoggedIn = async () => {
-    if (!auth?.user?.email) {
-      history.replace(getLoginRoute());
-    }
-  };
+  useEffect(() => {
+    dispatch(changeTitle(isEdit ? 'Edit Request' : 'Create Request'));
+  }, [isEdit]);
 
   const isValidUser = () => {
-    return data?.requesterEmail
-      ? data?.requesterEmail === auth?.user?.email
-      : !!auth?.user?.email;
+    return data?.requesterEmail ?
+      data?.requesterEmail === auth?.user?.email :
+      !!auth?.user?.email;
   };
 
   const ensurePermissions = () => {
@@ -120,10 +109,10 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   };
 
   const loadData = async () => {
-    const existingRequest = isEdit
-      ? await getRequest(params?.docId)
-      : undefined;
-    if (typeof existingRequest === "object") {
+    const existingRequest = isEdit ?
+      await getRequest(params?.docId) :
+      undefined;
+    if (typeof existingRequest === 'object') {
       setData(existingRequest as any);
     }
   };
@@ -140,40 +129,54 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     const newDistricts =
       states[state]?.map((el) => ({ value: el.city, label: el.city })) || [];
     setDistricts(newDistricts);
-    setValue("patientDistrict", newDistricts[0]);
+    setValue('patientDistrict', newDistricts[0]);
   };
 
-  // const handleStatusChange = (status: string) => {
-  //   console.log({ status });
-  //   setIsDonorVisible(status === 'closed');
-  // };
+  const validateFields = (data: RequestType) => {
+    const requiredKeys: (keyof Partial<RequestType>)[] = [
+      'requestTitle',
+      'requestCategory',
+      'patientBloodGroup',
+      'requestDescription',
+      'requesterContactNumber',
+    ];
+    const missingKey = requiredKeys.find((key) => !data?.[key]);
+    if (missingKey) {
+      snackbar.show('error', `Field "${missingKey}" must not be empty!`);
+      return false;
+    }
+    return true;
+  };
 
   const onSubmit = async (data: RequestType) => {
-    // console.log(data);
     if (!isValidUser()) {
-      snackbar.show("error", `You're not authorized for the action!`);
+      snackbar.show('error', `You're not authorized for the action!`);
       return;
     }
+    if (!validateFields(data)) return;
     try {
-      const res = isEdit
-        ? await updateRequest(params?.docId, data)
-        : await addRequest({
-            ...data,
-            requestStatus: { value: "open", label: "Open" },
-            requesterEmail: auth?.user?.email,
-          });
-      // console.log({ newId: res.id });
+      const payload: RequestType = pickBy(data, identity) as any;
+      const res = isEdit ?
+        await updateRequest(params?.docId, payload) :
+        await addRequest({
+          ...payload,
+          requestStatus: { value: 'open', label: 'Open' },
+          requesterEmail: auth?.user?.email,
+        });
       snackbar.show(
-        "success",
-        `Request ${isEdit ? "updated" : "created"} successfully!`
+          'success',
+          `Request 
+          ${ isEdit ? 'updated' : 'created' } successfully! Please also keep an eye on your post comment thread and useful links tab`,
       );
       // message.success('Request created successfully!')
       history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error('Error adding document: ', e);
       snackbar.show(
-        "error",
-        `Couldn't ${isEdit ? "update" : "create"} request!`
+          'error',
+          `Couldn't ${
+          isEdit ? 'update' : 'create'
+          } request!\n All the fields are mandatory!`,
       );
       // message.error(`Couldn't create request!`);
     }
@@ -183,17 +186,24 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     history.push(getHomeRoute());
   };
 
+  const renderSelectPlaceholder = (text: string) => {
+    return (
+      <Typography style={{ color: 'rgba(0, 0, 0, 0.40)' }}>{text}</Typography>
+    );
+  };
+
   const renderTitle = () => {
     return (
       <Controller
-        name={"requestTitle"}
+        name={'requestTitle'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
             placeholder="Situation title goes here ..."
-            style={{ width: "100%" }}
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />
@@ -203,14 +213,15 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderDescription = () => {
     return (
       <Controller
-        name={"requestDescription"}
+        name={'requestDescription'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextareaAutosize
             {...field}
             placeholder="Situation description goes here ..."
-            style={{ width: "100%", height: "100px" }}
+            style={{ width: '100%', height: '100px' }}
+            className={classes.input}
           />
         )}
       />
@@ -220,14 +231,16 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderRequester = () => {
     return (
       <Controller
-        name={"requesterName"}
+        name={'requesterName'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             placeholder="Requester's Name"
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />
@@ -237,14 +250,16 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderAge = () => {
     return (
       <Controller
-        name={"patientAge"}
+        name={'patientAge'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             placeholder="Patient's Age"
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />
@@ -260,14 +275,14 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
           return (
             <Select
               {...field}
-              placeholder="Select Category"
+              placeholder={renderSelectPlaceholder('Select Category')}
               options={[
-                { value: "plasma", label: "Plasma" },
-                { value: "oxygen", label: "Oxygen" },
-                { value: "medicine", label: "Medicine" },
-                { value: "blood", label: "Blood" },
-                { value: "money", label: "Monetary" },
-                { value: "other", label: "Other" },
+                { value: 'plasma', label: 'Plasma' },
+                { value: 'oxygen', label: 'Oxygen' },
+                { value: 'medicine', label: 'Medicine' },
+                { value: 'blood', label: 'Blood' },
+                { value: 'money', label: 'Monetary' },
+                { value: 'other', label: 'Other' },
               ]}
             />
           );
@@ -284,10 +299,12 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select Blood Group of the patient"
+            placeholder={renderSelectPlaceholder(
+                'Select Gender of the patient',
+            )}
             options={[
-              { value: "male", label: "Male" },
-              { value: "femal", label: "Female" },
+              { value: 'male', label: 'Male' },
+              { value: 'female', label: 'Female' },
             ]}
           />
         )}
@@ -303,18 +320,20 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select Blood Group of the patient"
+            placeholder={renderSelectPlaceholder(
+                'Select Blood Group of the patient',
+            )}
             options={[
-              { value: "a+", label: "A+" },
-              { value: "a-", label: "A-" },
-              { value: "b+", label: "B+" },
-              { value: "b-", label: "B-" },
-              { value: "c+", label: "C+" },
-              { value: "c-", label: "C-" },
-              { value: "o+", label: "O+" },
-              { value: "o-", label: "O-" },
-              { value: "ab+", label: "AB+" },
-              { value: "ab+", label: "AB+" },
+              { value: 'a+', label: 'A+' },
+              { value: 'a-', label: 'A-' },
+              { value: 'b+', label: 'B+' },
+              { value: 'b-', label: 'B-' },
+              { value: 'c+', label: 'C+' },
+              { value: 'c-', label: 'C-' },
+              { value: 'o+', label: 'O+' },
+              { value: 'o-', label: 'O-' },
+              { value: 'ab+', label: 'AB+' },
+              { value: 'ab+', label: 'AB+' },
             ]}
           />
         )}
@@ -325,18 +344,20 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   const renderContactNumber = () => {
     return (
       <Controller
-        name={"requesterContactNumber"}
+        name={'requesterContactNumber'}
         control={control}
         defaultValue=""
         render={({ field }) => (
           <MuiPhoneNumber
             {...field}
-            defaultCountry={"in"}
-            onlyCountries={["in"]}
+            defaultCountry={'in'}
+            onlyCountries={['in']}
             disableCountryCode
             disableDropdown
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             placeholder="Contact Number"
+            className={classes.input}
+            InputProps={{ disableUnderline: true }}
           />
         )}
       />
@@ -351,7 +372,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select State"
+            placeholder={renderSelectPlaceholder('Select State')}
             onChange={(option) => {
               handleStateChange(option.value);
               field?.onChange(option);
@@ -374,7 +395,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
         render={({ field }) => (
           <Select
             {...field}
-            placeholder="Select District"
+            placeholder={renderSelectPlaceholder('Select District')}
             options={districts}
           />
         )}
@@ -382,46 +403,13 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     );
   };
 
-  // const renderStatus = () => {
-  //   return <Controller
-  //     name="status"
-  //     control={control}
-  //     render={({ field }) => {
-  //       return <Select
-  //         {...field}
-  //         isDisabled={!isEdit}
-  //         placeholder="Select Status"
-  //         options={[
-  //           { value: "open", label: "Open" },
-  //           { value: "closed", label: "Closed" },
-  //         ]}
-  //         onChange={(option) => {
-  //           handleStatusChange(option.value);
-  //           field?.onChange(option);
-  //         }}
-  //       />;
-  //     }}
-  //   />;
-  // };
-
-  // const renderDonor = () => {
-  //   return <Controller
-  //     name={'donor'}
-  //     control={control}
-  //     defaultValue=""
-  //     render={({ field }) => <TextareaAutosize {...field}
-  //       placeholder="Donor details"
-  //       style={{ width: '100%', height: '100px' }} />}
-  //   />;
-  // };
-
   const renderSubmit = () => {
     return (
       <Button
         variant="contained"
         color="primary"
         onClick={handleSubmit(onSubmit)}
-        style={{ marginRight: "10px" }}
+        style={{ marginRight: '10px' }}
       >
         Submit
       </Button>
@@ -436,181 +424,128 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
     );
   };
 
-  // const renderResolve = () => {
-  //   return <Button
-  //     variant="contained"
-  //     onClick={handleCancel}
-  //     color="secondary"
-  //   >
-  //     Close Request
-  //   </Button>;
-  // };
-
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Navbar showBack title="Create Request" />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          <Container maxWidth="md">
-            <Typography variant="h3" style={{ marginBottom: "50px" }}>
-              {isEdit ? "Edit Request" : "Create Request"}
-            </Typography>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={1}>
-                <Grid container xs={12} sm={12}>
-                  <Grid item xs>
-                    <Typography variant="h5">Requester's Email</Typography>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography variant="h6">
-                      {isEdit ? data?.requesterEmail : auth?.user?.email}
-                    </Typography>
-                  </Grid>
+    <Container maxWidth="md">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={1}>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Requester&apos;s Email</Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="h6">
+                {isEdit ? data?.requesterEmail : auth?.user?.email}
+              </Typography>
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Requester's Name</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderRequester()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Requester&apos;s Name</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderRequester()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Contact Number</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderContactNumber()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Contact Number</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderContactNumber()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Category</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderCategory()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Category</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderCategory()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Patient's Gender</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderGender()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Patient&apos;s Gender</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderGender()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">
-                        Patient's Blood Group
-                      </Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderBloodGroup()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Patient&apos;s Blood Group</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderBloodGroup()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Patient's Age</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderAge()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Patient&apos;s Age</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderAge()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">State</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderState()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">State</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderState()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">District</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderDistrict()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">District</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderDistrict()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Title</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderTitle()}
-                    </Grid>
-                  </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Title</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderTitle()}
+            </Grid>
+          </Grid>
 
-                  <Grid container xs={12} sm={12}>
-                    <Grid item xs>
-                      <Typography variant="h5">Description</Typography>
-                    </Grid>
-                    <Grid item xs>
-                      {renderDescription()}
-                    </Grid>
-                  </Grid>
-
-                  {/* <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">
-                    Status
-                  </Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderStatus()}
-                </Grid>
-              </Grid> */}
-
-                  {/* {isDonorVisible ? <Grid container xs={12} sm={12}>
-                <Grid item xs>
-                  <Typography variant="h5">
-                    Donor Details
-                  </Typography>
-                </Grid>
-                <Grid item xs>
-                  {renderDonor()}
-                </Grid>
-              </Grid> : null} */}
-
-                  <Grid
-                    container
-                    xs={12}
-                    sm={12}
-                    md={12}
-                    // justify="flex-end"
-                    className={classes.buttons}
-                  >
-                    <Grid item xs={12} sm={6} md={4} spacing={2}>
-                      {renderSubmit()}
-                      {renderCancel()}
-                    </Grid>
-                    {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
+          <Grid container>
+            <Grid item xs>
+              <Typography variant="h6">Description</Typography>
+            </Grid>
+            <Grid item xs>
+              {renderDescription()}
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            // justify="flex-end"
+            className={classes.buttons}
+            spacing={2}
+          >
+            <Grid item xs={12} sm={6} md={4}>
+              {renderSubmit()}
+              {renderCancel()}
+            </Grid>
+            {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
                   {renderResolve()}
                 </Grid> */}
-                  </Grid>
-                </Grid>
-              </Grid>
-            </form>
-          </Container>
-        </div>
-        <Box pt={4}>
-          <Footer />
-        </Box>
-      </main>
-    </div>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
   );
 };
 
-// export default withAuth(CreateRequest);
-export default CreateRequest;
+export default withAuth(CreateRequest);

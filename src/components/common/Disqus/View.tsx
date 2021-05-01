@@ -1,18 +1,25 @@
+import React from 'react';
 import { DiscussionEmbed } from 'disqus-react';
-import { DisqusProps } from 'src/types'
+import CardContent from '@material-ui/core/CardContent';
+import Card from '@material-ui/core/Card';
+import { DisqusProps } from 'src/types';
 
-export default function Footer(props: DisqusProps) {
-    return (
+const Disqus = (props: DisqusProps) => {
+  return (
+    <Card>
+      <CardContent>
         <DiscussionEmbed
-            shortname='Comments'
-            config={
-                {
-                    url: props.url,
-                    identifier: props.id,
-                    title: props.title,
-                    language: props.language	
-                }
-            }
+          shortname="https-carefortheliving-org"
+          config={{
+            url: props.url,
+            identifier: props.id,
+            title: props.title,
+            language: props.language,
+          }}
         />
-    )
-}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default Disqus;

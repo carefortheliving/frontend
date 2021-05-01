@@ -1,37 +1,24 @@
-import * as React from "react";
-import { Container, Grid, makeStyles, Typography } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Navbar from "src/components/common/Navbar/View";
-import Footer from "src/components/common/Footer/View";
-import Box from "@material-ui/core/Box";
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from 'react';
+import { Container, Grid, Typography } from '@material-ui/core';
 import HearingIcon from '@material-ui/icons/Hearing';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-    backgroundColor: theme.palette.background.paper,
-  },
-  heroContent: {
-    padding: theme.spacing(8, 0, 6),
-  },
-  contentGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
-  },
-}));
+import {
+  useAppContext,
+  changeTitle,
+  changeBackButton,
+} from 'src/contexts/AppContext';
+import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 interface SayAbout {}
 
 const About: React.FC<SayAbout> = () => {
-  const classes = useStyles();
+  const { dispatch } = useAppContext();
+
+  useEffect(() => {
+    firebaseAnalytics.logEvent('about_page_visited');
+    dispatch(changeBackButton(true));
+    dispatch(changeTitle('About'));
+  }, []);
 
   const renderHeader = () => {
     return (
@@ -45,19 +32,39 @@ const About: React.FC<SayAbout> = () => {
         >
           Our Vision <br></br>
         </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="textSecondary"
+          paragraph
+        >
           <i>
-            Caring starts with listening! <HearingIcon /> <br/>
-            <br/>
-            We are committed to listen to the <strong>voice of pain</strong>{/* <RecordVoiceOverIcon /> */}, <br/>
-            and amplify that voice for those, to hear, who can help. <br/>
-            <br/>
-            If you are seeking help, <br/>
-            kindly click on <strong>Create Request</strong> and generate your request. <br/>
-            We will do our best to make it visible to the world. <br/>
+            Caring starts with listening! <HearingIcon /> <br />
             <br />
+            We are committed to listen to the <strong>voice of pain</strong>
+            {/* <RecordVoiceOverIcon /> */}, <br />
+            and amplify that voice for those, to hear, who can help. <br />
+            <br />
+            If you are seeking help, <br />
+            kindly click on <strong>Create Request</strong> and generate your
+            request. <br />
+            We will do our best to make it visible to the world. <br />
+            <br />
+            If you wish to contribute to the good cause, <br/>
+            kindly checkout <strong>requests</strong> on the dashboard and <br/>
+            see what you can do to help.
           </i>
           {/* - Buddha */}
+          <br/><br/><br/>
+        </Typography>
+        <Typography
+          component="h5"
+          variant="h4"
+          align="center"
+          color="textPrimary"
+          gutterBottom
+        >
+          <strong>&quot;Let&apos;s fight this together. 💪&quot;</strong>
         </Typography>
       </Container>
     );
@@ -66,31 +73,16 @@ const About: React.FC<SayAbout> = () => {
   const renderContent = () => {
     return (
       <Grid item md={9}>
-        <Container className={classes.contentGrid} maxWidth="lg">
-          {/**Content goes here */}
-        </Container>
+        <Container maxWidth="lg">{/** Content goes here */}</Container>
       </Grid>
     );
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-
-      <Navbar showBack />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <div className={classes.heroContent}>
-          {renderHeader()}
-        </div>
-        <Grid container>
-          {renderContent()}
-        </Grid>
-        <Box mt={8}>
-          <Footer />
-        </Box>
-      </main>
-    </div>
+    <>
+      {renderHeader()}
+      <Grid container>{renderContent()}</Grid>
+    </>
   );
 };
 
