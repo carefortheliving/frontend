@@ -85,9 +85,7 @@ function View(props) {
       history.push(getLoginRoute());
     }
     firebaseAnalytics.logEvent('create/edit_request_visited');
-    // isEdit?dispatch(changeTitle('Edit Request')):dispatch(changeTitle('My Request'));
     appActions.setTitle(isEdit ? 'Edit Request' : 'Create Request');
-    // dispatch(changeBackButton(true));
     appActions.setBackButton(true);
     isEdit&&loadData();
   }, []);
