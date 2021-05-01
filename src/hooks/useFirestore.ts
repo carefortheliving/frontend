@@ -61,11 +61,12 @@ const useFirestore = () => {
     if (sortBy?.key) {
       requestsRef = requestsRef.orderBy(sortBy.key, sortBy.direction === 'desc' ? 'desc' : undefined) as any;
     }
-    if (pageIndex && pageSize) {
-      const startAt = pageSize * (pageIndex - 1);
-      const endAt = pageSize * pageIndex;
-      requestsRef = requestsRef.startAt(startAt).endAt(endAt) as any;
-    }
+    // TODO: postponing pagination to save db queries
+    // if (pageIndex && pageSize) {
+    //   const startAt = pageSize * (pageIndex - 1);
+    //   const endAt = pageSize * pageIndex;
+    //   requestsRef = requestsRef.startAt(startAt).endAt(endAt) as any;
+    // }
     const requests = await requestsRef.get();
     const ret = requests.docs?.map((doc) => ({
       id: doc.id,

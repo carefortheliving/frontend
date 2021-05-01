@@ -60,29 +60,60 @@ const Dashboard = () => {
     );
   };
 
-  const renderLinkCard = (data?: UsefulLink, index?: number) => {
-    return (
-      <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
-        <LinkCard prefillData={data} onReloadRequested={() => usefulLinks.loadData()} />
-      </Grid>
-    );
+  const getRowHeight = () => {
+    switch (urlKeys.tab.key) {
+      case 'useful_links':
+      case 'donors':
+        return 280;
+      case 'open_requests':
+      case 'closed_requests':
+      case 'my_requests':
+      default:
+        return 400;
+    }
+  };
+
+  const getGridData = () => {
+    switch (urlKeys.tab.key) {
+      case 'useful_links':
+      case 'donors':
+        return usefulLinks?.data;
+      case 'open_requests':
+      case 'closed_requests':
+      case 'my_requests':
+        return requests;
+      default:
+        return [];
+    }
   };
 
   const gridColumnCount = isUpSm ? (urlKeys.tab.key === 'open_requests' ? 3 : 4) : 1;
   const renderCell = (props: InfiniteGridCellProps) => {
     const { columnIndex, rowIndex, style } = props;
     const index = rowIndex * gridColumnCount + columnIndex;
-    const data = usefulLinks?.data?.[index];
-    // return <div style={{ ...style }}> div </div>;
-    return (
-      <div style={{ ...style, padding: '16px' }}>
-        <LinkCard
-          prefillData={data || {
-            name: 'Loading more ...',
-          }}
-          onReloadRequested={() => usefulLinks.loadData()} />
-      </div>
-    );
+    const data = getGridData()?.[index] as any;
+    return data ? <div style={{ ...style, padding: '16px' }} key={`cell-${index}`}>
+      {(() => {
+        switch (urlKeys.tab.key) {
+          case 'useful_links':
+          case 'donors':
+            return <LinkCard
+              prefillData={data || {
+                name: 'Loading more ...',
+              }}
+              onReloadRequested={() => usefulLinks.loadData()} />;
+          case 'open_requests':
+          case 'closed_requests':
+          case 'my_requests':
+            return <RequestCard
+              key={data.id}
+              data={data}
+              onClick={handleCardClick} />;
+          default:
+            return [];
+        }
+      })()}
+    </div> : null;
   };
 
   const renderContent = () => {
@@ -103,40 +134,17 @@ const Dashboard = () => {
                   style={{ margin: 'auto', marginTop: '100px' }}
                 />
               </Box>
-            ) : (
-                (() => {
-                  switch (urlKeys.tab.key) {
-                    case 'useful_links':
-                      return (
-                        <>
-                          {usefulLinks?.data?.map((link, index) =>
-                            renderLinkCard(link, index),
-                          )}
-                          {isAdmin ? renderLinkCard() : null}
-                        </>
-                      );
-                    case 'donors':
-                      return <InfiniteGrid
-                        loadMoreItems={async (s, e) => {
-                          console.log({ s, e });
-                        }}
-                        renderCell={renderCell}
-                        columnCount={gridColumnCount}
-                        columnWidth={isUpSm ? 300 : 400}
-                        gridHeight={600}
-                        isItemLoaded={(idx) => idx < 10}
-                        itemCount={usefulLinks?.data?.length + 3}
-                        rowHeight={280} />;
-                    case 'open_requests':
-                    case 'closed_requests':
-                    case 'my_requests':
-                    default:
-                      return requests?.length ?
-                        requests?.map((card) => <RequestCard key={card.id} data={card} onClick={handleCardClick} />) :
-                        renderNoRequests();
-                  }
-                })()
-              )}
+            ) : (getGridData()?.length ? <InfiniteGrid
+              loadMoreItems={async (s, e) => {
+                console.log({ s, e });
+              }}
+              renderCell={renderCell}
+              columnCount={gridColumnCount}
+              columnWidth={isUpSm ? 300 : 400}
+              gridHeight={600}
+              isItemLoaded={(idx) => idx < 10}
+              itemCount={getGridData()?.length}
+              rowHeight={getRowHeight()} /> : renderNoRequests())}
           </Grid>
         </Container>
       </Grid>
