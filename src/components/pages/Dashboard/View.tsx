@@ -106,8 +106,8 @@ const Dashboard = () => {
                     case 'closed_requests':
                     case 'my_requests':
                     default:
-                      return requests.data?.length ?
-                        requests.data?.map((card) => <RequestCard key={card.id} data={card} onClick={handleCardClick} />) :
+                      return requests?.length ?
+                        requests?.map((card) => <RequestCard key={card.id} data={card} onClick={handleCardClick} />) :
                         renderNoRequests();
                   }
                 })()
@@ -132,7 +132,7 @@ const Dashboard = () => {
           <Tab label="Open Requests"
             value={dashboardTabs.open_requests.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests.data?.length : 0}
+              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests?.length : 0}
                 color="primary">
                 <EnhancedEncryptionIcon />
               </Badge>
@@ -161,7 +161,7 @@ const Dashboard = () => {
             <Tab label="My Requests"
               value={dashboardTabs.my_requests.key}
               icon={
-                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests.data?.length : 0} color="primary">
+                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests?.length : 0} color="primary">
                   <NotificationsActiveIcon />
                 </Badge>
               } /> : null}
@@ -169,7 +169,7 @@ const Dashboard = () => {
           <Tab label="Closed Requests"
             value={dashboardTabs.closed_requests.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests.data?.length : 0} color="primary">
+              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests?.length : 0} color="primary">
                 <CancelIcon />
               </Badge>
             } />

@@ -43,6 +43,7 @@ export const useAppStore = () => {
     });
   };
 
+  // TODO: export single object like dashboardStore
   const actions = {
     setBackButton,
     setTitle,

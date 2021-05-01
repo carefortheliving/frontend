@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import identity from 'lodash/identity';
-import pickBy from 'lodash/pickBy';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
@@ -8,8 +6,6 @@ import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUt
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { useAppStore } from 'src/stores/appStore';
 import { FiltersType } from 'src/types';
-import { defaultFilters } from './constants';
-import useRequests from './useRequests';
 import useUrlKeys from './useUrlKeys';
 import useUsefulLinks from './useUsefulLinks';
 import { useDashboardStore } from 'src/stores/dashboardStore';
@@ -17,16 +13,12 @@ import { useDashboardStore } from 'src/stores/dashboardStore';
 const useModel = () => {
   const [app, appActions] = useAppStore();
   const snackbar = useSnackbar();
-  const [appliedFilters, setAppliedFilters] = useState(
-    defaultFilters as Partial<FiltersType>,
-  );
-  const requests = useRequests({ appliedFilters });
   const usefulLinks = useUsefulLinks({});
   const history = useHistory();
   const urlKeys = useUrlKeys();
-  const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
-  const loading = requests.loading || usefulLinks.loading;
-  const [dashboard, dashboardActions] = useDashboardStore();
+  const dashboard = useDashboardStore();
+
+  const loading = dashboard.requestsLoading || usefulLinks.loading;
 
   useEffect(() => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
@@ -34,18 +26,12 @@ const useModel = () => {
     appActions.setTitle('Care for the Living');
   }, []);
 
-  console.log({ renderRequests: dashboard.requests });
-  useEffect(() => {
-    dashboardActions.loadLinks();
-    console.log({ effectRequests: dashboard.requests });
-  }, [dashboard.requests]);
-
   useEffect(() => {
     resetFilters();
     if (urlKeys.tab.key === 'closed_requests' ||
       urlKeys.tab.key === 'open_requests' ||
       urlKeys.tab.key === 'my_requests') {
-      requests.loadData(handleFirebaseFailure);
+      dashboard.loadRequests(handleFirebaseFailure);
     }
     if (urlKeys.tab.key === 'useful_links') {
       usefulLinks.loadData(handleFirebaseFailure);
@@ -53,8 +39,8 @@ const useModel = () => {
   }, [urlKeys.tab.key]);
 
   useEffect(() => {
-    requests.loadData(handleFirebaseFailure);
-  }, [appliedFilters]);
+    dashboard.loadRequests(handleFirebaseFailure);
+  }, [dashboard.requestsFilters]);
 
   const handleFirebaseFailure = (e: any) => {
     if (app.userInfo?.isAdmin) {
@@ -73,11 +59,11 @@ const useModel = () => {
   };
 
   const resetFilters = () => {
-    handleFilterChange(defaultFilters);
+    dashboard.resetRequestsFilters();
   };
 
   const handleFilterChange = (updatedFilters: Partial<FiltersType>) => {
-    setAppliedFilters({ ...appliedFilters, ...updatedFilters });
+    dashboard.setRequestsFilters(updatedFilters);
   };
 
   return {
@@ -85,13 +71,13 @@ const useModel = () => {
     resetFilters,
     handleFilterChange,
     handleFirebaseFailure,
-    filtersCount,
+    filtersCount: dashboard.requestsFiltersCount,
     loading,
     isAdmin: app.userInfo?.isAdmin,
     email: app.userInfo?.email,
     urlKeys,
     usefulLinks,
-    requests,
+    requests: dashboard.requests,
   };
 };
 

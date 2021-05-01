@@ -7,11 +7,18 @@ const useGenericRecoilState = <T>(
   recoilStateStore: RecoilState<T>,
 ): [T, SetState<T>] => {
   const [state, setState] = useRecoilState(recoilStateStore);
-  const setStateLocal: SetState<T> = (newState: Partial<T>) => {
-    setState((state) => ({
-      ...state,
-      ...newState,
-    }));
+  const setStateLocal: SetState<T> = (valOrUpdated: Partial<T> | ((currVal: Partial<T>) => Partial<T>)) => {
+    if (typeof valOrUpdated === 'function') {
+      setState((state) => ({
+        ...state,
+        ...valOrUpdated(state),
+      }));
+    } else {
+      setState((state) => ({
+        ...state,
+        ...valOrUpdated,
+      }));
+    }
   };
 
   return [state as T, setStateLocal];
