@@ -22,7 +22,7 @@ const App = () => (
             <MasterDataLoader />
             <CssBaseline />
             <Navbar />
-            <Box mt={10} minHeight="70vh">
+            <Box mt={10} minHeight="83vh">
               <ScrollToTop smooth />
               <RouterOutlet />
             </Box>

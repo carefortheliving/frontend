@@ -206,7 +206,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
           </CardContent>
         </Card>
       </Box>
-      <Box>
+      {/* <Box>
         {data && (
           <Disqus
             url={pageURL}
@@ -215,7 +215,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
             language="en"
           />
         )}
-      </Box>
+      </Box> */}
     </Container>
   );
 };
