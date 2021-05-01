@@ -4,7 +4,7 @@ import useUrlKeys from 'src/components/pages/Dashboard/useUrlKeys';
 import useFirestore from 'src/hooks/useFirestore';
 import useGenericRecoilState from 'src/hooks/useGenericRecoilState';
 import { useAppStore } from 'src/stores/appStore';
-import { ExistingRequestType, FiltersType, UsefulLink } from 'src/types';
+import { ExistingRequestType, UsefulLink } from 'src/types';
 import { usePaginationStore } from './paginationStore';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 
@@ -27,12 +27,8 @@ export const useDashboardStore = () => {
 
   useEffect(() => {
     // DANGER!
-    // Should never have to do anything here!
+    // Stores can't have effects!
   }, []);
-
-  useEffect(() => {
-    loadRequests();
-  }, [paginationRequests.appliedFilters]);
 
   const handleFirebaseFailure = (e: any) => {
     if (app.userInfo?.isAdmin) {
@@ -46,51 +42,29 @@ export const useDashboardStore = () => {
     );
   };
 
-  const setRequestsFilters = (requestsFilters: Partial<FiltersType>) => {
-    paginationRequests.setFilters(requestsFilters);
-  };
-
-  const resetRequestsFilters = () => {
-    paginationRequests.resetFilters();
-  };
-
   const loadRequests = async () => {
     setState({
       requests: [],
       requestsLoading: true,
     });
     try {
-      const requests = await (async () => {
-        switch (urlKeys.tab.key) {
-          case 'open_requests':
-            return await getRequests({
-              ...paginationRequests.appliedFilters,
-              requestStatus: 'open',
-              sortBy: paginationRequests.filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 'closed_requests':
-            return await getRequests({
-              ...paginationRequests.appliedFilters,
-              requestStatus: 'closed',
-              sortBy: paginationRequests.filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 'my_requests':
-            return (
-              app.userInfo?.email &&
-              (await getRequests({
-                requesterEmail: app.userInfo?.email,
-              }))
-            );
-          default:
-            return;
-        }
-      })();
+      const effectiveFilters = { ...paginationRequests.appliedFilters };
+
+      /** Firebase indexing works only for manually indexed filters,
+       * so, making sure sortBy is sent only when the indexing is present.
+      */
+      let effectiveFiltersCount = paginationRequests.filtersCount;
+      if (effectiveFilters.requestStatus) {
+        effectiveFiltersCount = effectiveFiltersCount - 1;
+      }
+      if (effectiveFilters.sortBy) {
+        effectiveFiltersCount = effectiveFiltersCount - 1;
+      }
+      if (effectiveFiltersCount > 0) {
+        effectiveFilters.sortBy = undefined;
+      }
+
+      const requests = await getRequests(effectiveFilters);
       setState({
         requests: requests || [],
       });
@@ -114,7 +88,5 @@ export const useDashboardStore = () => {
     paginationRequests,
     loadRequests,
     loadLinks,
-    setRequestsFilters,
-    resetRequestsFilters,
   };
 };

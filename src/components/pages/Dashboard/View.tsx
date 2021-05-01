@@ -32,8 +32,6 @@ const Dashboard = () => {
   const isUpSm = useBreakpoint('sm');
   const {
     handleCardClick,
-    handleFilterChange,
-    filtersCount,
     loading,
     isAdmin,
     email,
@@ -190,7 +188,7 @@ const Dashboard = () => {
         </Grid>
         <Grid container spacing={4}>
           {urlKeys.tab.key === 'open_requests' ?
-            <RequestFilters onChangeFilter={handleFilterChange} filtersCount={filtersCount} /> :
+            <RequestFilters /> :
             null}
           {renderContent()}
         </Grid>

@@ -3,6 +3,7 @@ import useGenericRecoilState from 'src/hooks/useGenericRecoilState';
 import { UserInfo } from 'src/types';
 import useFirestore from 'src/hooks/useFirestore';
 import useFirebase from 'src/hooks/useFirebase';
+import { useEffect } from 'react';
 
 const appStore = atom({
   key: 'app',
@@ -18,6 +19,11 @@ export const useAppStore = () => {
   const [state, setState] = useGenericRecoilState(appStore);
   const { isCurrentUserAdmin } = useFirestore();
   const { auth } = useFirebase();
+
+  useEffect(() => {
+    // DANGER!
+    // Stores can't have effects!
+  }, []);
 
   const setBackButton = async (backButton: typeof state.backButton) => {
     setState({

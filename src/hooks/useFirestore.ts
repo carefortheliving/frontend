@@ -1,8 +1,9 @@
-import { FiltersType, RequestType, UsefulLink } from 'src/types';
+import { RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
+import { defaultRequestsFilters } from 'src/components/pages/Dashboard/constants';
 
 const useFirestore = () => {
   const { db, auth } = useFirebase();
@@ -28,7 +29,7 @@ const useFirestore = () => {
     sortBy,
     requestStatus,
     ...unindexedFilters // to be indexed on demand in firebase
-  } : FiltersType) => {
+  } : Partial<typeof defaultRequestsFilters>) => {
     const {
       requesterEmail,
       requestCategory,
@@ -42,20 +43,20 @@ const useFirestore = () => {
     }
     if (requestCategory) {
       requestsRef =
-        requestsRef.where('requestCategory.value', '==', requestCategory) as any;
+        requestsRef.where('requestCategory.value', '==', requestCategory.value) as any;
     }
     if (patientDistrict) {
       requestsRef =
-        requestsRef.where('patientDistrict.value', '==', patientDistrict) as any;
+        requestsRef.where('patientDistrict.value', '==', patientDistrict.value) as any;
     }
     if (patientState) {
-      requestsRef = requestsRef.where('patientState.value', '==', patientState) as any;
+      requestsRef = requestsRef.where('patientState.value', '==', patientState.value) as any;
     }
     if (requestStatus) {
       requestsRef =
-        requestsRef.where('requestStatus.value', '==', requestStatus) as any;
+        requestsRef.where('requestStatus.value', '==', requestStatus.value) as any;
     }
-    if (sortBy) {
+    if (sortBy?.key) {
       requestsRef = requestsRef.orderBy(sortBy.key, sortBy.direction === 'desc' ? 'desc' : undefined) as any;
     }
     const requests = await requestsRef.get();

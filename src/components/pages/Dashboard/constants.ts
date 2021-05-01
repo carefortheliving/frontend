@@ -1,4 +1,4 @@
-import { UsefulLink } from '../../../types';
+import { LabelValue, UsefulLink } from '../../../types';
 
 export const dashboardTabs = {
   open_requests: {
@@ -75,10 +75,17 @@ export const defaultUsefulLinks: UsefulLink[] = [
   },
 ];
 
-export const defaultFilters = {
-  patientDistrict: undefined as string | undefined,
-  patientState: undefined as string | undefined,
-  requestCategory: undefined as string | undefined,
-  requestStatus: undefined as string | undefined,
-  requesterEmail: undefined as string | undefined,
+export const defaultRequestsFilters = {
+  patientDistrict: undefined as undefined | LabelValue,
+  patientState: undefined as undefined | LabelValue<'open' | 'closed'>,
+  requestCategory: undefined as undefined | LabelValue,
+  requestStatus: undefined as undefined | LabelValue,
+  requesterEmail: undefined as undefined | string,
+  sortBy: {
+    key: 'updatedAt',
+    direction: 'desc',
+  } as undefined | {
+    key?: 'createdAt' | 'updatedAt' | 'patientAge',
+    direction?: 'asc' | 'desc'
+  },
 };

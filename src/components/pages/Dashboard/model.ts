@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useAppStore } from 'src/stores/appStore';
-import { FiltersType } from 'src/types';
 import useUrlKeys from './useUrlKeys';
 import useUsefulLinks from './useUsefulLinks';
 import { useDashboardStore } from 'src/stores/dashboardStore';
@@ -25,14 +24,36 @@ const useModel = () => {
   }, []);
 
   useEffect(() => {
-    // resetFilters();
-    // if (urlKeys.tab.key === 'closed_requests' ||
-    //   urlKeys.tab.key === 'open_requests' ||
-    //   urlKeys.tab.key === 'my_requests') {
-    //   dashboard.loadRequests();
-    // }
-    if (urlKeys.tab.key === 'useful_links') {
-      usefulLinks.loadData();
+    dashboard.loadRequests();
+  }, [dashboard.paginationRequests.appliedFilters]);
+
+  useEffect(() => {
+    switch (urlKeys.tab.key) {
+      case 'open_requests':
+        dashboard.paginationRequests.setFilters({
+          ...dashboard.paginationRequests.defaultFilters,
+          requestStatus: { label: 'Open', value: 'open' },
+        });
+        return;
+      case 'closed_requests':
+        dashboard.paginationRequests.setFilters({
+          ...dashboard.paginationRequests.defaultFilters,
+          requestStatus: { label: 'Closed', value: 'closed' },
+        });
+        return;
+      case 'my_requests':
+        // if (app.userInfo?.email) {
+        dashboard.paginationRequests.setFilters({
+          ...dashboard.paginationRequests.defaultFilters,
+          requesterEmail: app.userInfo?.email || 'zzzzzzzzz',
+        });
+        // }
+        return;
+      case 'useful_links':
+        usefulLinks.loadData();
+        return;
+      default:
+        return;
     }
   }, [urlKeys.tab.key]);
 
@@ -40,19 +61,8 @@ const useModel = () => {
     history.push(getViewRequestRoute(docId));
   };
 
-  const resetFilters = () => {
-    dashboard.resetRequestsFilters();
-  };
-
-  const handleFilterChange = (updatedFilters: Partial<FiltersType>) => {
-    dashboard.setRequestsFilters(updatedFilters);
-  };
-
   return {
     handleCardClick,
-    resetFilters,
-    handleFilterChange,
-    filtersCount: dashboard.paginationRequests.filtersCount,
     loading,
     isAdmin: app.userInfo?.isAdmin,
     email: app.userInfo?.email,
