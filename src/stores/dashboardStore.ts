@@ -14,12 +14,13 @@ const dashboardStore = atom({
     requests: [] as ExistingRequestType[],
     requestsLoading: false,
     links: [] as UsefulLink[],
+    linksLoading: false,
   },
 });
 
 export const useDashboardStore = () => {
   const [state, setState] = useGenericRecoilState(dashboardStore);
-  const { getRequests } = useFirestore();
+  const { getRequests, getUsefulLinks } = useFirestore();
   const urlKeys = useUrlKeys();
   const [app, appActions] = useAppStore();
   const paginationRequests = usePaginationStore('dashboardRequestsFilters');
@@ -70,10 +71,21 @@ export const useDashboardStore = () => {
     });
   };
 
-  // TODO: move logic here from dashboard model
   const loadLinks = async () => {
     setState({
       links: [],
+      linksLoading: true,
+    });
+    try {
+      const links = await getUsefulLinks();
+      setState({
+        links: links || [],
+      });
+    } catch (e) {
+      handleFirebaseFailure(e);
+    }
+    setState({
+      linksLoading: false,
     });
   };
 

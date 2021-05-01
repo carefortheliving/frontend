@@ -36,8 +36,10 @@ const Dashboard = () => {
     loading,
     isAdmin,
     email,
-    urlKeys,
+    activeTabKey,
+    setTab,
     usefulLinks,
+    loadLinks,
     requests,
   } = model;
 
@@ -61,7 +63,7 @@ const Dashboard = () => {
   };
 
   const getRowHeight = () => {
-    switch (urlKeys.tab.key) {
+    switch (activeTabKey) {
       case 'useful_links':
       case 'donors':
         return 280;
@@ -74,10 +76,10 @@ const Dashboard = () => {
   };
 
   const getGridData = () => {
-    switch (urlKeys.tab.key) {
+    switch (activeTabKey) {
       case 'useful_links':
       case 'donors':
-        return usefulLinks?.data;
+        return usefulLinks;
       case 'open_requests':
       case 'closed_requests':
       case 'my_requests':
@@ -87,21 +89,21 @@ const Dashboard = () => {
     }
   };
 
-  const gridColumnCount = isUpSm ? (urlKeys.tab.key === 'open_requests' ? 3 : 4) : 1;
+  const gridColumnCount = isUpSm ? (activeTabKey === 'open_requests' ? 3 : 4) : 1;
   const renderCell = (props: InfiniteGridCellProps) => {
     const { columnIndex, rowIndex, style } = props;
     const index = rowIndex * gridColumnCount + columnIndex;
     const data = getGridData()?.[index] as any;
     return data ? <div style={{ ...style, padding: '16px' }} key={`cell-${index}`}>
       {(() => {
-        switch (urlKeys.tab.key) {
+        switch (activeTabKey) {
           case 'useful_links':
           case 'donors':
             return <LinkCard
               prefillData={data || {
                 name: 'Loading more ...',
               }}
-              onReloadRequested={() => usefulLinks.loadData()} />;
+              onReloadRequested={loadLinks} />;
           case 'open_requests':
           case 'closed_requests':
           case 'my_requests':
@@ -118,7 +120,7 @@ const Dashboard = () => {
 
   const renderContent = () => {
     return (
-      <Grid item md={urlKeys.tab.key === 'open_requests' ? 9 : 12}>
+      <Grid item md={activeTabKey === 'open_requests' ? 9 : 12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {loading ? (
@@ -156,15 +158,15 @@ const Dashboard = () => {
         <Tabs
           variant="scrollable"
           scrollButtons="auto"
-          value={urlKeys.tab.key}
+          value={activeTabKey}
           indicatorColor="primary"
           textColor="primary"
-          onChange={(e, tabKey) => urlKeys.setTab(tabKey)}>
+          onChange={(e, tabKey) => setTab(tabKey)}>
 
           <Tab label="Open Requests"
             value={dashboardTabs.open_requests.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests?.length : 0}
+              <Badge badgeContent={activeTabKey === 'open_requests' ? requests?.length : 0}
                 color="primary">
                 <EnhancedEncryptionIcon />
               </Badge>
@@ -175,7 +177,7 @@ const Dashboard = () => {
             label="Donors"
             value={dashboardTabs.donors.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'donors' ? 0 /* TODO: */ : 0} color="primary">
+              <Badge badgeContent={activeTabKey === 'donors' ? 0 /* TODO: */ : 0} color="primary">
                 <FavoriteIcon />
               </Badge>
             } /> : null}
@@ -184,7 +186,7 @@ const Dashboard = () => {
             label="Useful links"
             value={dashboardTabs.useful_links.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'useful_links' ? usefulLinks?.data?.length : 0} color="primary">
+              <Badge badgeContent={activeTabKey === 'useful_links' ? usefulLinks?.length : 0} color="primary">
                 <BeenhereIcon />
               </Badge>
             } />
@@ -193,7 +195,7 @@ const Dashboard = () => {
             <Tab label="My Requests"
               value={dashboardTabs.my_requests.key}
               icon={
-                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests?.length : 0} color="primary">
+                <Badge badgeContent={activeTabKey === 'my_requests' ? requests?.length : 0} color="primary">
                   <NotificationsActiveIcon />
                 </Badge>
               } /> : null}
@@ -201,7 +203,7 @@ const Dashboard = () => {
           <Tab label="Closed Requests"
             value={dashboardTabs.closed_requests.key}
             icon={
-              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests?.length : 0} color="primary">
+              <Badge badgeContent={activeTabKey === 'closed_requests' ? requests?.length : 0} color="primary">
                 <CancelIcon />
               </Badge>
             } />
@@ -222,7 +224,7 @@ const Dashboard = () => {
           {renderTabs()}
         </Grid>
         <Grid container spacing={4}>
-          {urlKeys.tab.key === 'open_requests' ?
+          {activeTabKey === 'open_requests' ?
             <RequestFilters /> :
             null}
           {renderContent()}
