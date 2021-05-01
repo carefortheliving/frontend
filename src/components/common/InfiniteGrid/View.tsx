@@ -1,72 +1,54 @@
 import React, { createRef, Fragment, PureComponent } from 'react';
-import { FixedSizeList, FixedSizeGrid } from 'react-window';
+import { FixedSizeGrid } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import useBreakpoint from 'src/hooks/useBreakpoint';
 
+export interface InfiniteGridCellProps {
+  columnIndex: number;
+  rowIndex: number;
+  style: React.CSSProperties;
+}
+interface InfiniteGridProps {
+  loadMoreItems: (startIndex: number, stopInex: number) => Promise<void>;
+  renderCell: React.FC<InfiniteGridCellProps>;
+  isItemLoaded: (rowIndex: number) => void;
+  itemCount: number;
+  gridHeight: number;
+  rowHeight: number;
+  columnCount: number;
+  columnWidth: number;
+}
 
-let listOptions = ['first cell', 'second cell', 'third cell', 'fourth cell'];
-listOptions = [...listOptions, ...listOptions, ...listOptions];
-
-const Row = (props: {
-  index,
-  style,
-}) => {
-  const { index, style } = props;
-  return (
-    <div className="ListItem" style={style}>
-      {'The cell: ' + index}
-    </div>
-  );
-};
-
-const Cell = ({ columnIndex, rowIndex, style, isScrolling }) => {
-  const option = listOptions?.[rowIndex];
-  return (
-    <div style={{
-      cursor: 'pointer',
-      ...style,
-    }}>
-      {option || 'Loading...'}
-    </div>
-  );
-};
-
-const loadMoreItems = async (startIndex, stopIndex) => {
-  console.log('Loading more...');
-  console.log({ startIndex, stopIndex });
-};
-
-const InfiniteGrid = () => {
+const InfiniteGrid = (props: InfiniteGridProps) => {
+  const {
+    loadMoreItems,
+    isItemLoaded,
+    renderCell,
+    itemCount,
+    gridHeight,
+    rowHeight,
+    columnCount,
+    columnWidth,
+  } = props;
   const isUpSm = useBreakpoint('sm');
-  const listHeight = 200;
-  const rowHeight = 50;
-  const itemsCount = 50; // listOptions?.length;
-  const columnCount = isUpSm ? 3 : 1;
+  // const gridHeight = 200;
+  // const rowCount = round(itemCount / columnCount) + 1;
+  // const rowHeight = 50;
+  // const itemsCount = 50;
+  // const columnCount = isUpSm ? 3 : 1;
+  // const columnWidth = 300;
+  const gridWidth = columnWidth * columnCount;
   return (
     <Fragment>
       <InfiniteLoader
-        isItemLoaded={(rowIndex) => {
-          return !!(listOptions?.[rowIndex]);
-        }}
-        itemCount={itemsCount}
+        isItemLoaded={isItemLoaded}
+        itemCount={itemCount}
         loadMoreItems={loadMoreItems}
       >
         {({ onItemsRendered, ref }) => (
-          // <FixedSizeList
-          //   className="List"
-          //   height={150}
-          //   itemCount={listOptions?.length}
-          //   itemSize={30}
-          //   onItemsRendered={onItemsRendered}
-          //   ref={ref}
-          //   width={300}
-          // >
-          //   {Row}
-          // </FixedSizeList>
           <FixedSizeGrid
             // outerRef={ref}
             // innerRef={ref}
-            // onItemsRendered={onItemsRendered}
             onItemsRendered={(gridProps) => {
               onItemsRendered({
                 overscanStartIndex:
@@ -77,15 +59,15 @@ const InfiniteGrid = () => {
               });
             }}
             ref={ref}
-            height={listHeight}
-            rowCount={itemsCount}
+            height={gridHeight}
+            rowCount={Math.ceil(itemCount / columnCount)}
             rowHeight={rowHeight}
             columnCount={columnCount}
-            columnWidth={400}
-            width={isUpSm ? 1200 : 400}
-            // onScroll={handleListScroll}
+            columnWidth={columnWidth}
+            width={gridWidth}
+          // onScroll={handleListScroll}
           >
-            {Cell}
+            {renderCell}
           </FixedSizeGrid>
         )}
       </InfiniteLoader>
