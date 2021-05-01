@@ -136,11 +136,10 @@ const Dashboard = () => {
               </Box>
             ) : (getGridData()?.length ? <InfiniteGrid
               loadMoreItems={async (s, e) => {
-                console.log({ s, e });
               }}
               renderCell={renderCell}
               columnCount={gridColumnCount}
-              columnWidth={isUpSm ? 300 : 400}
+              columnWidth={isUpSm ? 300 : 350}
               gridHeight={600}
               isItemLoaded={(idx) => idx < 10}
               itemCount={getGridData()?.length}
