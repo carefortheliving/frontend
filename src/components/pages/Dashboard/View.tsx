@@ -172,14 +172,14 @@ const Dashboard = () => {
             }
           />
 
-          <Tab
+          {isAdmin ? <Tab
             label="Donors"
             value={dashboardTabs.donors.key}
             icon={
               <Badge badgeContent={urlKeys.tab.key === 'donors' ? 0 /* TODO: */ : 0} color="primary">
                 <FavoriteIcon />
               </Badge>
-            } />
+            } /> : null}
 
           <Tab
             label="Useful links"
