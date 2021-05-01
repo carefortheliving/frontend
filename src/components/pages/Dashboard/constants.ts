@@ -88,4 +88,6 @@ export const defaultRequestsFilters = {
     key?: 'createdAt' | 'updatedAt' | 'patientAge',
     direction?: 'asc' | 'desc'
   },
+  pageSize: 10,
+  pageIndex: 1,
 };

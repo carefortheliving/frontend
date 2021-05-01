@@ -25,6 +25,7 @@ import RequestCard from './RequestCard';
 import RequestFilters from './RequestFilters';
 import { useStyles } from './styles';
 import useBreakpoint from 'src/hooks/useBreakpoint';
+import InfiniteGrid from 'src/components/common/InfiniteGrid/View';
 
 const Dashboard = () => {
   const classes = useStyles();
@@ -98,7 +99,7 @@ const Dashboard = () => {
                         </>
                       );
                     case 'donors':
-                      return null;
+                      return <InfiniteGrid />;
                     case 'open_requests':
                     case 'closed_requests':
                     case 'my_requests':
