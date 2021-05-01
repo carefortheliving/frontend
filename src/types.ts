@@ -27,18 +27,6 @@ export interface RequestType {
 
 export type ExistingRequestType = RequestType & { id: string };
 
-export interface FiltersType {
-  requesterEmail?: string;
-  requestStatus?: ('open' | 'closed');
-  patientState?: string;
-  patientDistrict?: string;
-  requestCategory?: string;
-  sortBy?: {
-    key: 'createdAt' | 'updatedAt' | 'patientAge',
-    direction: 'asc' | 'desc'
-  }
-}
-
 export interface UsefulLink {
   name: string;
   link: string;
@@ -56,4 +44,9 @@ export interface UserInfo {
   isAdmin: boolean;
   email: string;
   displayName: string;
+}
+
+export interface LabelValue<ValueType = string> {
+  label: string;
+  value: ValueType;
 }

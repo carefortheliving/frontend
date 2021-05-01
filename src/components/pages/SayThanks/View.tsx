@@ -15,11 +15,7 @@ import { Controller, useForm } from 'react-hook-form';
 import useFirestore from 'src/hooks/useFirestore';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { RequestType } from 'src/types';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 interface SayThanksProps {}
 
 const SayThanks: FC<SayThanksProps> = () => {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
   const classes = useStyles();
   const history = useHistory();
   const defaultValues = {
@@ -46,8 +42,8 @@ const SayThanks: FC<SayThanksProps> = () => {
   useEffect(() => {
     firebaseAnalytics.logEvent('thank_you_page_visited');
     prefillData();
-    dispatch(changeBackButton(true));
-    dispatch(changeTitle('Say Thanks'));
+    appActions.setBackButton(true);
+    appActions.setTitle('Say Thanks');
   }, []);
 
   const prefillData = async () => {

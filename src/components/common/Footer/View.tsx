@@ -21,11 +21,11 @@ export default function Footer() {
         className={classes.footerStyle}
       >
         Made with ❤️️ in 🇮🇳 by <a
-          href="https://github.com/carefortheliving/frontend"
+          href="https://github.com/duke79"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <strong>{' carefortheliving'}</strong>
+          <strong>{' Pulkit Singh'}</strong>
         </a> & <a
           href="https://opendevs.in"
           target="_blank"

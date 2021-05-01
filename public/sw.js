@@ -42,24 +42,24 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((responseFromCache) => {
-      if (responseFromCache) return responseFromCache;
-      else
-        return fetch(event.request)
-          .then((responseFromServer) => {
-            return caches.open(dynamicCacheName).then((cache) => {
-              cache.put(event.request.url, responseFromServer.clone());
-              return responseFromServer;
-            });
-          })
-          .catch((err) => {
-            return caches.open(staticCacheName).then((cache) => {
-              return cache.match("/offline.html");
-            });
-          });
-    })
-  );
-});
+// self.addEventListener("fetch", (event) => {
+//   event.respondWith(
+//     caches.match(event.request).then((responseFromCache) => {
+//       if (responseFromCache) return responseFromCache;
+//       else
+//         return fetch(event.request)
+//           .then((responseFromServer) => {
+//             return caches.open(dynamicCacheName).then((cache) => {
+//               cache.put(event.request.url, responseFromServer.clone());
+//               return responseFromServer;
+//             });
+//           })
+//           .catch((err) => {
+//             return caches.open(staticCacheName).then((cache) => {
+//               return cache.match("/offline.html");
+//             });
+//           });
+//     })
+//   );
+// });
 

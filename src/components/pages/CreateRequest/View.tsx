@@ -25,11 +25,7 @@ import useGeo from 'src/hooks/useGeo';
 import { RequestType } from 'src/types';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import withAuth from 'src/components/common/withAuth/View';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
@@ -50,7 +46,7 @@ interface CreateRequestProps {
 }
 
 const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
@@ -77,7 +73,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   useEffect(() => {
     firebaseAnalytics.logEvent('create/edit_request_visited');
     loadData();
-    dispatch(changeBackButton(true));
+    appActions.setBackButton(true);
   }, []);
 
   useEffect(() => {
@@ -93,7 +89,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   }, [data]);
 
   useEffect(() => {
-    dispatch(changeTitle(isEdit ? 'Edit Request' : 'Create Request'));
+    appActions.setTitle(isEdit ? 'Edit Request' : 'Create Request');
   }, [isEdit]);
 
   const isValidUser = () => {

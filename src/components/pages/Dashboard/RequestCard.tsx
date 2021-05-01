@@ -25,54 +25,53 @@ const RequestCard = (props: RequestCardProps) => {
   const classes = useStyles();
 
   return (
-    <Grid item key={card.id} xs={12} sm={6} md={4}>
-      <Card
-        className={`${card.requestStatus?.value === 'open' ?
-          classes.openCard :
-          classes.closedCard
-        }`}
-        onClick={() => onClick && onClick(card.id)}
-      >
-        {/* <CardMedia
+    <Card
+      className={`${card.requestStatus?.value === 'open' ?
+        classes.openCard :
+        classes.closedCard
+      }`}
+      onClick={() => onClick && onClick(card.id)}
+    >
+      {/* <CardMedia
           className={classes.cardMedia}
           image={card.image}
           title="Image title"
         /> */}
-        <CardContent className={classes.cardContent}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {card.requestTitle}
+      <CardContent className={classes.cardContent}>
+        <Typography noWrap gutterBottom variant="h5" component="h2">
+          {card.requestTitle}
+        </Typography>
+        <hr />
+        <Tooltip
+          style={{ width: '250px' }}
+          enterDelay={500}
+          title={
+            <>
+              <Typography color="inherit">
+                {card.requestDescription}
+              </Typography>
+            </>
+          }
+          placement="top"
+        >
+          <Typography noWrap>{card.requestDescription}</Typography>
+        </Tooltip>
+        <br />
+        <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
+          <Typography style={{ marginRight: '10px' }}>
+            <i>Requested By:</i>
           </Typography>
-          <hr />
-          <Tooltip
-            style={{ width: '250px' }}
-            enterDelay={500}
-            title={
-              <>
-                <Typography color="inherit">
-                  {card.requestDescription}
-                </Typography>
-              </>
-            }
-            placement="top"
-          >
-            <Typography noWrap>{card.requestDescription}</Typography>
-          </Tooltip>
-          <br />
-          <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
-            <Typography style={{ marginRight: '10px' }}>
-              <i>Requested By:</i>
-            </Typography>
-            <Typography>{card.requesterName}</Typography>
-          </Box>
-          <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
-            <Typography style={{ marginRight: '10px' }}>
-              <i>Address:</i>
-            </Typography>
-            <Typography>
-              {card.patientDistrict?.label}, {card.patientState?.label}
-            </Typography>
-          </Box>
-          {/* {card.requestStatus?.value === "closed" ? (
+          <Typography>{card.requesterName}</Typography>
+        </Box>
+        <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
+          <Typography style={{ marginRight: '10px' }}>
+            <i>Address:</i>
+          </Typography>
+          <Typography>
+            {card.patientDistrict?.label}, {card.patientState?.label}
+          </Typography>
+        </Box>
+        {/* {card.requestStatus?.value === "closed" ? (
             <Typography style={{ display: "flex", alignItems: "center" }}>
               Donor: {card.donorName}
               <FavoriteIcon
@@ -82,27 +81,26 @@ const RequestCard = (props: RequestCardProps) => {
               />
             </Typography>
           ) : null} */}
-          <br />
-          <Chip
-            label={card.patientBloodGroup?.label}
+        <br />
+        <Chip
+          label={card.patientBloodGroup?.label}
+          variant="outlined"
+        />{' '}
+        <Chip label={card.requestCategory?.label} variant="outlined" />{' '}
+        <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
+        <br />
+        {card.requestStatus?.value === 'open' ?
+          <Button
             variant="outlined"
-          />{' '}
-          <Chip label={card.requestCategory?.label} variant="outlined" />{' '}
-          <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
-          <br />
-          {card.requestStatus?.value === 'open' ?
-            <Button
-              variant="outlined"
-              size="small"
-              endIcon={<PanToolIcon />}
-              onClick={() => onClick && onClick(card.id)}
-            >
-              I want to help
-            </Button> :
-            null}
-        </CardContent>
-      </Card>
-    </Grid>
+            size="small"
+            endIcon={<PanToolIcon />}
+            onClick={() => onClick && onClick(card.id)}
+          >
+            I want to help
+          </Button> :
+          null}
+      </CardContent>
+    </Card>
   );
 };
 

@@ -11,7 +11,7 @@ const useUsefulLinks = (props: UseUsefulLinksProps) => {
   const [loading, setLoading] = React.useState(false);
   const { getUsefulLinks } = useFirestore();
 
-  const loadData = async (onFailure: (e: any) => void) => {
+  const loadData = async (onFailure?: (e: any) => void) => {
     setLoading(true);
     setData([]);
     try {

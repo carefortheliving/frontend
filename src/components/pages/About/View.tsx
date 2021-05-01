@@ -2,22 +2,18 @@
 import React, { useEffect } from 'react';
 import { Container, Grid, Typography } from '@material-ui/core';
 import HearingIcon from '@material-ui/icons/Hearing';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 interface SayAbout {}
 
 const About: React.FC<SayAbout> = () => {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
 
   useEffect(() => {
     firebaseAnalytics.logEvent('about_page_visited');
-    dispatch(changeBackButton(true));
-    dispatch(changeTitle('About'));
+    appActions.setBackButton(true);
+    appActions.setTitle('About');
   }, []);
 
   const renderHeader = () => {
