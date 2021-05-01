@@ -68,14 +68,14 @@ const Dashboard = () => {
     );
   };
 
-  const columnCount = isUpSm ? 3 : 1;
-  const Cell = (props: InfiniteGridCellProps) => {
+  const gridColumnCount = isUpSm ? (urlKeys.tab.key === 'open_requests' ? 3 : 4) : 1;
+  const renderCell = (props: InfiniteGridCellProps) => {
     const { columnIndex, rowIndex, style } = props;
-    const index = rowIndex * columnCount + columnIndex;
+    const index = rowIndex * gridColumnCount + columnIndex;
     const data = usefulLinks?.data?.[index];
     // return <div style={{ ...style }}> div </div>;
     return (
-      <div style={{ ...style }}>
+      <div style={{ ...style, padding: '16px' }}>
         <LinkCard
           prefillData={data || {
             name: 'Loading more ...',
@@ -87,7 +87,7 @@ const Dashboard = () => {
 
   const renderContent = () => {
     return (
-      <Grid item md={9}>
+      <Grid item md={urlKeys.tab.key === 'open_requests' ? 9 : 12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {loading ? (
@@ -120,13 +120,13 @@ const Dashboard = () => {
                         loadMoreItems={async (s, e) => {
                           console.log({ s, e });
                         }}
-                        renderCell={Cell}
-                        columnCount={columnCount}
-                        columnWidth={300}
+                        renderCell={renderCell}
+                        columnCount={gridColumnCount}
+                        columnWidth={isUpSm ? 300 : 400}
                         gridHeight={600}
                         isItemLoaded={(idx) => idx < 10}
                         itemCount={usefulLinks?.data?.length + 3}
-                        rowHeight={250} />;
+                        rowHeight={280} />;
                     case 'open_requests':
                     case 'closed_requests':
                     case 'my_requests':
