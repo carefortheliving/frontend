@@ -1,18 +1,17 @@
-import identity from 'lodash/identity';
-import pickBy from 'lodash/pickBy';
+import { useEffect } from 'react';
 import { atom } from 'recoil';
-import { defaultFilters } from 'src/components/pages/Dashboard/constants';
 import useUrlKeys from 'src/components/pages/Dashboard/useUrlKeys';
 import useFirestore from 'src/hooks/useFirestore';
 import useGenericRecoilState from 'src/hooks/useGenericRecoilState';
 import { useAppStore } from 'src/stores/appStore';
 import { ExistingRequestType, FiltersType, UsefulLink } from 'src/types';
+import { usePaginationStore } from './paginationStore';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 
 const dashboardStore = atom({
-  key: 'firebase',
+  key: 'dashboard',
   default: {
     requests: [] as ExistingRequestType[],
-    requestsFilters: defaultFilters as Partial<FiltersType>,
     requestsLoading: false,
     links: [] as UsefulLink[],
   },
@@ -23,29 +22,39 @@ export const useDashboardStore = () => {
   const { getRequests } = useFirestore();
   const urlKeys = useUrlKeys();
   const [app, appActions] = useAppStore();
+  const paginationRequests = usePaginationStore('dashboardRequestsFilters');
+  const snackbar = useSnackbar();
 
-  const requestsFiltersCount = Object.keys(pickBy(state.requestsFilters, identity)).length;
+  useEffect(() => {
+    // DANGER!
+    // Should never have to do anything here!
+  }, []);
+
+  useEffect(() => {
+    loadRequests();
+  }, [paginationRequests.appliedFilters]);
+
+  const handleFirebaseFailure = (e: any) => {
+    if (app.userInfo?.isAdmin) {
+      console.log({ e });
+    }
+    // usefulLinks.loadFallbackData(); // TODO:
+    snackbar.show(
+        'error',
+        `Data fetch failed due to huge traffic load.
+        Meanwhile please use comment thread.`,
+    );
+  };
+
   const setRequestsFilters = (requestsFilters: Partial<FiltersType>) => {
-    const valOrUpdated = (state) => ({
-      requestsFilters: {
-        ...state.requestsFilters,
-        ...requestsFilters,
-      },
-    });
-    setState(valOrUpdated as any);
+    paginationRequests.setFilters(requestsFilters);
   };
 
   const resetRequestsFilters = () => {
-    const valOrUpdated = (state) => ({
-      requestsFilters: {
-        ...state.requestsFilters,
-        ...defaultFilters,
-      },
-    });
-    setState(valOrUpdated as any);
+    paginationRequests.resetFilters();
   };
 
-  const loadRequests = async (onFailure?: (e: any) => void) => {
+  const loadRequests = async () => {
     setState({
       requests: [],
       requestsLoading: true,
@@ -55,18 +64,18 @@ export const useDashboardStore = () => {
         switch (urlKeys.tab.key) {
           case 'open_requests':
             return await getRequests({
-              ...state.requestsFilters,
+              ...paginationRequests.appliedFilters,
               requestStatus: 'open',
-              sortBy: requestsFiltersCount ? undefined : {
+              sortBy: paginationRequests.filtersCount ? undefined : {
                 key: 'updatedAt',
                 direction: 'desc',
               },
             });
           case 'closed_requests':
             return await getRequests({
-              ...state.requestsFilters,
+              ...paginationRequests.appliedFilters,
               requestStatus: 'closed',
-              sortBy: requestsFiltersCount ? undefined : {
+              sortBy: paginationRequests.filtersCount ? undefined : {
                 key: 'updatedAt',
                 direction: 'desc',
               },
@@ -86,7 +95,7 @@ export const useDashboardStore = () => {
         requests: requests || [],
       });
     } catch (e) {
-      onFailure && onFailure(e);
+      handleFirebaseFailure(e);
     }
     setState({
       requestsLoading: false,
@@ -102,7 +111,7 @@ export const useDashboardStore = () => {
 
   return {
     ...state,
-    requestsFiltersCount,
+    paginationRequests,
     loadRequests,
     loadLinks,
     setRequestsFilters,

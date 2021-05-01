@@ -76,9 +76,9 @@ export const defaultUsefulLinks: UsefulLink[] = [
 ];
 
 export const defaultFilters = {
-  patientDistrict: undefined,
-  patientState: undefined,
-  requestCategory: undefined,
-  requestStatus: undefined,
-  requesterEmail: undefined,
+  patientDistrict: undefined as string | undefined,
+  patientState: undefined as string | undefined,
+  requestCategory: undefined as string | undefined,
+  requestStatus: undefined as string | undefined,
+  requesterEmail: undefined as string | undefined,
 };

@@ -5,7 +5,7 @@ import useFirestore from 'src/hooks/useFirestore';
 import useFirebase from 'src/hooks/useFirebase';
 
 const appStore = atom({
-  key: 'firebase',
+  key: 'app',
   default: {
     backButton: false,
     title: 'Care for the Living',

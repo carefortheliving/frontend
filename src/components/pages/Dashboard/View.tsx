@@ -33,7 +33,6 @@ const Dashboard = () => {
   const {
     handleCardClick,
     handleFilterChange,
-    handleFirebaseFailure,
     filtersCount,
     loading,
     isAdmin,
@@ -65,7 +64,7 @@ const Dashboard = () => {
   const renderLinkCard = (data?: UsefulLink, index?: number) => {
     return (
       <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
-        <LinkCard prefillData={data} onReloadRequested={() => usefulLinks.loadData(handleFirebaseFailure)} />
+        <LinkCard prefillData={data} onReloadRequested={() => usefulLinks.loadData()} />
       </Grid>
     );
   };

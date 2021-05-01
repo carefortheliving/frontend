@@ -5,13 +5,14 @@ import {
   Badge,
   makeStyles,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import useGeo from 'src/hooks/useGeo';
 import { FiltersType, RequestType } from 'src/types';
 import FilterList from '@material-ui/icons/FilterList';
 import useBreakpoint from 'src/hooks/useBreakpoint';
+import { usePaginationStore } from 'src/stores/paginationStore';
 
 interface RequestFiltersProps {
   onChangeFilter: (updatedFilters: Partial<FiltersType>) => void;
@@ -41,16 +42,25 @@ const useStyles = makeStyles((theme) => ({
 
 const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
   const { onChangeFilter, filtersCount } = props;
-  const defaultValues = {
-    requestCategory: undefined,
-    patientState: undefined,
-    patientDistrict: undefined,
-  } as RequestType;
-  const { control } = useForm({ defaultValues });
+  const paginationRequests = usePaginationStore('dashboardRequestsFilters');
+  const { control, reset, setValue } = useForm({ defaultValues: paginationRequests.appliedFilters });
   const { states } = useGeo();
   const [districts, setDistricts] = React.useState([]);
   const isUpSm = useBreakpoint('sm');
   const classes = useStyles();
+
+  useEffect(() => {
+    console.log({ appliedFilters: paginationRequests.appliedFilters });
+    prefillData(paginationRequests.appliedFilters);
+  }, []);
+
+  // TODO: applied filter must be { key, label } instead of just key
+  const prefillData = async (data) => {
+    data &&
+      Object.keys(data).forEach((key) => {
+        setValue(key as any, data?.[key]);
+      });
+  };
 
   const handleStateChange = (state: string) => {
     const newDistricts =

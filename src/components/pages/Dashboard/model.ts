@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
-import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { useAppStore } from 'src/stores/appStore';
 import { FiltersType } from 'src/types';
 import useUrlKeys from './useUrlKeys';
@@ -12,7 +11,6 @@ import { useDashboardStore } from 'src/stores/dashboardStore';
 
 const useModel = () => {
   const [app, appActions] = useAppStore();
-  const snackbar = useSnackbar();
   const usefulLinks = useUsefulLinks({});
   const history = useHistory();
   const urlKeys = useUrlKeys();
@@ -27,32 +25,16 @@ const useModel = () => {
   }, []);
 
   useEffect(() => {
-    resetFilters();
-    if (urlKeys.tab.key === 'closed_requests' ||
-      urlKeys.tab.key === 'open_requests' ||
-      urlKeys.tab.key === 'my_requests') {
-      dashboard.loadRequests(handleFirebaseFailure);
-    }
+    // resetFilters();
+    // if (urlKeys.tab.key === 'closed_requests' ||
+    //   urlKeys.tab.key === 'open_requests' ||
+    //   urlKeys.tab.key === 'my_requests') {
+    //   dashboard.loadRequests();
+    // }
     if (urlKeys.tab.key === 'useful_links') {
-      usefulLinks.loadData(handleFirebaseFailure);
+      usefulLinks.loadData();
     }
   }, [urlKeys.tab.key]);
-
-  useEffect(() => {
-    dashboard.loadRequests(handleFirebaseFailure);
-  }, [dashboard.requestsFilters]);
-
-  const handleFirebaseFailure = (e: any) => {
-    if (app.userInfo?.isAdmin) {
-      console.log({ e });
-    }
-    usefulLinks.loadFallbackData();
-    snackbar.show(
-        'error',
-        `Data fetch failed due to huge traffic load.
-        Meanwhile please use comment thread.`,
-    );
-  };
 
   const handleCardClick = (docId: string) => {
     history.push(getViewRequestRoute(docId));
@@ -70,8 +52,7 @@ const useModel = () => {
     handleCardClick,
     resetFilters,
     handleFilterChange,
-    handleFirebaseFailure,
-    filtersCount: dashboard.requestsFiltersCount,
+    filtersCount: dashboard.paginationRequests.filtersCount,
     loading,
     isAdmin: app.userInfo?.isAdmin,
     email: app.userInfo?.email,
