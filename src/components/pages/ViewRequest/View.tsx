@@ -12,13 +12,8 @@ import { RequestType } from 'src/types';
 import { parseTime } from 'src/utils/commonUtils';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Disqus from 'src/components/common/Disqus/View';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import CardContent from '@material-ui/core/CardContent';
-import useUser from 'src/hooks/useUser';
 import Card from '@material-ui/core/Card';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -30,7 +25,7 @@ import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 interface ViewRequestProps {}
 
 const ViewRequest: FC<ViewRequestProps> = () => {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
   const history = useHistory();
   const params = useParams();
   const { getRequest } = useFirestore();
@@ -38,7 +33,6 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   const { auth } = useFirebase();
   const [pageURL, setPageURL] = useState('');
   const [pageID, setPageID] = useState('');
-  const { isAdmin } = useUser();
 
   useEffect(() => {
     firebaseAnalytics.logEvent('request_details_page_visited');
@@ -46,8 +40,8 @@ const ViewRequest: FC<ViewRequestProps> = () => {
     const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
     prefillData();
-    dispatch(changeBackButton(true));
-    dispatch(changeTitle('Request Details'));
+    appActions.setBackButton(true);
+    appActions.setTitle('Request Details');
   }, []);
 
   const prefillData = async () => {
@@ -119,17 +113,17 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                 <Grid item xs={12}>
                   <Typography variant="h6" component="h3">
                     <strong>
-                      {data.requesterName} ({data.patientGender?.value || ''})
+                      {data.requesterName} ({data.patientGender?.label || ''})
                     </strong>{' '}
                     of age: <strong>{data.patientAge || '-'}</strong>, blood
                     group:{' '}
                     <strong>
-                      {data.patientBloodGroup?.value || '-'}
+                      {data.patientBloodGroup?.label || '-'}
                     </strong> from{' '}
                     <strong>
-                      {data.patientDistrict?.value}, {data.patientState?.value}
+                      {data.patientDistrict?.label}, {data.patientState?.label}
                     </strong>{' '}
-                    requires <strong>{data.requestCategory?.value}</strong>
+                    requires <strong>{data.requestCategory?.label}</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -152,13 +146,6 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                     </ListItem>
                     <ListItem>
                       <ListItemText
-                        id="email"
-                        primary={data.requesterEmail}
-                        secondary="Email"
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
                         id="created-at"
                         primary={parseTime(data.createdAt)}
                         secondary="Created At"
@@ -175,7 +162,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                 </Grid>
                 {data.requestStatus?.value === 'open' ? (
                   ( (data?.requesterEmail === auth?.user?.email) ||
-                  (isAdmin) ) &&
+                  (app.userInfo?.isAdmin) ) &&
                   (
                     <Grid item xs={12} md={6} spacing={2}>
                       {renderEditButton()}
@@ -184,7 +171,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                   )
                 ) : (
                   <>
-                    <Grid container>
+                    {data?.donorName ? <Grid container>
                       <Grid item xs={6}>
                         {renderFieldValue('Donor Name')}
                       </Grid>
@@ -200,18 +187,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                           />
                         </span>
                       </Grid>
-                    </Grid>
-
-                    <Grid container>
-                      <Grid item xs={6}>
-                        {renderFieldValue('Donor Email')}
-                      </Grid>
-                      <Grid item xs={6}>
-                        {renderFieldValue(data?.donorEmail, {
-                          fontWeight: 600,
-                        })}
-                      </Grid>
-                    </Grid>
+                    </Grid> : null }
 
                     <Grid container>
                       <Grid item xs={6}>
@@ -230,7 +206,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
           </CardContent>
         </Card>
       </Box>
-      <Box>
+      {/* <Box>
         {data && (
           <Disqus
             url={pageURL}
@@ -239,7 +215,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
             language="en"
           />
         )}
-      </Box>
+      </Box> */}
     </Container>
   );
 };

@@ -10,11 +10,7 @@ import { useAuth } from 'src/components/common/AuthProvider/View';
 import {
   getCreateRequestRoute,
 } from 'src/components/common/RouterOutlet/routerUtils';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
+import { useAppStore } from 'src/stores/appStore';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LogIn() {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
   const { user, signInWithGoogle } = useAuth();
   const classes = useStyles();
   const history = useHistory();
@@ -48,8 +44,8 @@ function LogIn() {
     if (user?.uid) {
       history.push(getCreateRequestRoute());
     }
-    dispatch(changeBackButton(true));
-    dispatch(changeTitle('Login here'));
+    appActions.setBackButton(true);
+    appActions.setTitle('Login here');
   }, []);
 
   return (

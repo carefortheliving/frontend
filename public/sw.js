@@ -1,5 +1,5 @@
-let staticCacheName = "cache-for-offline-pages-4";
-let dynamicCacheName = "cache-for-dynamic-data-4";
+let staticCacheName = "cache-for-offline-pages-7";
+let dynamicCacheName = "cache-for-dynamic-data-7";
 const OFFLINE_URL = "offline.html";
 
 self.addEventListener("install", (event) => {
@@ -42,24 +42,24 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((responseFromCache) => {
-      if (responseFromCache) return responseFromCache;
-      else
-        return fetch(event.request)
-          .then((responseFromServer) => {
-            return caches.open(dynamicCacheName).then((cache) => {
-              cache.put(event.request.url, responseFromServer.clone());
-              return responseFromServer;
-            });
-          })
-          .catch((err) => {
-            return caches.open(staticCacheName).then((cache) => {
-              return cache.match("/offline.html");
-            });
-          });
-    })
-  );
-});
+// self.addEventListener("fetch", (event) => {
+//   event.respondWith(
+//     caches.match(event.request).then((responseFromCache) => {
+//       if (responseFromCache) return responseFromCache;
+//       else
+//         return fetch(event.request)
+//           .then((responseFromServer) => {
+//             return caches.open(dynamicCacheName).then((cache) => {
+//               cache.put(event.request.url, responseFromServer.clone());
+//               return responseFromServer;
+//             });
+//           })
+//           .catch((err) => {
+//             return caches.open(staticCacheName).then((cache) => {
+//               return cache.match("/offline.html");
+//             });
+//           });
+//     })
+//   );
+// });
 

@@ -1,368 +1,45 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Badge,
   CircularProgress,
-  Tooltip,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
-import PanToolIcon from '@material-ui/icons/PanTool';
-import FilterList from '@material-ui/icons/FilterList';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useAuth } from 'src/components/common/AuthProvider/View';
-import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
-import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
-import useBreakpoint from 'src/hooks/useBreakpoint';
-import useFirestore from 'src/hooks/useFirestore';
-import { FiltersType, RequestType, UsefulLink } from 'src/types';
-import { parseTime } from 'src/utils/commonUtils';
-import useUser from '../../../hooks/useUser';
-import AddEditLinkCard from './AddEditLinkCard';
-import RequestFilters from './RequestFilters';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import CancelIcon from '@material-ui/icons/Cancel';
 import BeenhereIcon from '@material-ui/icons/Beenhere';
+import CancelIcon from '@material-ui/icons/Cancel';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
-import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
-import { defaultUsefulLinks } from './constants';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import React from 'react';
+import { UsefulLink } from 'src/types';
+import { dashboardTabs } from './constants';
+import HeaderCarousel from './HeaderCarousel';
+import LinkCard from './LinkCard';
+import useModel from './model';
+import RequestCard from './RequestCard';
+import RequestFilters from './RequestFilters';
+import { useStyles } from './styles';
+import useBreakpoint from 'src/hooks/useBreakpoint';
+import InfiniteGrid, { InfiniteGridCellProps } from 'src/components/common/InfiniteGrid/View';
 
-const useStyles = makeStyles((theme) => ({
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
-  cardGrid: {
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(8),
-    paddingLeft: '0px',
-    paddingRight: '0px',
-  },
-  openCard: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    cursor: 'pointer',
-  },
-  closedCard: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    cursor: 'pointer',
-    background: '#efefef',
-  },
-  cardMedia: {
-    paddingTop: '56.25%',
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  filter_Heading: {
-    textAlign: 'center',
-    margin: '1rem 0 1rem 0',
-  },
-  filter_Container: {
-    position: 'relative',
-  },
-  filterCollapsed: {
-    marginTop: theme.spacing(4),
-  },
-  filterCount: {
-    marginLeft: '10px',
-  },
-  filter: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  table: {
-    // minWidth: 650,
-  },
-}));
-
-function Dashboard() {
-  const { dispatch } = useAppContext();
+const Dashboard = () => {
   const classes = useStyles();
-  const { user } = useAuth();
-  const { getRequests, getUsefulLinks } = useFirestore();
-  const snackbar = useSnackbar();
-  const [requests, setRequests] = useState(
-    [] as (RequestType & { id: string })[],
-  );
-  const [usefulLinks, setUsefulLinks] = useState([] as UsefulLink[]);
-  const [loading, setLoading] = useState(false);
-  const history = useHistory();
-  const location = useLocation();
-  const defaultFilters = {
-    patientDistrict: undefined,
-    patientState: undefined,
-    requestCategory: undefined,
-    requestStatus: undefined,
-    requesterEmail: undefined,
-  };
-  const [appliedFilters, setAppliedFilters] = useState(
-    defaultFilters as Partial<FiltersType>,
-  );
-  const filtersCount = Object.keys(pickBy(appliedFilters, identity)).length;
+  const model = useModel();
   const isUpSm = useBreakpoint('sm');
-  const { isAdmin } = useUser();
-
-  const getCurrentTabFromUrl = () => {
-    const currentUrlParams = new URLSearchParams(location.search);
-    return Number(currentUrlParams.get('tab') || '0');
-  };
-
-  useEffect(() => {
-    firebaseAnalytics.logEvent('dashboard_page_visited');
-    dispatch(changeBackButton(false));
-    dispatch(changeTitle('Care for the Living'));
-  }, []);
-
-  useEffect(() => {
-    resetFilters();
-    if (getCurrentTabFromUrl() !== 2) {
-      loadRequests();
-    }
-    if (getCurrentTabFromUrl() === 2) {
-      loadLinks();
-    }
-  }, [getCurrentTabFromUrl()]);
-
-  useEffect(() => {
-    loadRequests();
-  }, [appliedFilters]);
-
-  const loadLinks = async () => {
-    setLoading(true);
-    const links = await getUsefulLinks();
-    setLoading(false);
-    setUsefulLinks(links);
-  };
-
-  const loadRequests = async () => {
-    setLoading(true);
-    setRequests([]);
-    try {
-      const requests = await (async () => {
-        switch (getCurrentTabFromUrl()) {
-          case 0:
-            return await getRequests({
-              ...appliedFilters,
-              requestStatus: 'open',
-              sortBy: filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 1:
-            return await getRequests({
-              ...appliedFilters,
-              requestStatus: 'closed',
-              sortBy: filtersCount ? undefined : {
-                key: 'updatedAt',
-                direction: 'desc',
-              },
-            });
-          case 2:
-            return;
-          case 3:
-            return (
-              user?.email &&
-              (await getRequests({
-                requesterEmail: user?.email,
-              }))
-            );
-          default:
-            return;
-        }
-      })();
-      setRequests(requests);
-    } catch (e) {
-      if (isAdmin) {
-        console.log({ e });
-      }
-      setUsefulLinks(defaultUsefulLinks);
-      snackbar.show(
-          'error',
-          `Data fetch failed due to huge traffic load.
-          Meanwhile please use comment thread.`,
-      );
-    }
-    setLoading(false);
-  };
-
-  const handleCardClick = (docId: string) => {
-    history.push(getViewRequestRoute(docId));
-  };
-
-  const handleTabChange = (event, newValue: number) => {
-    console.log({ event });
-    const currentUrlParams = new URLSearchParams(location.search);
-    currentUrlParams.set('tab', newValue?.toString());
-    history.push({
-      pathname: location.pathname,
-      search: '?' + currentUrlParams.toString(),
-    });
-  };
-
-  const resetFilters = () => {
-    handleFilterChange(defaultFilters);
-  };
-
-  const handleFilterChange = (updatedFilters: Partial<FiltersType>) => {
-    setAppliedFilters({ ...appliedFilters, ...updatedFilters });
-  };
-
-  const renderFilters = () => {
-    return (
-      <Grid item md={3}>
-        {
-          <div className={classes.filter_Container}>
-            {isUpSm ? (
-              <Typography
-                component="h1"
-                variant="h5"
-                className={classes.filter_Heading}
-              >
-                Filters
-              </Typography>
-            ) : null}
-            <div className={classes.filter}>
-              <RequestFilters onChangeFilter={handleFilterChange} />
-              {/* {getFilters={(keys)=>setFilterResults(keys)} } */}
-            </div>
-          </div>
-        }
-      </Grid>
-    );
-  };
-
-  const renderFiltersCollapsed = () => {
-    return (
-      <Grid item md={12}>
-        <Accordion className={classes.filterCollapsed}>
-          <AccordionSummary
-            expandIcon={<FilterList />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Badge badgeContent={filtersCount} color="primary">
-              <Typography>Filters</Typography>
-            </Badge>
-          </AccordionSummary>
-          <AccordionDetails>{renderFilters()}</AccordionDetails>
-        </Accordion>
-      </Grid>
-    );
-  };
-
-  const renderSingleCard = (card: typeof requests[0]) => {
-    return (
-      <Grid item key={card.id} xs={12} sm={6} md={4}>
-        <Card
-          className={`${card.requestStatus?.value === 'open' ?
-            classes.openCard :
-            classes.closedCard
-          }`}
-          onClick={() => handleCardClick(card.id)}
-        >
-          {/* <CardMedia
-            className={classes.cardMedia}
-            image={card.image}
-            title="Image title"
-          /> */}
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h5" component="h2">
-              {card.requestTitle}
-            </Typography>
-            <hr />
-            <Tooltip
-              style={{ width: '250px' }}
-              enterDelay={500}
-              title={
-                <>
-                  <Typography color="inherit">
-                    {card.requestDescription}
-                  </Typography>
-                </>
-              }
-              placement="top"
-            >
-              <Typography noWrap>{card.requestDescription}</Typography>
-            </Tooltip>
-            <br />
-            <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
-              <Typography style={{ marginRight: '10px' }}>
-                <i>Requested By:</i>
-              </Typography>
-              <Typography>{card.requesterName}</Typography>
-            </Box>
-            <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
-              <Typography style={{ marginRight: '10px' }}>
-                <i>Address:</i>
-              </Typography>
-              <Typography>
-                {card.patientDistrict?.label}, {card.patientState?.label}
-              </Typography>
-            </Box>
-            {/* {card.requestStatus?.value === "closed" ? (
-              <Typography style={{ display: "flex", alignItems: "center" }}>
-                Donor: {card.donorName}
-                <FavoriteIcon
-                  color="secondary"
-                  fontSize="small"
-                  style={{ marginLeft: "5px" }}
-                />
-              </Typography>
-            ) : null} */}
-            <br />
-            <Chip
-              label={card.patientBloodGroup?.label}
-              variant="outlined"
-            />{' '}
-            <Chip label={card.requestCategory?.label} variant="outlined" />{' '}
-            <Chip label={parseTime(card.updatedAt)} variant="outlined" /> <br />
-            <br />
-            {card.requestStatus?.value === 'open' ?
-              <Button
-                variant="contained"
-                color="secondary"
-                size="small"
-                endIcon={<PanToolIcon />}
-                onClick={() => handleCardClick(card.id)}
-              >
-                I want to help
-              </Button> :
-              null}
-          </CardContent>
-        </Card>
-      </Grid>
-    );
-  };
+  const {
+    handleCardClick,
+    loading,
+    isAdmin,
+    email,
+    urlKeys,
+    usefulLinks,
+    requests,
+  } = model;
 
   const renderNoRequests = () => {
     return (
@@ -377,41 +54,71 @@ function Dashboard() {
 
   const renderHeader = () => {
     return (
-      <Container maxWidth="md">
-        <Typography
-          component="h2"
-          variant={isUpSm ? 'h3' : 'h6'}
-          align="center"
-          color="textPrimary"
-          gutterBottom
-        >
-          Care for the Living <br></br>
-        </Typography>
-        <Typography
-          variant={isUpSm ? 'h6' : 'subtitle1'}
-          align="center"
-          color="textSecondary"
-          paragraph
-        >
-          &#34;If you truly loved yourself, you could never hurt another.&#34;
-          <br />
-          {/* - Buddha */}
-        </Typography>
+      <Container maxWidth="lg">
+        <HeaderCarousel />
       </Container>
     );
   };
 
-  const renderLinkCard = (data?: UsefulLink, index?: number) => {
-    return (
-      <Grid item key={`add-link-${index || '*'}`} xs={12} sm={6} md={4}>
-        <AddEditLinkCard prefillData={data} onReloadRequested={loadLinks} />
-      </Grid>
-    );
+  const getRowHeight = () => {
+    switch (urlKeys.tab.key) {
+      case 'useful_links':
+      case 'donors':
+        return 280;
+      case 'open_requests':
+      case 'closed_requests':
+      case 'my_requests':
+      default:
+        return 400;
+    }
+  };
+
+  const getGridData = () => {
+    switch (urlKeys.tab.key) {
+      case 'useful_links':
+      case 'donors':
+        return usefulLinks?.data;
+      case 'open_requests':
+      case 'closed_requests':
+      case 'my_requests':
+        return requests;
+      default:
+        return [];
+    }
+  };
+
+  const gridColumnCount = isUpSm ? (urlKeys.tab.key === 'open_requests' ? 3 : 4) : 1;
+  const renderCell = (props: InfiniteGridCellProps) => {
+    const { columnIndex, rowIndex, style } = props;
+    const index = rowIndex * gridColumnCount + columnIndex;
+    const data = getGridData()?.[index] as any;
+    return data ? <div style={{ ...style, padding: '16px' }} key={`cell-${index}`}>
+      {(() => {
+        switch (urlKeys.tab.key) {
+          case 'useful_links':
+          case 'donors':
+            return <LinkCard
+              prefillData={data || {
+                name: 'Loading more ...',
+              }}
+              onReloadRequested={() => usefulLinks.loadData()} />;
+          case 'open_requests':
+          case 'closed_requests':
+          case 'my_requests':
+            return <RequestCard
+              key={data.id}
+              data={data}
+              onClick={handleCardClick} />;
+          default:
+            return [];
+        }
+      })()}
+    </div> : null;
   };
 
   const renderContent = () => {
     return (
-      <Grid item md={9}>
+      <Grid item md={urlKeys.tab.key === 'open_requests' ? 9 : 12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {loading ? (
@@ -427,25 +134,16 @@ function Dashboard() {
                   style={{ margin: 'auto', marginTop: '100px' }}
                 />
               </Box>
-            ) : (
-                (() => {
-                  switch (getCurrentTabFromUrl()) {
-                    case 2:
-                      return (
-                        <>
-                          {usefulLinks?.map((link, index) =>
-                            renderLinkCard(link, index),
-                          )}
-                          {isAdmin ? renderLinkCard() : null}
-                        </>
-                      );
-                    default:
-                      return requests?.length ?
-                        requests.map((card) => renderSingleCard(card)) :
-                        renderNoRequests();
-                  }
-                })()
-              )}
+            ) : (getGridData()?.length ? <InfiniteGrid
+              loadMoreItems={async (s, e) => {
+              }}
+              renderCell={renderCell}
+              columnCount={gridColumnCount}
+              columnWidth={isUpSm ? 300 : 350}
+              gridHeight={600}
+              isItemLoaded={(idx) => idx < 10}
+              itemCount={getGridData()?.length}
+              rowHeight={getRowHeight()} /> : renderNoRequests())}
           </Grid>
         </Container>
       </Grid>
@@ -458,25 +156,56 @@ function Dashboard() {
         <Tabs
           variant="scrollable"
           scrollButtons="auto"
-          value={getCurrentTabFromUrl()}
+          value={urlKeys.tab.key}
           indicatorColor="primary"
           textColor="primary"
-          onChange={handleTabChange}
-        // aria-label="disabled tabs example"
-        // variant="fullWidth"
-        >
-          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 0 ? requests?.length : 0} color="primary">
-            <EnhancedEncryptionIcon />
-          </Badge>} label="Open Requests" />
-          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 1 ? requests?.length : 0} color="primary">
-            <CancelIcon />
-          </Badge>} label="Closed Requests" />
-          <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 2 ? usefulLinks?.length : 0} color="primary">
-            <BeenhereIcon />
-          </Badge>} label="Useful links" />
-          {user?.email && <Tab icon={<Badge badgeContent={getCurrentTabFromUrl() === 3 ? requests?.length : 0} color="primary">
-            <NotificationsActiveIcon />
-          </Badge>} label="My Requests" />}
+          onChange={(e, tabKey) => urlKeys.setTab(tabKey)}>
+
+          <Tab label="Open Requests"
+            value={dashboardTabs.open_requests.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests?.length : 0}
+                color="primary">
+                <EnhancedEncryptionIcon />
+              </Badge>
+            }
+          />
+
+          {isAdmin ? <Tab
+            label="Donors"
+            value={dashboardTabs.donors.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'donors' ? 0 /* TODO: */ : 0} color="primary">
+                <FavoriteIcon />
+              </Badge>
+            } /> : null}
+
+          <Tab
+            label="Useful links"
+            value={dashboardTabs.useful_links.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'useful_links' ? usefulLinks?.data?.length : 0} color="primary">
+                <BeenhereIcon />
+              </Badge>
+            } />
+
+          {email ?
+            <Tab label="My Requests"
+              value={dashboardTabs.my_requests.key}
+              icon={
+                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests?.length : 0} color="primary">
+                  <NotificationsActiveIcon />
+                </Badge>
+              } /> : null}
+
+          <Tab label="Closed Requests"
+            value={dashboardTabs.closed_requests.key}
+            icon={
+              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests?.length : 0} color="primary">
+                <CancelIcon />
+              </Badge>
+            } />
+
         </Tabs>
       </AppBar>
     );
@@ -484,22 +213,23 @@ function Dashboard() {
 
   return (
     <>
-      <div className={classes.heroContent}>{renderHeader()}</div>
+      <div className={classes.heroContent}
+        style={{
+          padding: isUpSm ? '64px 0px 48px' : '40px 0px 20px',
+        }}>{renderHeader()}</div>
       <Container>
         <Grid item sm={12}>
           {renderTabs()}
         </Grid>
         <Grid container spacing={4}>
-          {getCurrentTabFromUrl() === 0 ?
-            isUpSm ?
-              renderFilters() :
-              renderFiltersCollapsed() :
+          {urlKeys.tab.key === 'open_requests' ?
+            <RequestFilters /> :
             null}
           {renderContent()}
         </Grid>
       </Container>
     </>
   );
-}
+};
 
 export default Dashboard;

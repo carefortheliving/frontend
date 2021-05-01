@@ -8,12 +8,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { getHomeRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import useFirestore from 'src/hooks/useFirestore';
-import {
-  useAppContext,
-  changeTitle,
-  changeBackButton,
-} from 'src/contexts/AppContext';
-import useUser from 'src/hooks/useUser';
+import { useAppStore } from 'src/stores/appStore';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { downloadFile } from 'src/utils/commonUtils';
 
@@ -26,20 +21,19 @@ const useStyles = makeStyles((theme) => ({
 interface AdminPortalProps { }
 
 const AdminPortal: FC<AdminPortalProps> = () => {
-  const { dispatch } = useAppContext();
+  const [app, appActions] = useAppStore();
   const classes = useStyles();
   const history = useHistory();
   const { getRequests, getUsefulLinks } = useFirestore();
-  const { isAdmin } = useUser();
 
   useEffect(() => {
     ensurePermissions();
-    dispatch(changeBackButton(true));
-    dispatch(changeTitle('Admin Portal'));
+    appActions.setBackButton(true);
+    appActions.setTitle('Admin Portal');
   }, []);
 
   const ensurePermissions = () => {
-    if (!isAdmin) {
+    if (!app.userInfo?.isAdmin) {
       history.push(getHomeRoute());
     }
   };

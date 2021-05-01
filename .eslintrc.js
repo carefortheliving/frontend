@@ -32,7 +32,7 @@ module.exports = {
     'linebreak-style': 'off',
     'max-len': "off",
     'object-curly-spacing': ["error", "always", { "arraysInObjects": false }],
-    "indent": "off"
+    'no-unused-vars': "off"
   },
   'settings': {
     'import/resolver': {

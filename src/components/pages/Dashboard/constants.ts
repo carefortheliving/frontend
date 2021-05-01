@@ -1,4 +1,32 @@
-import { UsefulLink } from '../../../types';
+import { LabelValue, UsefulLink } from '../../../types';
+
+export const dashboardTabs = {
+  open_requests: {
+    key: 'open_requests',
+    label: 'Open Requsts',
+    index: 0,
+  },
+  closed_requests: {
+    key: 'closed_requests',
+    label: 'Closed Requsts',
+    index: 1,
+  },
+  useful_links: {
+    key: 'useful_links',
+    label: 'Useful Links',
+    index: 2,
+  },
+  my_requests: {
+    key: 'my_requests',
+    label: 'My Requsts',
+    index: 3,
+  },
+  donors: {
+    key: 'donors',
+    label: 'Donors',
+    index: 4,
+  },
+};
 
 export const defaultUsefulLinks: UsefulLink[] = [
   {
@@ -46,3 +74,20 @@ export const defaultUsefulLinks: UsefulLink[] = [
     description: 'To search for plasma donors.',
   },
 ];
+
+export const defaultRequestsFilters = {
+  patientDistrict: undefined as undefined | LabelValue,
+  patientState: undefined as undefined | LabelValue<'open' | 'closed'>,
+  requestCategory: undefined as undefined | LabelValue,
+  requestStatus: undefined as undefined | LabelValue,
+  requesterEmail: undefined as undefined | string,
+  sortBy: {
+    key: 'updatedAt',
+    direction: 'desc',
+  } as undefined | {
+    key?: 'createdAt' | 'updatedAt' | 'patientAge',
+    direction?: 'asc' | 'desc'
+  },
+  pageSize: 10,
+  pageIndex: 1,
+};

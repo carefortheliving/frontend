@@ -25,17 +25,7 @@ export interface RequestType {
   updatedAt?: number;
 }
 
-export interface FiltersType {
-  requesterEmail?: string;
-  requestStatus?: ('open' | 'closed');
-  patientState?: string;
-  patientDistrict?: string;
-  requestCategory?: string;
-  sortBy?: {
-    key: 'createdAt' | 'updatedAt' | 'patientAge',
-    direction: 'asc' | 'desc'
-  }
-}
+export type ExistingRequestType = RequestType & { id: string };
 
 export interface UsefulLink {
   name: string;
@@ -54,4 +44,9 @@ export interface UserInfo {
   isAdmin: boolean;
   email: string;
   displayName: string;
+}
+
+export interface LabelValue<ValueType = string> {
+  label: string;
+  value: ValueType;
 }

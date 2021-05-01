@@ -14,7 +14,7 @@ import React, { useState, useEffect, FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { UsefulLink } from '../../../types';
 import useFirestore from 'src/hooks/useFirestore';
-import useUser from '../../../hooks/useUser';
+import { useAppStore } from 'src/stores/appStore';
 import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
@@ -36,13 +36,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type AddEditLinkCardProps = {
+type LinkCardProps = {
   // type: 'add' | 'view';
   prefillData?: UsefulLink;
   onReloadRequested?: () => void;
 };
 
-const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
+const LinkCard: FC<LinkCardProps> = (props) => {
   const { prefillData, onReloadRequested } = props;
   const type = prefillData ? 'view' : 'add';
   const classes = useStyles();
@@ -55,11 +55,11 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
     addUsefulLink,
     updateUsefulLink,
   } = useFirestore();
-  const { isAdmin, email } = useUser();
+  const [app, appActions] = useAppStore();
   const snackbar = useSnackbar();
 
   useEffect(() => {
-    firebaseAnalytics.logEvent('AddEditLinkCard_visited');
+    firebaseAnalytics.logEvent('LinkCard_visited');
     handlePrefillData();
 
     return () => {
@@ -84,7 +84,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
           await updateUsefulLink((prefillData as any)?.docId, data as any) :
           await addUsefulLink({
             ...(data as any),
-            addedBy: email,
+            addedBy: app.userInfo?.email,
           });
         snackbar.show(
             'success',
@@ -202,7 +202,7 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
   return (
     <Card
       className={classes.openCard}
-      onClick={() => !isEdit && isAdmin && setIsEdit(true)}
+      onClick={() => !isEdit && app.userInfo?.isAdmin && setIsEdit(true)}
     >
       <CardContent className={classes.cardContent}>
         {(() => {
@@ -220,4 +220,4 @@ const AddEditLinkCard: FC<AddEditLinkCardProps> = (props) => {
   );
 };
 
-export default AddEditLinkCard;
+export default LinkCard;
