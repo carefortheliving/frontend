@@ -43,12 +43,16 @@ export const usePaginationStore =
       setState(valOrUpdated as any);
     };
 
-    const filtersCount = Object.keys(pickBy(state?.[key], identity)).length;
+    const getFiltersCount = (ignoreList?: (keyof T)[]) => {
+      return Object.keys(pickBy(state?.[key], (val, key) => {
+        return !!val && !(ignoreList?.includes(key as any));
+      })).length;
+    };
 
     return {
       defaultFilters: defaultFilters?.[key],
       appliedFilters: state?.[key] as Partial<T>,
-      filtersCount,
+      getFiltersCount,
       setFilters,
       resetFilters,
     };

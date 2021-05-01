@@ -53,13 +53,7 @@ export const useDashboardStore = () => {
       /** Firebase indexing works only for manually indexed filters,
        * so, making sure sortBy is sent only when the indexing is present.
       */
-      let effectiveFiltersCount = paginationRequests.filtersCount;
-      if (effectiveFilters.requestStatus) {
-        effectiveFiltersCount = effectiveFiltersCount - 1;
-      }
-      if (effectiveFilters.sortBy) {
-        effectiveFiltersCount = effectiveFiltersCount - 1;
-      }
+      const effectiveFiltersCount = paginationRequests.getFiltersCount(['requestStatus', 'sortBy', 'pageSize', 'pageIndex']);
       if (effectiveFiltersCount > 0) {
         effectiveFilters.sortBy = undefined;
       }

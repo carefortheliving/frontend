@@ -174,7 +174,7 @@ const RequestFilters: React.FC<RequestFiltersProps> = (props) => {
             aria-controls="panel2a-content"
             id="panel2a-header"
           >
-            <Badge badgeContent={paginationRequests.filtersCount} color="primary">
+            <Badge badgeContent={paginationRequests.getFiltersCount(['requestStatus', 'sortBy', 'pageSize', 'pageIndex'])} color="primary">
               <Typography>Filters</Typography>
             </Badge>
           </AccordionSummary>
