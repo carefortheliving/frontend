@@ -64,7 +64,7 @@ const useModel = (props: CreateDonationProps) => {
   }, [auth?.user?.displayName]);
 
   useEffect(() => {
-    ensurePermissions();
+    // ensurePermissions();
   }, [data?.donorEmail]);
 
   useEffect(() => {

@@ -562,4 +562,4 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
   );
 };
 
-export default withAuth(CreateDonation);
+export default CreateDonation;
