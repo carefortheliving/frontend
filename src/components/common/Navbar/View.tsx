@@ -1,3 +1,4 @@
+import { useTheme } from '@material-ui/core';
 import { Box } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Badge from '@material-ui/core/Badge';
@@ -121,6 +122,7 @@ function Navbar(props: NavbarProps) {
   const [profileBtn, setProfileBtn] = React.useState(null);
   const isUpSm = useBreakpoint('sm');
   const { isCreateRequest, isLogin } = useRoutes();
+  const theme = useTheme();
 
   const isLogged = !!(user && user.uid);
 
@@ -150,7 +152,9 @@ function Navbar(props: NavbarProps) {
               variant="contained"
               className={classes.btnStyle}
               size="small"
-              color="secondary"
+              style={{
+                backgroundColor: theme.colors.fourth,
+              }}
               onClick={() => history.push(getCreateRequestRoute())}
             >
               Create Request
@@ -159,7 +163,9 @@ function Navbar(props: NavbarProps) {
               variant="contained"
               className={classes.btnStyle}
               size="small"
-              color="primary"
+              style={{
+                backgroundColor: theme.colors.third,
+              }}
               onClick={() => history.push(getCreateDonationRoute())}
             >
               Donate
@@ -167,6 +173,9 @@ function Navbar(props: NavbarProps) {
             <Button
               variant="contained"
               size="small"
+              style={{
+                backgroundColor: theme.colors.second,
+              }}
               onClick={() => history.push(getAboutRoute())}
             >
               About us
