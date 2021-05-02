@@ -3,6 +3,7 @@ import Carousel from 'react-material-ui-carousel';
 import { Button, Container, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import useBreakpoint from 'src/hooks/useBreakpoint';
+import { Link } from 'react-router-dom';
 
 export const useStyles = makeStyles((theme) => ({
   navButtons: {
@@ -33,6 +34,16 @@ const HeaderCarousel = () => {
       button: {
         text: 'Check it out!',
         link: 'https://covid19-twitter.in',
+        isExternal: true,
+      },
+    },
+    {
+      name: 'We need your help',
+      description: `Follow the the link below to register as a Plasma donor.`,
+      button: {
+        text: 'Register!',
+        link: '/donation/create',
+        isExternal: false,
       },
     },
     {
@@ -41,17 +52,24 @@ const HeaderCarousel = () => {
       button: {
         text: 'Register!',
         link: 'https://selfregistration.cowin.gov.in/',
-      },
-    },
-    {
-      name: 'We need your help',
-      description: `Follow the the link below to register as a Plasma donor.`,
-      button: {
-        text: 'Register!',
-        link: 'http://localhost:7901/donation/create',
+        isExternal: true,
       },
     },
   ];
+
+  const renderLink = (item: typeof items[0]) => {
+    return item.button.isExternal ? <a target="blank" href={item.button.link}
+      className={classes.link}>
+      <Button variant="outlined">
+        {item.button.text}
+      </Button>
+    </a> : <Link to={item.button.link}
+      className={classes.link}>
+      <Button variant="outlined">
+        {item.button.text}
+      </Button>
+    </Link>;
+  };
 
   const renderItem = (item: typeof items[0], key) => {
     return (
@@ -76,13 +94,7 @@ const HeaderCarousel = () => {
           {/* - Buddha */}
         </Typography>
 
-        {item.button ?
-          <a target="blank" href={item.button.link}
-            className={classes.link}>
-            <Button variant="outlined">
-              {item.button.text}
-            </Button>
-          </a> : <a className={classes.link} />}
+        {item.button ? renderLink(item) : <a className={classes.link} />}
       </Container>
     );
   };

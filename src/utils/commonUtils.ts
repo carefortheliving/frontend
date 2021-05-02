@@ -24,3 +24,7 @@ export const getUrlKey = (key: string, defaultVal?: any) => {
   const currentUrlParams = new URLSearchParams(window.location.search);
   return currentUrlParams.get(key) || defaultVal;
 };
+
+export const isLinkExternal = (url: string) => {
+  return new URL(url).origin !== location.origin;
+};
