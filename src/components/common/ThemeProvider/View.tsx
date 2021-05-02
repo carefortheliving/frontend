@@ -13,6 +13,7 @@ declare module '@material-ui/core/styles/createMuiTheme' {
       third: Color,
       fourth: Color,
       fifth: Color,
+      error: Color;
     }
   }
   interface ThemeOptions extends Theme {
@@ -36,6 +37,7 @@ const theme = createMuiTheme({
     third: '#dfe3ee',
     fourth: '#f7f7f7',
     fifth: '#ffffff',
+    error: '#db3131',
   },
 });
 
