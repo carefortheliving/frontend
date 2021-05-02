@@ -48,7 +48,7 @@ const HeaderCarousel = () => {
       description: `Follow the the link below to register as a Plasma donor.`,
       button: {
         text: 'Register!',
-        link: 'https://docs.google.com/forms/d/e/1FAIpQLSegE2m5H8l6Ey_KDJx0KWVRvlofTd4tW21v6WO4-5xeJfSwUg/viewform',
+        link: 'http://localhost:7901/donation/create',
       },
     },
   ];
