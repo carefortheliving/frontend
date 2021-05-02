@@ -23,7 +23,7 @@ export const dashboardTabs = {
   },
   donations: {
     key: 'donations',
-    label: 'Donations',
+    label: 'Plasma Donations',
     index: 4,
   },
 };

@@ -168,7 +168,7 @@ function Navbar(props: NavbarProps) {
               }}
               onClick={() => history.push(getCreateDonationRoute())}
             >
-              Donate
+              Donate Plasma
             </Button>
             <Button
               variant="contained"

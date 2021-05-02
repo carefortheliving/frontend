@@ -188,6 +188,7 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
             render={({ field }) => {
               return (
                 <Select
+                  isDisabled
                   {...field}
                   placeholder={renderSelectPlaceholder('Select Category')}
                   options={categoriesOptions}
