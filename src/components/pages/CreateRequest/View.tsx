@@ -1,547 +1,411 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Button,
-  Container,
-  Grid,
-  makeStyles,
-  TextareaAutosize,
-  TextField,
-  Typography,
-} from '@material-ui/core';
-import MuiPhoneNumber from 'material-ui-phone-number';
-import React, { useState, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useHistory, useParams } from 'react-router-dom';
-import Select from 'react-select';
-import {
-  getHomeRoute,
-  getLoginRoute,
-  getViewRequestRoute,
-} from 'src/components/common/RouterOutlet/routerUtils';
-import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
-import useFirestore from 'src/hooks/useFirestore';
-import useFirebase from 'src/hooks/useFirebase';
-import useGeo from 'src/hooks/useGeo';
-import { RequestType } from 'src/types';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from 'react';
+import './View.css';
+import Paper from '@material-ui/core/Paper';
+import HelpImage from 'src/Assets/Images/help.jpg';
+import Grid from '@material-ui/core/Grid';
 import { useAppStore } from 'src/stores/appStore';
+import { getLoginRoute, getHomeRoute, getSayThanksRoute, getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import useFirebase from 'src/hooks/useFirebase';
+import useFirestore from 'src/hooks/useFirestore';
 import withAuth from 'src/components/common/withAuth/View';
+import { useHistory, useParams } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import { CATEGORIES, BLOOD_GROUPS, locations } from 'src/Constants/FilterData';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import Button from '@material-ui/core/Button';
+import CloseIcon from '@material-ui/icons/Close';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { useSnackbar } from 'src/components/common/SnackbarProvider/View';
+import { RequestType } from 'src/types';
+import validations from './Validations';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
+import TurnedInIcon from '@material-ui/icons/TurnedIn';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import Select from '@material-ui/core/Select';
 
-const useStyles = makeStyles((theme) => ({
-  buttons: {
-    marginTop: '50px',
+const ValidationTextField = withStyles({
+  root: {
+    '& input:valid + fieldset': {
+      borderColor: 'green',
+      borderWidth: 2,
+    },
+    '& input:invalid + fieldset': {
+      borderColor: 'blue',
+      borderWidth: 2,
+    },
+    '& input:valid:focus + fieldset': {
+      borderLeftWidth: 8,
+      padding: '4px !important',
+    },
   },
-  input: {
-    width: '100%',
-    border: 'solid hsl(0, 0%, 80%) 1px',
-    borderRadius: '4px',
-    paddingLeft: '10px',
-    paddingRight: '10px',
+})(TextField);
+const useStyles = makeStyles(() => ({
+  centerElement: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  showBloodGroup: {
+    width: '35%',
+    marginTop: '10px',
+  },
+  hideBloodGroup: {
+    width: '80%',
+    marginTop: '10px',
   },
 }));
-interface CreateRequestProps {
-  isEdit?: boolean;
-}
-
-const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
-  const [app, appActions] = useAppStore();
+function View(props) {
   const classes = useStyles();
-  const { auth } = useFirebase();
-  const defaultValues = {
-    requestTitle: undefined,
-    requestDescription: undefined,
-    requesterName: undefined,
-    requestCategory: undefined,
-    patientGender: undefined,
-    patientBloodGroup: undefined,
-    patientAge: undefined,
-    patientState: undefined,
-    patientDistrict: undefined,
-    requesterContactNumber: undefined,
-  } as Partial<RequestType>;
-  const { handleSubmit, control, setValue } = useForm({ defaultValues });
-  const { states } = useGeo();
-  const [districts, setDistricts] = useState([]);
   const history = useHistory();
-  const params = useParams();
-  const { addRequest, updateRequest, getRequest } = useFirestore();
+  const { displayName, email, phoneNumber } = useFirebase()?.auth?.user || { displayName: null, email: null, phoneNumber: null };
+  const [name, setName] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [category, setCategory] = useState('');
+  const [width, setWidth] = useState(false);
+  const [blood, setBlood] = useState('');
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState('');
+  const [indianState, setIndianState] = useState('');
+  const { indianStates, allStates } = locations();
+  const [indianCity, setIndianCity] = useState('');
+  const [subject, setSubject] = useState('');
+  const [description, setDescription] = useState('');
   const snackbar = useSnackbar();
-  const [data, setData] = useState(undefined as undefined | RequestType);
+  const { addRequest, getRequest, updateRequest } = useFirestore();
+  const { isEdit } = props;
+  const params = useParams();
+  const [app, appActions] = useAppStore();
 
   useEffect(() => {
-    firebaseAnalytics.logEvent('create/edit_request_visited');
-    loadData();
-    appActions.setBackButton(true);
-  }, []);
-
-  useEffect(() => {
-    setValue('requesterName', auth?.user?.displayName);
-  }, [auth?.user?.displayName]);
-
-  useEffect(() => {
-    ensurePermissions();
-  }, [data?.requesterEmail]);
-
-  useEffect(() => {
-    prefillData();
-  }, [data]);
-
-  useEffect(() => {
-    appActions.setTitle(isEdit ? 'Edit Request' : 'Create Request');
-  }, [isEdit]);
-
-  const isValidUser = () => {
-    return data?.requesterEmail ?
-      data?.requesterEmail === auth?.user?.email :
-      !!auth?.user?.email;
-  };
-
-  const ensurePermissions = () => {
-    if (!isValidUser()) {
+    if (!email) {
       history.push(getLoginRoute());
     }
-  };
-
+    firebaseAnalytics.logEvent('create/edit_request_visited');
+    appActions.setTitle(isEdit ? 'Edit Request' : 'Create Request');
+    appActions.setBackButton(true);
+    isEdit&&loadData();
+  }, []);
+  useEffect(() => {
+    if ( ['Plasma', 'Blood'].includes(category) ) {
+      setWidth(true);
+    }
+  }, [category]);
   const loadData = async () => {
-    const existingRequest = isEdit ?
-      await getRequest(params?.docId) :
-      undefined;
-    if (typeof existingRequest === 'object') {
-      setData(existingRequest as any);
+    try {
+      const data:any = await getRequest(params?.docId);
+      setAge(data.patientAge);
+      setBlood(data.patientBloodGroup.value);
+      setIndianState(data.patientState.value);
+      setGender(data.patientGender.value);
+      setCategory(data.requestCategory.value);
+      setDescription(data.requestDescription);
+      setSubject(data.requestTitle);
+      setName(data.requesterName);
+      setMobile(data.requesterContactNumber);
+      setIndianCity(data.patientDistrict.value);
+    } catch ( e ) {
+      snackbar.show('error', 'Some Error occured !!');
+      history.push(getHomeRoute());
     }
   };
-
-  const prefillData = async () => {
-    data &&
-      Object.keys(data).forEach((key) => {
-        setValue(key as any, data?.[key]);
-      });
+  const payload = ():RequestType =>{
+    return ({
+      donorEmail: '',
+      donorName: '',
+      patientBloodGroup: { value: blood||'', label: blood||'' },
+      patientDistrict: { value: indianCity||'', label: indianCity||'' },
+      patientState: { value: indianState||'', label: indianState||'' },
+      requestCategory: { value: category||'', label: category||'' },
+      patientGender: { value: gender, label: gender },
+      requestTitle: subject,
+      requestDescription: description||'',
+      requestStatus: { value: 'open', label: 'Open' },
+      requesterContactNumber: mobile,
+      requesterName: name,
+      requesterEmail: email,
+      patientAge: age,
+    });
   };
-
-  const handleStateChange = (state: string) => {
-    // getValues().state.value
-    const newDistricts =
-      states[state]?.map((el) => ({ value: el.city, label: el.city })) || [];
-    setDistricts(newDistricts);
-    setValue('patientDistrict', newDistricts[0]);
-  };
-
-  const validateFields = (data: RequestType) => {
-    const requiredKeys: (keyof Partial<RequestType>)[] = [
-      'requestTitle',
-      'requestCategory',
-      'patientBloodGroup',
-      'requestDescription',
-      'requesterContactNumber',
-    ];
-    const missingKey = requiredKeys.find((key) => !data?.[key]);
-    if (missingKey) {
-      snackbar.show('error', `Field "${missingKey}" must not be empty!`);
-      return false;
-    }
-    return true;
-  };
-
-  const onSubmit = async (data: RequestType) => {
-    if (!isValidUser()) {
+  const handleSubmit = async () => {
+    if (!email) {
       snackbar.show('error', `You're not authorized for the action!`);
       return;
     }
-    if (!validateFields(data)) return;
+
+    const validation = validations(payload());
+    if ( validation !== 'true' ) {
+      snackbar.show('error', validation);
+      return;
+    }
     try {
-      const payload: RequestType = pickBy(data, identity) as any;
-      const res = isEdit ?
-        await updateRequest(params?.docId, payload) :
-        await addRequest({
-          ...payload,
-          requestStatus: { value: 'open', label: 'Open' },
-          requesterEmail: auth?.user?.email,
-        });
+      const res = await addRequest(payload());
+      console.log(res);
       snackbar.show(
           'success',
           `Request 
-          ${ isEdit ? 'updated' : 'created' } successfully! Please also keep an eye on your post comment thread and useful links tab`,
+        created successfully! Please also keep an eye on your post comment thread and useful links tab`,
       );
-      // message.success('Request created successfully!')
       history.push(getViewRequestRoute(params?.docId || (res as any)?.id));
     } catch (e) {
-      console.error('Error adding document: ', e);
       snackbar.show(
           'error',
-          `Couldn't ${
-          isEdit ? 'update' : 'create'
-          } request!\n All the fields are mandatory!`,
+          `Error while creating the request !`,
       );
-      // message.error(`Couldn't create request!`);
     }
   };
-
-  const handleCancel = async () => {
-    history.push(getHomeRoute());
+  const handleChanges = async ()=>{
+    const validation = validations(payload());
+    if ( validation !== 'true' ) {
+      snackbar.show('error', validation);
+      return;
+    }
+    try {
+      const res = await updateRequest(params?.docId, payload());
+      snackbar.show(
+          'success',
+          `Request 
+        created successfully! Please also keep an eye on your post comment thread and useful links tab`,
+      );
+      history.push('/?tab=3');
+    } catch (e) {
+      snackbar.show(
+          'error',
+          `Error while creating the request !`,
+      );
+    }
   };
-
-  const renderSelectPlaceholder = (text: string) => {
-    return (
-      <Typography style={{ color: 'rgba(0, 0, 0, 0.40)' }}>{text}</Typography>
-    );
-  };
-
-  const renderTitle = () => {
-    return (
-      <Controller
-        name={'requestTitle'}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            placeholder="Situation title goes here ..."
-            className={classes.input}
-            InputProps={{ disableUnderline: true }}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderDescription = () => {
-    return (
-      <Controller
-        name={'requestDescription'}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextareaAutosize
-            {...field}
-            placeholder="Situation description goes here ..."
-            style={{ width: '100%', height: '100px' }}
-            className={classes.input}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderRequester = () => {
-    return (
-      <Controller
-        name={'requesterName'}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            style={{ width: '100%' }}
-            placeholder="Requester's Name"
-            className={classes.input}
-            InputProps={{ disableUnderline: true }}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderAge = () => {
-    return (
-      <Controller
-        name={'patientAge'}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            style={{ width: '100%' }}
-            placeholder="Patient's Age"
-            className={classes.input}
-            InputProps={{ disableUnderline: true }}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderCategory = () => {
-    return (
-      <Controller
-        name="requestCategory"
-        control={control}
-        render={({ field }) => {
-          return (
-            <Select
-              {...field}
-              placeholder={renderSelectPlaceholder('Select Category')}
-              options={[
-                { value: 'plasma', label: 'Plasma' },
-                { value: 'oxygen', label: 'Oxygen' },
-                { value: 'medicine', label: 'Medicine' },
-                { value: 'blood', label: 'Blood' },
-                { value: 'money', label: 'Monetary' },
-                { value: 'other', label: 'Other' },
-              ]}
-            />
-          );
-        }}
-      />
-    );
-  };
-
-  const renderGender = () => {
-    return (
-      <Controller
-        name="patientGender"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder={renderSelectPlaceholder(
-                'Select Gender of the patient',
-            )}
-            options={[
-              { value: 'male', label: 'Male' },
-              { value: 'female', label: 'Female' },
-            ]}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderBloodGroup = () => {
-    return (
-      <Controller
-        name="patientBloodGroup"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder={renderSelectPlaceholder(
-                'Select Blood Group of the patient',
-            )}
-            options={[
-              { value: 'a+', label: 'A+' },
-              { value: 'a-', label: 'A-' },
-              { value: 'b+', label: 'B+' },
-              { value: 'b-', label: 'B-' },
-              { value: 'c+', label: 'C+' },
-              { value: 'c-', label: 'C-' },
-              { value: 'o+', label: 'O+' },
-              { value: 'o-', label: 'O-' },
-              { value: 'ab+', label: 'AB+' },
-              { value: 'ab+', label: 'AB+' },
-            ]}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderContactNumber = () => {
-    return (
-      <Controller
-        name={'requesterContactNumber'}
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <MuiPhoneNumber
-            {...field}
-            defaultCountry={'in'}
-            onlyCountries={['in']}
-            disableCountryCode
-            disableDropdown
-            style={{ width: '100%' }}
-            placeholder="Contact Number"
-            className={classes.input}
-            InputProps={{ disableUnderline: true }}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderState = () => {
-    return (
-      <Controller
-        name="patientState"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder={renderSelectPlaceholder('Select State')}
-            onChange={(option) => {
-              handleStateChange(option.value);
-              field?.onChange(option);
-            }}
-            options={Object.keys(states).map((key) => ({
-              value: key,
-              label: key,
-            }))}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderDistrict = () => {
-    return (
-      <Controller
-        name="patientDistrict"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            placeholder={renderSelectPlaceholder('Select District')}
-            options={districts}
-          />
-        )}
-      />
-    );
-  };
-
-  const renderSubmit = () => {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit(onSubmit)}
-        style={{ marginRight: '10px' }}
-      >
-        Submit
-      </Button>
-    );
-  };
-
-  const renderCancel = () => {
-    return (
-      <Button variant="contained" onClick={handleCancel}>
-        Cancel
-      </Button>
-    );
-  };
-
   return (
-    <Container maxWidth="md">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={1}>
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Requester&apos;s Email</Typography>
-            </Grid>
-            <Grid item xs>
-              <Typography variant="h6">
-                {isEdit ? data?.requesterEmail : auth?.user?.email}
-              </Typography>
-            </Grid>
+    <div className="cr--body">
+      <Paper variant="outlined" square elevation={3} className="cr--container">
+        <div className="header">
+          <img src={HelpImage} className="cr--image" alt="Together - We are strong"></img>
+          <div className="cr--image__heading">Together - We are strong</div>
+        </div>
+        <Grid container spacing={3} className="form--container">
+          <Grid item xs={12} md={6} className={classes.centerElement} >
+            <ValidationTextField
+              label='Name'
+              required={true}
+              variant="outlined"
+              defaultValue={displayName}
+              onChange={(event) => {
+                setName(event?.target.value);
+              }}
+              className='cr--element__position1'
+              value={name}
+              name='name'
+              placeholder='John Doe'
+            />
           </Grid>
+          <Grid item xs={12} md={6} className={classes.centerElement} style={{ justifyContent: 'space-evenly' }} >
+            <ValidationTextField
+              label='Email'
+              required={true}
+              variant="outlined"
+              defaultValue={email}
+              className='cr--element__position6'
+              disabled
+            />
+            <ValidationTextField
+              label='Age'
+              required={true}
+              variant="outlined"
+              onChange={(event) => {
+                setAge(event?.target.value);
+              }}
+              className='cr--element__position7'
+              value={age}
+              name='age'
+              placeholder='XX'
+            />
+          </Grid>
+          <Grid item xs={12} md={6} className={classes.centerElement} style={{ justifyContent: 'space-evenly' }} >
+            <ValidationTextField
+              label='Mobile'
+              required={true}
+              variant="outlined"
+              defaultValue={phoneNumber || ''}
+              onChange={(event) => {
+                setMobile(event?.target.value);
+              }}
+              className='cr--element__position4'
+              value={mobile}
+              name='mobile'
+              placeholder='10 Digit Number'
+            />
+            <ValidationTextField
+              name='gender'
+              select
+              label="Gender"
+              value={gender}
+              onChange={(event) => {
+                setGender(event.target.value);
+              }}
+              variant="outlined"
+              className='cr--element__position5'
+              style={{ borderColor: 'green !important' }}
+            >
+              {['Male', 'Female', 'Other'].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </ValidationTextField>
+          </Grid>
+          <Grid item xs={12} md={6} className={classes.centerElement} style={{ justifyContent: 'space-evenly' }} >
+            <ValidationTextField
+              name='category'
+              select
+              label="Category"
+              value={category}
+              onChange={(event) => {
+                setCategory(event.target.value);
+                if (['Blood', 'Plasma'].includes(event.target.value)) {
+                  setWidth(true);
+                } else {
+                  setWidth(false);
+                  setBlood('');
+                }
+              }}
+              variant="outlined"
+              className={width ? classes.showBloodGroup : classes.hideBloodGroup}
+            >
+              {CATEGORIES.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </ValidationTextField>
 
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Requester&apos;s Name</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderRequester()}
-            </Grid>
+            {width && <ValidationTextField
+              name='blood'
+              select
+              label="Group"
+              value={blood}
+              onChange={(event) => setBlood(event.target.value)}
+              variant="outlined"
+              className='cr--element__position3'
+            >
+              {BLOOD_GROUPS.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </ValidationTextField>}
           </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Contact Number</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderContactNumber()}
-            </Grid>
+          <Grid item xs={12} md={6} className={classes.centerElement} >
+            <ValidationTextField
+              name='states'
+              select
+              label='State'
+              value={indianState}
+              onChange={(event) => setIndianState(event.target.value)}
+              variant="outlined"
+              className='cr--element__position1'
+            >
+              {indianStates.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </ValidationTextField>
           </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Category</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderCategory()}
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Patient&apos;s Gender</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderGender()}
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Patient&apos;s Blood Group</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderBloodGroup()}
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Patient&apos;s Age</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderAge()}
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">State</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderState()}
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">District</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderDistrict()}
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Title</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderTitle()}
-            </Grid>
-          </Grid>
-
-          <Grid container>
-            <Grid item xs>
-              <Typography variant="h6">Description</Typography>
-            </Grid>
-            <Grid item xs>
-              {renderDescription()}
-            </Grid>
-          </Grid>
-          <Grid
-            container
-            // justify="flex-end"
-            className={classes.buttons}
-            spacing={2}
-          >
-            <Grid item xs={12} sm={6} md={4}>
-              {renderSubmit()}
-              {renderCancel()}
-            </Grid>
-            {/* <Grid item xs={12} sm={6} md={4} spacing={2}>
-                  {renderResolve()}
-                </Grid> */}
+          <Grid item xs={12} md={6} className={classes.centerElement}>
+            <ValidationTextField
+              name='cities'
+              select
+              label='City'
+              value={indianCity}
+              onChange={(event) => setIndianCity(event.target.value)}
+              variant="outlined"
+              className='cr--element__position1'
+            >
+              {indianState && allStates[indianState].map((option) => (
+                <MenuItem key={option.city} value={option.city}>
+                  {option.city}
+                </MenuItem>
+              ))}
+            </ValidationTextField>
           </Grid>
         </Grid>
-      </form>
-    </Container>
+        <Grid item xs={12} className={classes.centerElement} >
+          <ValidationTextField
+            label='Subject'
+            required={true}
+            variant="outlined"
+            onChange={(event) => {
+              setSubject(event?.target.value);
+            }}
+            className='cr--element__position2'
+            value={subject}
+            name='subject'
+            placeholder='Describe your issue in short words'
+          />
+        </Grid>
+        <Grid item xs={12} className={classes.centerElement} >
+          <TextareaAutosize
+            rowsMin={10}
+            placeholder="Explain the issue briefly"
+            className='cr--element__position2 cr--from__textarea'
+            onChange={(event) => {
+              setDescription(event?.target.value);
+            }}
+            value={description}
+          />
+        </Grid >
+        {!isEdit ? <Grid container xs={12} className='cr--buttob__container' >
+          <Grid item xs={6} className={classes.centerElement} >
+            <Button
+              variant="contained"
+              startIcon={<CloseIcon style={{ fill: 'white' }} />}
+              className='cr--cancel__button'
+              onClick={()=>history.push(getHomeRoute())}
+            >
+        Cancel
+            </Button>
+          </Grid>
+          <Grid item xs={6} className={classes.centerElement}>
+            <Button
+              variant="contained"
+              endIcon={<CheckCircleIcon style={{ fill: 'white' }}/>}
+              className='cr--submit__button'
+              onClick={handleSubmit}
+            >
+        Submit
+            </Button>
+          </Grid>
+        </Grid> :
+      <Grid container xs={12} className='cr--buttob__container' >
+        <Grid item xs={6} className={classes.centerElement} >
+          <Button
+            variant="contained"
+            startIcon={<TurnedInIcon style={{ fill: 'yellow' }} />}
+            className='cr--save__button'
+            onClick={handleChanges}
+          >
+      Save Changes
+          </Button>
+        </Grid>
+        <Grid item xs={6} className={classes.centerElement}>
+          <Button
+            variant="contained"
+            endIcon={<FavoriteIcon style={{ fill: 'red' }}/>}
+            className='cr--resolve__button'
+            onClick={()=>history.push(getSayThanksRoute(params?.docId))}
+          >
+      Issue is Resolved
+          </Button>
+        </Grid>
+      </Grid>
+        }
+      </Paper>
+    </div>
   );
 };
 
-export default withAuth(CreateRequest);
+export default withAuth(View);
+
