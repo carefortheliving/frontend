@@ -17,7 +17,6 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React from 'react';
 import { UsefulLink } from 'src/types';
-import { dashboardTabs } from './constants';
 import HeaderCarousel from './HeaderCarousel';
 import LinkCard from './LinkCard';
 import useModel from './model';
@@ -26,6 +25,7 @@ import RequestFilters from './RequestFilters';
 import { useStyles } from './styles';
 import useBreakpoint from 'src/hooks/useBreakpoint';
 import InfiniteGrid, { InfiniteGridCellProps } from 'src/components/common/InfiniteGrid/View';
+import DashboardTabs from './DashboardTabs';
 
 const Dashboard = () => {
   const classes = useStyles();
@@ -152,67 +152,6 @@ const Dashboard = () => {
     );
   };
 
-  const renderTabs = () => {
-    return (
-      <AppBar position="static" color="default" variant="outlined">
-        <Tabs
-          variant="scrollable"
-          scrollButtons="auto"
-          value={activeTabKey}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={(e, tabKey) => setTab(tabKey)}>
-
-          <Tab label="Open Requests"
-            value={dashboardTabs.open_requests.key}
-            icon={
-              <Badge badgeContent={activeTabKey === 'open_requests' ? requests?.length : 0}
-                color="primary">
-                <EnhancedEncryptionIcon />
-              </Badge>
-            }
-          />
-
-          {isAdmin ? <Tab
-            label="Donors"
-            value={dashboardTabs.donors.key}
-            icon={
-              <Badge badgeContent={activeTabKey === 'donors' ? 0 /* TODO: */ : 0} color="primary">
-                <FavoriteIcon />
-              </Badge>
-            } /> : null}
-
-          <Tab
-            label="Useful links"
-            value={dashboardTabs.useful_links.key}
-            icon={
-              <Badge badgeContent={activeTabKey === 'useful_links' ? usefulLinks?.length : 0} color="primary">
-                <BeenhereIcon />
-              </Badge>
-            } />
-
-          {email ?
-            <Tab label="My Requests"
-              value={dashboardTabs.my_requests.key}
-              icon={
-                <Badge badgeContent={activeTabKey === 'my_requests' ? requests?.length : 0} color="primary">
-                  <NotificationsActiveIcon />
-                </Badge>
-              } /> : null}
-
-          <Tab label="Closed Requests"
-            value={dashboardTabs.closed_requests.key}
-            icon={
-              <Badge badgeContent={activeTabKey === 'closed_requests' ? requests?.length : 0} color="primary">
-                <CancelIcon />
-              </Badge>
-            } />
-
-        </Tabs>
-      </AppBar>
-    );
-  };
-
   return (
     <>
       <div className={classes.heroContent}
@@ -221,7 +160,7 @@ const Dashboard = () => {
         }}>{renderHeader()}</div>
       <Container>
         <Grid item sm={12}>
-          {renderTabs()}
+          <DashboardTabs />
         </Grid>
         <Grid container spacing={4}>
           {activeTabKey === 'open_requests' ?
