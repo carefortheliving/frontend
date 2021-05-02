@@ -39,7 +39,7 @@ const Dashboard = () => {
     loading,
     isAdmin,
     email,
-    activeTabKey,
+    activeTab,
     setTab,
     usefulLinks,
     loadLinks,
@@ -51,7 +51,7 @@ const Dashboard = () => {
     return (
       <Container style={{ marginTop: '20px' }}>
         <Alert severity="info">
-          <AlertTitle>No {activeTabKey === 'donors' ? 'Donation' : 'Request'} created yet</AlertTitle>
+          <AlertTitle>No {activeTab.key === 'donations' ? 'Donation' : 'Request'} created yet</AlertTitle>
           Click on the <strong>Create Request</strong> button to get started!
         </Alert>
       </Container>
@@ -67,10 +67,10 @@ const Dashboard = () => {
   };
 
   const getRowHeight = () => {
-    switch (activeTabKey) {
+    switch (activeTab.key) {
       case 'useful_links':
         return 280;
-      case 'donors':
+      case 'donations':
       case 'open_requests':
       case 'closed_requests':
       case 'my_requests':
@@ -80,9 +80,10 @@ const Dashboard = () => {
   };
 
   const getGridData = () => {
-    switch (activeTabKey) {
+    switch (activeTab.key) {
       case 'useful_links':
-      case 'donors':
+        return usefulLinks;
+      case 'donations':
         return donations;
       case 'open_requests':
       case 'closed_requests':
@@ -93,16 +94,21 @@ const Dashboard = () => {
     }
   };
 
-  const gridColumnCount = isUpSm ? (activeTabKey === 'open_requests' || activeTabKey === 'donors' ? 3 : 4) : 1;
+  const gridColumnCount = isUpSm ? (activeTab.key === 'open_requests' || activeTab.key === 'donations' ? 3 : 4) : 1;
   const renderCell = (props: InfiniteGridCellProps) => {
     const { columnIndex, rowIndex, style } = props;
     const index = rowIndex * gridColumnCount + columnIndex;
     const data = getGridData()?.[index] as any;
     return data ? <div style={{ ...style, padding: '16px' }} key={`cell-${index}`}>
       {(() => {
-        switch (activeTabKey) {
+        switch (activeTab.key) {
           case 'useful_links':
-          case 'donors':
+            return <LinkCard
+              prefillData={data || {
+                name: 'Loading more ...',
+              }}
+              onReloadRequested={loadLinks} />;
+          case 'donations':
             return <DonationCard
               key={data.id}
               data={data}
@@ -123,7 +129,7 @@ const Dashboard = () => {
 
   const renderContent = () => {
     return (
-      <Grid item md={activeTabKey === 'open_requests' || activeTabKey === 'donors' ? 9 : 12}>
+      <Grid item md={activeTab.key === 'open_requests' || activeTab.key === 'donations' ? 9 : 12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {loading ? (
@@ -163,14 +169,14 @@ const Dashboard = () => {
         }}>{renderHeader()}</div>
       <Container>
         <Grid item sm={12}>
-          <DashboardTabs activeTabKey={activeTabKey} setTab={setTab}
+          <DashboardTabs activeTab={activeTab} setTab={setTab}
           />
         </Grid>
         <Grid container spacing={4}>
-          {activeTabKey === 'open_requests' ?
+          {activeTab.key === 'open_requests' ?
             <RequestFilters /> :
             null}
-          {activeTabKey === 'donors' ?
+          {activeTab.key === 'donations' ?
             <DonationFilters /> :
             null}
           {renderContent()}

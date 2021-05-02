@@ -14,14 +14,15 @@ import React from 'react';
 import { useDashboardStore } from 'src/stores/dashboardStore';
 import { useAppStore } from 'src/stores/appStore';
 import { dashboardTabs } from './constants';
+import { DashboardTab } from './types';
 
 interface DashboardTabsProps {
   setTab: (newTab: string) => void;
-  activeTabKey: string;
+  activeTab: DashboardTab;
 }
 
 const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
-  const { setTab, activeTabKey } = props;
+  const { setTab, activeTab } = props;
   const { requests, donations, links } = useDashboardStore();
   const { userInfo } = useAppStore();
   const { email, isAdmin } = userInfo || {};
@@ -30,15 +31,15 @@ const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
       <Tabs
         variant="scrollable"
         scrollButtons="auto"
-        value={activeTabKey}
+        value={activeTab.key}
         indicatorColor="primary"
         textColor="primary"
         onChange={(e, tabKey) => setTab(tabKey)}>
 
-        <Tab label="Open Requests"
+        <Tab label={dashboardTabs.open_requests.label}
           value={dashboardTabs.open_requests.key}
           icon={
-            <Badge badgeContent={activeTabKey === 'open_requests' ? requests?.length : 0}
+            <Badge badgeContent={activeTab.key === dashboardTabs.open_requests.key ? requests?.length : 0}
               color="primary">
               <EnhancedEncryptionIcon />
             </Badge>
@@ -46,36 +47,36 @@ const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
         />
 
         {isAdmin ? <Tab
-          label="Donors"
-          value={dashboardTabs.donors.key}
+          label={dashboardTabs.donations.label}
+          value={dashboardTabs.donations.key}
           icon={
-            <Badge badgeContent={activeTabKey === 'donors' ? donations?.length : 0} color="primary">
+            <Badge badgeContent={activeTab.key === dashboardTabs.donations.key ? donations?.length : 0} color="primary">
               <FavoriteIcon />
             </Badge>
           } /> : null}
 
         <Tab
-          label="Useful links"
+          label={dashboardTabs.useful_links.label}
           value={dashboardTabs.useful_links.key}
           icon={
-            <Badge badgeContent={activeTabKey === 'useful_links' ? links?.length : 0} color="primary">
+            <Badge badgeContent={activeTab.key === dashboardTabs.useful_links.key ? links?.length : 0} color="primary">
               <BeenhereIcon />
             </Badge>
           } />
 
         {email ?
-          <Tab label="My Requests"
+          <Tab label={dashboardTabs.my_requests.label}
             value={dashboardTabs.my_requests.key}
             icon={
-              <Badge badgeContent={activeTabKey === 'my_requests' ? requests?.length : 0} color="primary">
+              <Badge badgeContent={activeTab.key === dashboardTabs.my_requests.key ? requests?.length : 0} color="primary">
                 <NotificationsActiveIcon />
               </Badge>
             } /> : null}
 
-        <Tab label="Closed Requests"
+        <Tab label={dashboardTabs.closed_requests.label}
           value={dashboardTabs.closed_requests.key}
           icon={
-            <Badge badgeContent={activeTabKey === 'closed_requests' ? requests?.length : 0} color="primary">
+            <Badge badgeContent={activeTab.key === dashboardTabs.closed_requests.key ? requests?.length : 0} color="primary">
               <CancelIcon />
             </Badge>
           } />

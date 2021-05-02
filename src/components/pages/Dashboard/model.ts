@@ -77,7 +77,7 @@ const useModel = () => {
     loading,
     isAdmin: app.userInfo?.isAdmin,
     email: app.userInfo?.email,
-    activeTabKey: urlKeys.tab.key,
+    activeTab: urlKeys.tab,
     setTab: urlKeys.setTab,
     usefulLinks: dashboard.links,
     loadLinks: dashboard.loadLinks,

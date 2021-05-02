@@ -21,9 +21,9 @@ export const dashboardTabs = {
     label: 'My Requsts',
     index: 3,
   },
-  donors: {
-    key: 'donors',
-    label: 'Donors',
+  donations: {
+    key: 'donations',
+    label: 'Donations',
     index: 4,
   },
 };
