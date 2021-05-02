@@ -95,7 +95,7 @@ export const defaultRequestsFilters = {
 export const defaultDonationsFilters = {
   donorDistrict: undefined as undefined | LabelValue,
   donorState: undefined as undefined | LabelValue<'open' | 'closed'>,
-  donationCategory: undefined as undefined | LabelValue,
+  donationCategory: { label: 'Plasma', value: 'plasma' } as undefined | LabelValue,
   donationStatus: undefined as undefined | LabelValue,
   donorEmail: undefined as undefined | string,
   sortBy: {

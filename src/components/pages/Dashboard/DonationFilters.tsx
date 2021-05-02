@@ -52,6 +52,7 @@ const DonationFilters: React.FC<DonationFiltersProps> = (props) => {
   const renderCategory = () => {
     return (
       <Select
+        isDiabled
         selectComponent={Select.Creatable}
         style={{
           width: '300px',
