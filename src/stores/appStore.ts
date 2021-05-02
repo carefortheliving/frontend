@@ -49,11 +49,10 @@ export const useAppStore = () => {
     });
   };
 
-  // TODO: export single object like dashboardStore
-  const actions = {
+  return {
+    ...state,
     setBackButton,
     setTitle,
     loadUserInfo,
   };
-  return [state, actions] as [typeof state, typeof actions];
 };

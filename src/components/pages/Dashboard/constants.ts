@@ -21,9 +21,9 @@ export const dashboardTabs = {
     label: 'My Requsts',
     index: 3,
   },
-  donors: {
-    key: 'donors',
-    label: 'Donors',
+  donations: {
+    key: 'donations',
+    label: 'Donations',
     index: 4,
   },
 };
@@ -81,6 +81,23 @@ export const defaultRequestsFilters = {
   requestCategory: undefined as undefined | LabelValue,
   requestStatus: undefined as undefined | LabelValue,
   requesterEmail: undefined as undefined | string,
+  sortBy: {
+    key: 'updatedAt',
+    direction: 'desc',
+  } as undefined | {
+    key?: 'createdAt' | 'updatedAt' | 'patientAge',
+    direction?: 'asc' | 'desc'
+  },
+  pageSize: 10,
+  pageIndex: 1,
+};
+
+export const defaultDonationsFilters = {
+  donorDistrict: undefined as undefined | LabelValue,
+  donorState: undefined as undefined | LabelValue<'open' | 'closed'>,
+  donationCategory: undefined as undefined | LabelValue,
+  donationStatus: undefined as undefined | LabelValue,
+  donorEmail: undefined as undefined | string,
   sortBy: {
     key: 'updatedAt',
     direction: 'desc',

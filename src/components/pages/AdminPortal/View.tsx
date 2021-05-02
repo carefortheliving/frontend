@@ -21,15 +21,15 @@ const useStyles = makeStyles((theme) => ({
 interface AdminPortalProps { }
 
 const AdminPortal: FC<AdminPortalProps> = () => {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const classes = useStyles();
   const history = useHistory();
-  const { getRequests, getUsefulLinks } = useFirestore();
+  const { getRequests, getDonations, getUsefulLinks } = useFirestore();
 
   useEffect(() => {
     ensurePermissions();
-    appActions.setBackButton(true);
-    appActions.setTitle('Admin Portal');
+    app.setBackButton(true);
+    app.setTitle('Admin Portal');
   }, []);
 
   const ensurePermissions = () => {
@@ -40,8 +40,9 @@ const AdminPortal: FC<AdminPortalProps> = () => {
 
   const handleDownloadButtonClick = async () => {
     const requests = await getRequests({});
+    const donations = await getDonations({});
     const usefulLinks = await getUsefulLinks();
-    downloadFile(JSON.stringify({ requests, usefulLinks }, null, 4), 'careforliving.json');
+    downloadFile(JSON.stringify({ requests, donations, usefulLinks }, null, 4), 'careforliving.json');
   };
 
   return (

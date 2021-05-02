@@ -20,6 +20,7 @@ import { useAppStore } from 'src/stores/appStore';
 import {
   getAboutRoute,
   getAdminPortalRoute,
+  getCreateDonationRoute,
   getCreateRequestRoute,
   getHomeRoute,
 } from '../RouterOutlet/routerUtils';
@@ -113,7 +114,7 @@ interface NavbarProps {
 }
 
 function Navbar(props: NavbarProps) {
-  const [app] = useAppStore();
+  const app = useAppStore();
   const { logout, user } = useAuth();
   const classes = useStyles();
   const history = useHistory();
@@ -153,6 +154,15 @@ function Navbar(props: NavbarProps) {
               onClick={() => history.push(getCreateRequestRoute())}
             >
               Create Request
+            </Button>
+            <Button
+              variant="contained"
+              className={classes.btnStyle}
+              size="small"
+              color="primary"
+              onClick={() => history.push(getCreateDonationRoute())}
+            >
+              Donate
             </Button>
             <Button
               variant="contained"

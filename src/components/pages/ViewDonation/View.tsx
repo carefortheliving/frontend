@@ -3,12 +3,12 @@ import React, { useState, useEffect, memo, FC, CSSProperties } from 'react';
 import { Button, Container, Grid, Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  getEditRequestRoute,
+  getEditDonationRoute,
   getSayThanksRoute,
 } from 'src/components/common/RouterOutlet/routerUtils';
 import useFirestore from 'src/hooks/useFirestore';
 import useFirebase from 'src/hooks/useFirebase';
-import { RequestType } from 'src/types';
+import { DonationType } from 'src/types';
 import { parseTime } from 'src/utils/commonUtils';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Disqus from 'src/components/common/Disqus/View';
@@ -22,32 +22,32 @@ import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 
-interface ViewRequestProps {}
+interface ViewDonationProps {}
 
-const ViewRequest: FC<ViewRequestProps> = () => {
+const ViewDonation: FC<ViewDonationProps> = () => {
   const app = useAppStore();
   const history = useHistory();
   const params = useParams();
-  const { getRequest } = useFirestore();
-  const [data, setData] = useState(undefined as undefined | RequestType);
+  const { getDonation } = useFirestore();
+  const [data, setData] = useState(undefined as undefined | DonationType);
   const { auth } = useFirebase();
   const [pageURL, setPageURL] = useState('');
   const [pageID, setPageID] = useState('');
 
   useEffect(() => {
-    firebaseAnalytics.logEvent('request_details_page_visited');
+    firebaseAnalytics.logEvent('donation_details_page_visited');
     setPageURL(window.location.href);
     const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
     prefillData();
     app.setBackButton(true);
-    app.setTitle('Request Details');
+    app.setTitle('Donation Details');
   }, []);
 
   const prefillData = async () => {
-    const existingRequest = await getRequest(params?.docId);
-    if (typeof existingRequest === 'object') {
-      setData(existingRequest as any);
+    const existingDonation = await getDonation(params?.docId);
+    if (typeof existingDonation === 'object') {
+      setData(existingDonation as any);
     }
   };
 
@@ -56,7 +56,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   };
 
   const handleEditClick = () => {
-    history.push(getEditRequestRoute(params?.docId));
+    history.push(getEditDonationRoute(params?.docId));
   };
 
   const renderCloseButton = () => {
@@ -67,7 +67,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
         onClick={handleCloseClick}
         // style={{ marginRight: "10px" }}
       >
-        Mark as Resolved
+        Mark as Culminated
       </Button>
     );
   };
@@ -103,27 +103,27 @@ const ViewRequest: FC<ViewRequestProps> = () => {
           <CardContent>
             {data && (
               <Grid container spacing={2}>
-                {data.requestTitle && (
+                {data.donationTitle && (
                   <Grid item xs={12}>
                     <Typography variant="h4" component="h1" align="center">
-                      {data.requestTitle}
+                      {data.donationTitle}
                     </Typography>
                   </Grid>
                 )}
                 <Grid item xs={12}>
                   <Typography variant="h6" component="h3">
                     <strong>
-                      {data.requesterName} ({data.patientGender?.label || ''})
+                      {data.donorName} ({data.donorGender?.label || ''})
                     </strong>{' '}
-                    of age: <strong>{data.patientAge || '-'}</strong>, blood
+                    of age: <strong>{data.donorAge || '-'}</strong>, blood
                     group:{' '}
                     <strong>
-                      {data.patientBloodGroup?.label || '-'}
+                      {data.donorBloodGroup?.label || '-'}
                     </strong> from{' '}
                     <strong>
-                      {data.patientDistrict?.label}, {data.patientState?.label}
+                      {data.donorDistrict?.label}, {data.donorState?.label}
                     </strong>{' '}
-                    requires <strong>{data.requestCategory?.label}</strong>
+                    is willing to donate <strong>{data.donationCategory?.label}</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -133,15 +133,43 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                     <ListItem>
                       <ListItemText
                         id="description"
-                        primary={data.requestDescription}
+                        primary={data.donationDescription}
                         secondary="Details"
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemText
                         id="phone-number"
-                        primary={data.requesterContactNumber}
+                        primary={data.donorContactNumber}
                         secondary="Phone number"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="covideRecoveryStatus"
+                        primary={parseTime(data.covidRecoveryDate)}
+                        secondary="Covide Recovery Date"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="antibodyTestStatus"
+                        primary={data.antibodyTestStatus?.label}
+                        secondary="Antibody Test Done?"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="vaccinationStatus"
+                        primary={data.vaccinationStatus?.label}
+                        secondary="Vaccination Done?"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        id="medicalComplication"
+                        primary={data.medicalComplication}
+                        secondary="Medication Complication"
                       />
                     </ListItem>
                     <ListItem>
@@ -160,8 +188,8 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                     </ListItem>
                   </List>
                 </Grid>
-                {data.requestStatus?.value === 'open' ? (
-                  ( (data?.requesterEmail === auth?.user?.email) ||
+                {data.donationStatus?.value === 'open' ? (
+                  ( (data?.donorEmail === auth?.user?.email) ||
                   (app.userInfo?.isAdmin) ) &&
                   (
                     <Grid item xs={12} md={6} spacing={2}>
@@ -211,7 +239,7 @@ const ViewRequest: FC<ViewRequestProps> = () => {
           <Disqus
             url={pageURL}
             id={pageID}
-            title={data.requestTitle}
+            title={data.donationTitle}
             language="en"
           />
         )}
@@ -220,5 +248,4 @@ const ViewRequest: FC<ViewRequestProps> = () => {
   );
 };
 
-// export default memo(withAuth(ViewRequest));
-export default memo(ViewRequest);
+export default memo(ViewDonation);

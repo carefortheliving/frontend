@@ -2,11 +2,12 @@ import identity from 'lodash/identity';
 import pickBy from 'lodash/pickBy';
 import { useEffect } from 'react';
 import { atom, RecoilState } from 'recoil';
-import { defaultRequestsFilters } from 'src/components/pages/Dashboard/constants';
+import { defaultDonationsFilters, defaultRequestsFilters } from 'src/components/pages/Dashboard/constants';
 import useGenericRecoilState from 'src/hooks/useGenericRecoilState';
 
 const defaultFilters = {
   dashboardRequestsFilters: defaultRequestsFilters,
+  dashboardDonationsFilters: defaultDonationsFilters,
 };
 
 const paginationStore = atom({
@@ -51,7 +52,7 @@ export const usePaginationStore =
 
     return {
       defaultFilters: defaultFilters?.[key],
-      appliedFilters: state?.[key] as Partial<T>,
+      appliedFilters: state?.[key] as unknown as Partial<T>,
       getFiltersCount,
       setFilters,
       resetFilters,

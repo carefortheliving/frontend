@@ -17,35 +17,41 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React from 'react';
 import { UsefulLink } from 'src/types';
-import { dashboardTabs } from './constants';
 import HeaderCarousel from './HeaderCarousel';
 import LinkCard from './LinkCard';
 import useModel from './model';
 import RequestCard from './RequestCard';
+import DonationCard from './DonationCard';
 import RequestFilters from './RequestFilters';
+import DonationFilters from './DonationFilters';
 import { useStyles } from './styles';
 import useBreakpoint from 'src/hooks/useBreakpoint';
 import InfiniteGrid, { InfiniteGridCellProps } from 'src/components/common/InfiniteGrid/View';
+import DashboardTabs from './DashboardTabs';
 
 const Dashboard = () => {
   const classes = useStyles();
   const model = useModel();
   const isUpSm = useBreakpoint('sm');
   const {
-    handleCardClick,
+    handleRequestCardClick,
+    handleDonationCardClick,
     loading,
     isAdmin,
     email,
-    urlKeys,
+    activeTab,
+    setTab,
     usefulLinks,
+    loadLinks,
     requests,
+    donations,
   } = model;
 
-  const renderNoRequests = () => {
+  const renderNoData = () => {
     return (
       <Container style={{ marginTop: '20px' }}>
         <Alert severity="info">
-          <AlertTitle>No requests created yet</AlertTitle>
+          <AlertTitle>No {activeTab.key === 'donations' ? 'Donation' : 'Request'} created yet</AlertTitle>
           Click on the <strong>Create Request</strong> button to get started!
         </Alert>
       </Container>
@@ -61,10 +67,10 @@ const Dashboard = () => {
   };
 
   const getRowHeight = () => {
-    switch (urlKeys.tab.key) {
+    switch (activeTab.key) {
       case 'useful_links':
-      case 'donors':
         return 280;
+      case 'donations':
       case 'open_requests':
       case 'closed_requests':
       case 'my_requests':
@@ -74,10 +80,11 @@ const Dashboard = () => {
   };
 
   const getGridData = () => {
-    switch (urlKeys.tab.key) {
+    switch (activeTab.key) {
       case 'useful_links':
-      case 'donors':
-        return usefulLinks?.data;
+        return usefulLinks;
+      case 'donations':
+        return donations;
       case 'open_requests':
       case 'closed_requests':
       case 'my_requests':
@@ -87,28 +94,32 @@ const Dashboard = () => {
     }
   };
 
-  const gridColumnCount = isUpSm ? (urlKeys.tab.key === 'open_requests' ? 3 : 4) : 1;
+  const gridColumnCount = isUpSm ? (activeTab.key === 'open_requests' || activeTab.key === 'donations' ? 3 : 4) : 1;
   const renderCell = (props: InfiniteGridCellProps) => {
     const { columnIndex, rowIndex, style } = props;
     const index = rowIndex * gridColumnCount + columnIndex;
     const data = getGridData()?.[index] as any;
     return data ? <div style={{ ...style, padding: '16px' }} key={`cell-${index}`}>
       {(() => {
-        switch (urlKeys.tab.key) {
+        switch (activeTab.key) {
           case 'useful_links':
-          case 'donors':
             return <LinkCard
               prefillData={data || {
                 name: 'Loading more ...',
               }}
-              onReloadRequested={() => usefulLinks.loadData()} />;
+              onReloadRequested={loadLinks} />;
+          case 'donations':
+            return <DonationCard
+              key={data.id}
+              data={data}
+              onClick={handleDonationCardClick} />;
           case 'open_requests':
           case 'closed_requests':
           case 'my_requests':
             return <RequestCard
               key={data.id}
               data={data}
-              onClick={handleCardClick} />;
+              onClick={handleRequestCardClick} />;
           default:
             return [];
         }
@@ -118,7 +129,7 @@ const Dashboard = () => {
 
   const renderContent = () => {
     return (
-      <Grid item md={urlKeys.tab.key === 'open_requests' ? 9 : 12}>
+      <Grid item md={activeTab.key === 'open_requests' || activeTab.key === 'donations' ? 9 : 12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {loading ? (
@@ -143,71 +154,10 @@ const Dashboard = () => {
               gridHeight={600}
               isItemLoaded={(idx) => idx < 10}
               itemCount={getGridData()?.length}
-              rowHeight={getRowHeight()} /> : renderNoRequests())}
+              rowHeight={getRowHeight()} /> : renderNoData())}
           </Grid>
         </Container>
       </Grid>
-    );
-  };
-
-  const renderTabs = () => {
-    return (
-      <AppBar position="static" color="default" variant="outlined">
-        <Tabs
-          variant="scrollable"
-          scrollButtons="auto"
-          value={urlKeys.tab.key}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={(e, tabKey) => urlKeys.setTab(tabKey)}>
-
-          <Tab label="Open Requests"
-            value={dashboardTabs.open_requests.key}
-            icon={
-              <Badge badgeContent={urlKeys.tab.key === 'open_requests' ? requests?.length : 0}
-                color="primary">
-                <EnhancedEncryptionIcon />
-              </Badge>
-            }
-          />
-
-          {isAdmin ? <Tab
-            label="Donors"
-            value={dashboardTabs.donors.key}
-            icon={
-              <Badge badgeContent={urlKeys.tab.key === 'donors' ? 0 /* TODO: */ : 0} color="primary">
-                <FavoriteIcon />
-              </Badge>
-            } /> : null}
-
-          <Tab
-            label="Useful links"
-            value={dashboardTabs.useful_links.key}
-            icon={
-              <Badge badgeContent={urlKeys.tab.key === 'useful_links' ? usefulLinks?.data?.length : 0} color="primary">
-                <BeenhereIcon />
-              </Badge>
-            } />
-
-          {email ?
-            <Tab label="My Requests"
-              value={dashboardTabs.my_requests.key}
-              icon={
-                <Badge badgeContent={urlKeys.tab.key === 'my_requests' ? requests?.length : 0} color="primary">
-                  <NotificationsActiveIcon />
-                </Badge>
-              } /> : null}
-
-          <Tab label="Closed Requests"
-            value={dashboardTabs.closed_requests.key}
-            icon={
-              <Badge badgeContent={urlKeys.tab.key === 'closed_requests' ? requests?.length : 0} color="primary">
-                <CancelIcon />
-              </Badge>
-            } />
-
-        </Tabs>
-      </AppBar>
     );
   };
 
@@ -219,11 +169,15 @@ const Dashboard = () => {
         }}>{renderHeader()}</div>
       <Container>
         <Grid item sm={12}>
-          {renderTabs()}
+          <DashboardTabs activeTab={activeTab} setTab={setTab}
+          />
         </Grid>
         <Grid container spacing={4}>
-          {urlKeys.tab.key === 'open_requests' ?
+          {activeTab.key === 'open_requests' ?
             <RequestFilters /> :
+            null}
+          {activeTab.key === 'donations' ?
+            <DonationFilters /> :
             null}
           {renderContent()}
         </Grid>

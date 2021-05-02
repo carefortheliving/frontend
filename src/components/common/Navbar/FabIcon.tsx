@@ -3,10 +3,12 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
+  getCreateDonationRoute,
   getCreateRequestRoute,
 } from 'src/components/common/RouterOutlet/routerUtils';
 
@@ -42,6 +44,15 @@ const FabIcon: React.FC<FabIconProps> = () => {
         />
       ),
       name: 'Create Request',
+    },
+    {
+      icon: (
+        <FavoriteIcon
+          color="secondary"
+          onClick={() => history.push(getCreateDonationRoute())}
+        />
+      ),
+      name: 'Donate',
     },
   ];
 

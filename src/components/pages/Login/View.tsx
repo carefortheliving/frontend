@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LogIn() {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const { user, signInWithGoogle } = useAuth();
   const classes = useStyles();
   const history = useHistory();
@@ -44,8 +44,8 @@ function LogIn() {
     if (user?.uid) {
       history.push(getCreateRequestRoute());
     }
-    appActions.setBackButton(true);
-    appActions.setTitle('Login here');
+    app.setBackButton(true);
+    app.setTitle('Login here');
   }, []);
 
   return (
