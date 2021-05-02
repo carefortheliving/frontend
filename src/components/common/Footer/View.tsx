@@ -37,7 +37,24 @@ export default function Footer() {
               </a></Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Typography>Made with ❤️️ in 🇮🇳</Typography>
+            <Typography variant='body2'>planners:
+              <a
+                className={classes.link}
+                href="https://www.linkedin.com/in/harikesh-singh-22536038/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <strong>{' Harikesh, '}</strong>
+              </a>
+              <a
+                className={classes.link}
+                href="https://www.linkedin.com/in/pulkit-singh-baliyan-16919713/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <strong>{'Pulkit'}</strong>
+              </a>
+            </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant='body2'>contributors:
@@ -75,6 +92,15 @@ export default function Footer() {
               </a>
             </Typography>
           </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Container>
+            <Typography variant="body2" color="textSecondary" align="center">
+              {'Copyright © '}
+              {new Date().getFullYear()}
+              {' carefortheliving.'}
+            </Typography>
+          </Container>
         </Grid>
       </footer>
     </div>
