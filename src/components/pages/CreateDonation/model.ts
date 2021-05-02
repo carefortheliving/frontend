@@ -48,7 +48,7 @@ const useModel = (props: CreateDonationProps) => {
   const [districts, setDistricts] = useState([]);
   const history = useHistory();
   const params = useParams();
-  const { addDonation, updateDonation, getDonation } = useFirestore() as any;
+  const { addDonation, updateDonation, getDonation } = useFirestore();
   const snackbar = useSnackbar();
   const [data, setData] = useState(undefined as undefined | DonationType);
 

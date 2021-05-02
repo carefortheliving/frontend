@@ -1,9 +1,9 @@
-import { RequestType, UsefulLink } from 'src/types';
+import { DonationType, RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
-import { defaultRequestsFilters } from 'src/components/pages/Dashboard/constants';
+import { defaultDonationsFilters, defaultRequestsFilters } from 'src/components/pages/Dashboard/constants';
 
 const useFirestore = () => {
   const { db, auth } = useFirebase();
@@ -84,6 +84,82 @@ const useFirestore = () => {
     return request;
   };
 
+  const addDonation = async (donation: DonationType) => {
+    const donations = await db.collection('donations').add({
+      ...donation,
+      createdAt: getCurrentTime(),
+      updatedAt: getCurrentTime(),
+    });
+    return donations;
+  };
+
+  const updateDonation = async (docId: string, donation: DonationType) => {
+    const res = await db.collection('donations').doc(docId)?.update({
+      ...donation,
+      updatedAt: getCurrentTime(),
+    });
+    return res;
+  };
+
+  const getDonations = async ({
+    sortBy,
+    donationStatus,
+    ...unindexedFilters // to be indexed on demand in firebase
+  } : Partial<typeof defaultDonationsFilters>) => {
+    const {
+      donorEmail,
+      donationCategory,
+      donorDistrict,
+      donorState,
+      pageSize,
+      pageIndex,
+    } = unindexedFilters;
+    let requestsRef = db.collection('donations');
+    if (donorEmail) {
+      requestsRef =
+        requestsRef.where('donorEmail', '==', donorEmail) as any;
+    }
+    if (donationCategory) {
+      requestsRef =
+        requestsRef.where('donationCategory.value', '==', donationCategory.value) as any;
+    }
+    if (donorDistrict) {
+      requestsRef =
+        requestsRef.where('donorDistrict.value', '==', donorDistrict.value) as any;
+    }
+    if (donorState) {
+      requestsRef = requestsRef.where('donorState.value', '==', donorState.value) as any;
+    }
+    if (donationStatus) {
+      requestsRef =
+        requestsRef.where('donationStatus.value', '==', donationStatus.value) as any;
+    }
+    if (sortBy?.key) {
+      requestsRef = requestsRef.orderBy(sortBy.key, sortBy.direction === 'desc' ? 'desc' : undefined) as any;
+    }
+    // TODO: postponing pagination to save db queries
+    // if (pageIndex && pageSize) {
+    //   const startAt = pageSize * (pageIndex - 1);
+    //   const endAt = pageSize * pageIndex;
+    //   requestsRef = requestsRef.startAt(startAt).endAt(endAt) as any;
+    // }
+    const requests = await requestsRef.get();
+    const ret = requests.docs?.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as unknown as (RequestType & { id: string })[];
+    const filtersCount = Object.keys(pickBy(unindexedFilters, identity)).length;
+    filtersCount && ret.sort((a, b) => b.createdAt - a.createdAt);
+    return ret;
+  };
+
+  const getDonation = async (docId: string) => {
+    const donation = await (
+      await db.collection('donations').doc(docId).get()
+    ).data();
+    return donation;
+  };
+
   const getUsefulLinks = async () => {
     const ret = await db.collection('usefulLinks').get();
     return ret.docs.map((el) => ({
@@ -124,6 +200,10 @@ const useFirestore = () => {
     getRequests,
     addRequest,
     updateRequest,
+    getDonation,
+    getDonations,
+    addDonation,
+    updateDonation,
     getUsefulLinks,
     addUsefulLink,
     updateUsefulLink,
