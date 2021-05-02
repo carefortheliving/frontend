@@ -19,7 +19,7 @@ npm start
 ```
 
 ### Setting up firebase
-**Note:** You'll need to setup your own firebase instance for it to work properly, preferably [local firebaes emulator](https://github.com/carefortheliving/frontend/issues/78).  
+**Note:** You'll need to setup your own firebase instance for it to work properly, preferably [local firebase emulator](https://github.com/carefortheliving/frontend/issues/78).  
 If done with that, create a `.env` file with the following keys & put it at the root of this repo.  
 (Replace the values with your own!)
 ```sh  
