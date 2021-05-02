@@ -338,7 +338,7 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">If you required, would you be ready to tavel?</Typography>
+          <Typography variant="h6">If required, would you be ready to tavel?</Typography>
         </Grid>
         <Grid item xs>
           <Controller
