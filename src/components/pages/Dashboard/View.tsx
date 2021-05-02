@@ -151,7 +151,7 @@ const Dashboard = () => {
               renderCell={renderCell}
               columnCount={gridColumnCount}
               columnWidth={isUpSm ? 300 : 350}
-              gridHeight={600}
+              gridHeight={560}
               isItemLoaded={(idx) => idx < 10}
               itemCount={getGridData()?.length}
               rowHeight={getRowHeight()} /> : renderNoData())}

@@ -7,6 +7,7 @@ import {
   TextareaAutosize,
   TextField,
   Typography,
+  useTheme,
 } from '@material-ui/core';
 import MuiPhoneNumber from 'material-ui-phone-number';
 import React from 'react';
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateDonation: React.FC<CreateDonationProps> = (props) => {
   const classes = useStyles();
+  const theme = useTheme();
   const model = useModel(props);
   const {
     auth,
@@ -54,7 +56,7 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
 
   const renderSelectPlaceholder = (text: string) => {
     return (
-      <Typography style={{ color: 'rgba(0, 0, 0, 0.40)' }}>{text}</Typography>
+      <Typography style={{ color: theme.colors.fifth }}>{text}</Typography>
     );
   };
 
@@ -186,6 +188,7 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
             render={({ field }) => {
               return (
                 <Select
+                  isDisabled
                   {...field}
                   placeholder={renderSelectPlaceholder('Select Category')}
                   options={categoriesOptions}

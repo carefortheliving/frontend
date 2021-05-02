@@ -7,6 +7,7 @@ import {
   TextareaAutosize,
   TextField,
   Typography,
+  useTheme,
 } from '@material-ui/core';
 import MuiPhoneNumber from 'material-ui-phone-number';
 import React from 'react';
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateRequest: React.FC<CreateRequestProps> = (props) => {
   const classes = useStyles();
+  const theme = useTheme();
   const model = useModel(props);
   const {
     auth,
@@ -47,7 +49,7 @@ const CreateRequest: React.FC<CreateRequestProps> = (props) => {
 
   const renderSelectPlaceholder = (text: string) => {
     return (
-      <Typography style={{ color: 'rgba(0, 0, 0, 0.40)' }}>{text}</Typography>
+      <Typography style={{ color: theme.colors.fifth }}>{text}</Typography>
     );
   };
 

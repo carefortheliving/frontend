@@ -6,13 +6,15 @@ import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
   footer: {
-    padding: theme.spacing(2, 2),
-    marginTop: 'auto',
-    bottom: 0,
-    width: '100%',
-    textAlign: 'center',
-    backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
+    'padding': theme.spacing(3, 2),
+    'marginTop': theme.spacing(2),
+    'bottom': 0,
+    'width': '100%',
+    'textAlign': 'center',
+    'backgroundColor': theme.colors.second,
+    '& a': {
+      color: theme.colors.zeroth,
+    },
   },
   link: {
     textDecoration: 'none',
@@ -25,80 +27,19 @@ export default function Footer() {
     <div>
       <footer className={classes.footer}>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <Typography variant='body2'>fork me @
-              <a
-                className={classes.link}
-                href="https://github.com/carefortheliving/frontend"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <strong>{'CareForTheLiving'}</strong>
-              </a></Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant='body2'>planners:
-              <a
-                className={classes.link}
-                href="https://www.linkedin.com/in/harikesh-singh-22536038/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <strong>{' Harikesh, '}</strong>
-              </a>
-              <a
-                className={classes.link}
-                href="https://www.linkedin.com/in/pulkit-singh-baliyan-16919713/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <strong>{'Pulkit'}</strong>
-              </a>
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant='body2'>developers:
-              <a
-                className={classes.link}
-                href="https://github.com/duke79"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <strong>{' Pulkit, '}</strong>
-              </a>
-              <a
-                className={classes.link}
-                href="https://github.com/mikr13"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <strong>{'Mihir, '}</strong>
-              </a>
-              <a
-                className={classes.link}
-                href="https://github.com/alok722"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <strong>{'Alok & '}</strong>
-              </a>
-              <a
-                className={classes.link}
-                href="https://github.com/Sravan2305"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <strong>{'Sravan'}</strong>
-              </a>
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container spacing={3}>
           <Container>
             <Typography variant="body2" color="textSecondary" align="center">
               {'Copyright © '}
               {new Date().getFullYear()}
-              {' carefortheliving.'}
+              <Typography variant='body2'>
+                <a
+                  className={classes.link}
+                  href="https://github.com/carefortheliving"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <strong>{'CareForTheLiving'}</strong>
+                </a></Typography>
             </Typography>
           </Container>
         </Grid>

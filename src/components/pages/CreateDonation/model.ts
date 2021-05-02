@@ -30,7 +30,7 @@ const useModel = (props: CreateDonationProps) => {
     donationTitle: undefined,
     donationDescription: undefined,
     donorName: undefined,
-    donationCategory: undefined,
+    donationCategory: { label: 'Plasma', value: 'plasma' },
     donorGender: undefined,
     donorBloodGroup: undefined,
     donorAge: undefined,

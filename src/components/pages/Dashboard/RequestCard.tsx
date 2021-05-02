@@ -1,5 +1,5 @@
 import {
-  Tooltip,
+  Tooltip, useTheme,
 } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -23,6 +23,7 @@ const RequestCard = (props: RequestCardProps) => {
   const { data: card, onClick } = props;
 
   const classes = useStyles();
+  const theme = useTheme();
 
   return (
     <Card
@@ -57,13 +58,13 @@ const RequestCard = (props: RequestCardProps) => {
           <Typography noWrap>{card.requestDescription}</Typography>
         </Tooltip>
         <br />
-        <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
+        <Box style={{ display: 'flex', color: theme.colors.fifth }}>
           <Typography style={{ marginRight: '10px' }}>
             <i>Requested By:</i>
           </Typography>
           <Typography>{card.requesterName}</Typography>
         </Box>
-        <Box style={{ display: 'flex', color: 'rgba(0, 0, 0, 0.54)' }}>
+        <Box style={{ display: 'flex', color: theme.colors.fifth }}>
           <Typography style={{ marginRight: '10px' }}>
             <i>Address:</i>
           </Typography>

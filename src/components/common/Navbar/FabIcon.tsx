@@ -52,7 +52,7 @@ const FabIcon: React.FC<FabIconProps> = () => {
           onClick={() => history.push(getCreateDonationRoute())}
         />
       ),
-      name: 'Donate',
+      name: 'Donate Plasma',
     },
   ];
 
