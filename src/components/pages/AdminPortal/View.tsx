@@ -24,7 +24,7 @@ const AdminPortal: FC<AdminPortalProps> = () => {
   const app = useAppStore();
   const classes = useStyles();
   const history = useHistory();
-  const { getRequests, getUsefulLinks } = useFirestore();
+  const { getRequests, getDonations, getUsefulLinks } = useFirestore();
 
   useEffect(() => {
     ensurePermissions();
@@ -40,8 +40,9 @@ const AdminPortal: FC<AdminPortalProps> = () => {
 
   const handleDownloadButtonClick = async () => {
     const requests = await getRequests({});
+    const donations = await getDonations({});
     const usefulLinks = await getUsefulLinks();
-    downloadFile(JSON.stringify({ requests, usefulLinks }, null, 4), 'careforliving.json');
+    downloadFile(JSON.stringify({ requests, donations, usefulLinks }, null, 4), 'careforliving.json');
   };
 
   return (
