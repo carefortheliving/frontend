@@ -144,6 +144,13 @@ const ViewDonation: FC<ViewDonationProps> = () => {
                         secondary="Phone number"
                       />
                     </ListItem>
+                    {app.userInfo?.isAdmin ? <ListItem>
+                      <ListItemText
+                        id="email-id"
+                        primary={data.donorEmail}
+                        secondary="Email Id"
+                      />
+                    </ListItem> : null}
                     <ListItem>
                       <ListItemText
                         id="covideRecoveryStatus"
