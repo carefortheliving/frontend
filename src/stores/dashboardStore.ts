@@ -80,7 +80,7 @@ export const useDashboardStore = () => {
       donationsLoading: true,
     });
     try {
-      const effectiveFilters = { ...paginationRequests.appliedFilters };
+      const effectiveFilters = { ...paginationDonations.appliedFilters };
 
       /** Firebase indexing works only for manually indexed filters,
        * so, making sure sortBy is sent only when the indexing is present.

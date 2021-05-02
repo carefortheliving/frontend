@@ -13,7 +13,7 @@ const useModel = () => {
   const urlKeys = useUrlKeys();
   const dashboard = useDashboardStore();
 
-  const loading = dashboard.requestsLoading || dashboard.linksLoading;
+  const loading = dashboard.requestsLoading || dashboard.donationsLoading || dashboard.linksLoading;
 
   useEffect(() => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
