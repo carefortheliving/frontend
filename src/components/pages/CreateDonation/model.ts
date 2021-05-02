@@ -112,10 +112,8 @@ const useModel = (props: CreateDonationProps) => {
 
   const validateFields = (data: DonationType) => {
     const requiredKeys: (keyof Partial<DonationType>)[] = [
-      'donationTitle',
       'donationCategory',
       'donorBloodGroup',
-      'donationDescription',
       'donorContactNumber',
     ];
     const missingKey = requiredKeys.find((key) => !data?.[key]);
