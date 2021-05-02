@@ -58,13 +58,13 @@ const RequestCard = (props: RequestCardProps) => {
           <Typography noWrap>{card.requestDescription}</Typography>
         </Tooltip>
         <br />
-        <Box style={{ display: 'flex', color: theme.colors.fifth }}>
+        <Box style={{ display: 'flex', color: theme.colors.second }}>
           <Typography style={{ marginRight: '10px' }}>
             <i>Requested By:</i>
           </Typography>
           <Typography>{card.requesterName}</Typography>
         </Box>
-        <Box style={{ display: 'flex', color: theme.colors.fifth }}>
+        <Box style={{ display: 'flex', color: theme.colors.second }}>
           <Typography style={{ marginRight: '10px' }}>
             <i>Address:</i>
           </Typography>
