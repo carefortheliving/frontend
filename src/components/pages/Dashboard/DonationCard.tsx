@@ -58,13 +58,13 @@ const DonationCard = (props: DonationCardProps) => {
           <Typography noWrap>{card.donationDescription}</Typography>
         </Tooltip>
         <br />
-        <Box style={{ display: 'flex', color: theme.colors.fifth }}>
+        <Box style={{ display: 'flex', color: theme.colors.second }}>
           <Typography style={{ marginRight: '10px' }}>
             <i>{card.donationStatus?.value === 'open' ? 'Donation registered' : 'Donated'} By:</i>
           </Typography>
           <Typography>{card.donorName}</Typography>
         </Box>
-        <Box style={{ display: 'flex', color: theme.colors.fifth }}>
+        <Box style={{ display: 'flex', color: theme.colors.second }}>
           <Typography style={{ marginRight: '10px' }}>
             <i>Address:</i>
           </Typography>
