@@ -22,7 +22,7 @@ export const useDashboardStore = () => {
   const [state, setState] = useGenericRecoilState(dashboardStore);
   const { getRequests, getUsefulLinks } = useFirestore();
   const urlKeys = useUrlKeys();
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const paginationRequests = usePaginationStore('dashboardRequestsFilters');
   const snackbar = useSnackbar();
 

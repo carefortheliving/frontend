@@ -160,7 +160,8 @@ const Dashboard = () => {
         }}>{renderHeader()}</div>
       <Container>
         <Grid item sm={12}>
-          <DashboardTabs />
+          <DashboardTabs activeTabKey={activeTabKey} setTab={setTab}
+          />
         </Grid>
         <Grid container spacing={4}>
           {activeTabKey === 'open_requests' ?

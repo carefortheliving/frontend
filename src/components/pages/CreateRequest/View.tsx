@@ -46,7 +46,7 @@ interface CreateRequestProps {
 }
 
 const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const classes = useStyles();
   const { auth } = useFirebase();
   const defaultValues = {
@@ -73,7 +73,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   useEffect(() => {
     firebaseAnalytics.logEvent('create/edit_request_visited');
     loadData();
-    appActions.setBackButton(true);
+    app.setBackButton(true);
   }, []);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ const CreateRequest: React.FC<CreateRequestProps> = ({ isEdit }) => {
   }, [data]);
 
   useEffect(() => {
-    appActions.setTitle(isEdit ? 'Edit Request' : 'Create Request');
+    app.setTitle(isEdit ? 'Edit Request' : 'Create Request');
   }, [isEdit]);
 
   const isValidUser = () => {

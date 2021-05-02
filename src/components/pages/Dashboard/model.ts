@@ -8,7 +8,7 @@ import useUrlKeys from './useUrlKeys';
 import { useDashboardStore } from 'src/stores/dashboardStore';
 
 const useModel = () => {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const history = useHistory();
   const urlKeys = useUrlKeys();
   const dashboard = useDashboardStore();
@@ -17,8 +17,8 @@ const useModel = () => {
 
   useEffect(() => {
     firebaseAnalytics.logEvent('dashboard_page_visited');
-    appActions.setBackButton(false);
-    appActions.setTitle('Care for the Living');
+    app.setBackButton(false);
+    app.setTitle('Care for the Living');
   }, []);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Badge
+  Badge,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Tab from '@material-ui/core/Tab';
@@ -11,18 +11,20 @@ import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import React from 'react';
+import { useDashboardStore } from 'src/stores/dashboardStore';
+import { useAppStore } from 'src/stores/appStore';
 import { dashboardTabs } from './constants';
 
 interface DashboardTabsProps {
-  isAdmin: boolean;
   setTab: (newTab: string) => void;
   activeTabKey: string;
-  email: string;
 }
 
 const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
-  const { isAdmin, setTab, activeTabKey, email } = props;
-  const dashboard = useDashboardStore();
+  const { setTab, activeTabKey } = props;
+  const { requests, links } = useDashboardStore();
+  const { userInfo } = useAppStore();
+  const { email, isAdmin } = userInfo || {};
   return (
     <AppBar position="static" color="default" variant="outlined">
       <Tabs
@@ -56,7 +58,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
           label="Useful links"
           value={dashboardTabs.useful_links.key}
           icon={
-            <Badge badgeContent={activeTabKey === 'useful_links' ? usefulLinks?.length : 0} color="primary">
+            <Badge badgeContent={activeTabKey === 'useful_links' ? links?.length : 0} color="primary">
               <BeenhereIcon />
             </Badge>
           } />

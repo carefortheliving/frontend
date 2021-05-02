@@ -25,7 +25,7 @@ import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 interface ViewRequestProps {}
 
 const ViewRequest: FC<ViewRequestProps> = () => {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const history = useHistory();
   const params = useParams();
   const { getRequest } = useFirestore();
@@ -40,8 +40,8 @@ const ViewRequest: FC<ViewRequestProps> = () => {
     const parts = window.location.href.split('/');
     setPageID(parts[parts.length - 1]);
     prefillData();
-    appActions.setBackButton(true);
-    appActions.setTitle('Request Details');
+    app.setBackButton(true);
+    app.setTitle('Request Details');
   }, []);
 
   const prefillData = async () => {

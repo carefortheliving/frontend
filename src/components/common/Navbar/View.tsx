@@ -113,7 +113,7 @@ interface NavbarProps {
 }
 
 function Navbar(props: NavbarProps) {
-  const [app] = useAppStore();
+  const app = useAppStore();
   const { logout, user } = useAuth();
   const classes = useStyles();
   const history = useHistory();

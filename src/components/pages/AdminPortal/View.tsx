@@ -21,15 +21,15 @@ const useStyles = makeStyles((theme) => ({
 interface AdminPortalProps { }
 
 const AdminPortal: FC<AdminPortalProps> = () => {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const classes = useStyles();
   const history = useHistory();
   const { getRequests, getUsefulLinks } = useFirestore();
 
   useEffect(() => {
     ensurePermissions();
-    appActions.setBackButton(true);
-    appActions.setTitle('Admin Portal');
+    app.setBackButton(true);
+    app.setTitle('Admin Portal');
   }, []);
 
   const ensurePermissions = () => {

@@ -4,10 +4,10 @@ import useFirebase from 'src/hooks/useFirebase';
 
 const MasterDataLoader = () => {
   const { auth } = useFirebase();
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
 
   React.useEffect(() => {
-    appActions.loadUserInfo();
+    app.loadUserInfo();
   }, [auth?.user?.email]);
 
   return null;

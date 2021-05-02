@@ -55,7 +55,7 @@ const LinkCard: FC<LinkCardProps> = (props) => {
     addUsefulLink,
     updateUsefulLink,
   } = useFirestore();
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const snackbar = useSnackbar();
 
   useEffect(() => {

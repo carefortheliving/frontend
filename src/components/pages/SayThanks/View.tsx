@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 interface SayThanksProps {}
 
 const SayThanks: FC<SayThanksProps> = () => {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
   const classes = useStyles();
   const history = useHistory();
   const defaultValues = {
@@ -42,8 +42,8 @@ const SayThanks: FC<SayThanksProps> = () => {
   useEffect(() => {
     firebaseAnalytics.logEvent('thank_you_page_visited');
     prefillData();
-    appActions.setBackButton(true);
-    appActions.setTitle('Say Thanks');
+    app.setBackButton(true);
+    app.setTitle('Say Thanks');
   }, []);
 
   const prefillData = async () => {

@@ -8,12 +8,12 @@ import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
 interface SayAbout {}
 
 const About: React.FC<SayAbout> = () => {
-  const [app, appActions] = useAppStore();
+  const app = useAppStore();
 
   useEffect(() => {
     firebaseAnalytics.logEvent('about_page_visited');
-    appActions.setBackButton(true);
-    appActions.setTitle('About');
+    app.setBackButton(true);
+    app.setTitle('About');
   }, []);
 
   const renderHeader = () => {
