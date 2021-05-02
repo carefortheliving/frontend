@@ -57,7 +57,7 @@ export default function Footer() {
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Typography variant='body2'>contributors:
+            <Typography variant='body2'>developers:
               <a
                 className={classes.link}
                 href="https://github.com/duke79"
