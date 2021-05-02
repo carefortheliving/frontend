@@ -144,6 +144,13 @@ const ViewRequest: FC<ViewRequestProps> = () => {
                         secondary="Phone number"
                       />
                     </ListItem>
+                    {app.userInfo?.isAdmin ? <ListItem>
+                      <ListItemText
+                        id="email-id"
+                        primary={data.requesterEmail}
+                        secondary="Email Id"
+                      />
+                    </ListItem> : null}
                     <ListItem>
                       <ListItemText
                         id="created-at"
