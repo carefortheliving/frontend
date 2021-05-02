@@ -403,7 +403,7 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Have you done an Antibody test?</Typography>
+          <Typography variant="h6">Are you vaccinated?</Typography>
         </Grid>
         <Grid item xs>
           <Controller
