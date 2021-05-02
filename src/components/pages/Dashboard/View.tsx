@@ -52,7 +52,7 @@ const Dashboard = () => {
       <Container style={{ marginTop: '20px' }}>
         <Alert severity="info">
           <AlertTitle>No {activeTab.key === 'donations' ? 'Donation' : 'Request'} created yet</AlertTitle>
-          Click on the <strong>Create Request</strong> button to get started!
+          Click on the <strong>{activeTab.key === 'donations' ? 'Donate' : 'Create Request'}</strong> button to get started!
         </Alert>
       </Container>
     );
