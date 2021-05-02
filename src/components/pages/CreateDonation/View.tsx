@@ -15,11 +15,12 @@ import { Controller } from 'react-hook-form';
 import Select from 'react-select';
 import withAuth from 'src/components/common/withAuth/View';
 import useModel, { CreateDonationProps } from './model';
-import { antibodyTestStatusOptions, bloodGroupsOptions, categoriesOptions, gendersOptions, travelWillingnessOptions, vaccinationStatusOptions } from './constants';
+import { antibodyTestStatusOptions, bloodGroupsOptions, categoriesOptions, gendersOptions, requiredKeys, travelWillingnessOptions, vaccinationStatusOptions } from './constants';
 import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers/MuiPickersUtilsProvider';
 import moment from 'moment';
+import RedAsterisk from 'src/components/common/RedAsterisk/View';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -64,7 +65,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Title</Typography>
+          <Typography variant="h6">
+            Title
+            {requiredKeys.includes('donationTitle') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -89,7 +93,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Description</Typography>
+          <Typography variant="h6">
+            Description
+            {requiredKeys.includes('donationDescription') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -127,7 +134,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Donor&apos;s Name</Typography>
+          <Typography variant="h6">
+            Donor&apos;s Name
+            {requiredKeys.includes('donorName') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -153,7 +163,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Donor&apos;s Age</Typography>
+          <Typography variant="h6">
+            Donor&apos;s Age
+            {requiredKeys.includes('donorAge') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -179,7 +192,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Category</Typography>
+          <Typography variant="h6">
+            Category
+            {requiredKeys.includes('donationCategory') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -205,7 +221,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Donor&apos;s Gender</Typography>
+          <Typography variant="h6">
+            Donor&apos;s Gender
+            {requiredKeys.includes('donorGender') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -230,7 +249,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Donor&apos;s Blood Group</Typography>
+          <Typography variant="h6">
+            Donor&apos;s Blood Group
+            {requiredKeys.includes('donorBloodGroup') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -255,7 +277,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Contact Number</Typography>
+          <Typography variant="h6">
+            Contact Number
+            {requiredKeys.includes('donorContactNumber') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -285,7 +310,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">State</Typography>
+          <Typography variant="h6">
+            State
+            {requiredKeys.includes('donorState') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -315,7 +343,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">District</Typography>
+          <Typography variant="h6">
+            District
+            {requiredKeys.includes('donorDistrict') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -338,7 +369,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">If required, would you be ready to tavel?</Typography>
+          <Typography variant="h6">
+            If required, would you be ready to tavel?
+            {requiredKeys.includes('donorTravelWillingness') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -361,7 +395,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Recovered from Covid-19 on?</Typography>
+          <Typography variant="h6">
+            Recovered from Covid-19 on?
+            {requiredKeys.includes('covidRecoveryDate') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <KeyboardDatePicker
@@ -383,7 +420,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Have you done an Antibody test?</Typography>
+          <Typography variant="h6">
+            Have you done an Antibody test?
+            {requiredKeys.includes('antibodyTestStatus') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -406,7 +446,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Are you vaccinated?</Typography>
+          <Typography variant="h6">
+            Are you vaccinated?
+            {requiredKeys.includes('vaccinationStatus') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller
@@ -428,7 +471,10 @@ const CreateDonation: React.FC<CreateDonationProps> = (props) => {
     return (
       <Grid container>
         <Grid item xs>
-          <Typography variant="h6">Any medical complication/disease?</Typography>
+          <Typography variant="h6">
+            Any medical complication/disease?
+            {requiredKeys.includes('medicalComplication') ? <RedAsterisk /> : null}
+          </Typography>
         </Grid>
         <Grid item xs>
           <Controller

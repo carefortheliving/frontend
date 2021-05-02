@@ -1,3 +1,5 @@
+import { DonationType } from 'src/types';
+
 export const categoriesOptions = [
   { value: 'plasma', label: 'Plasma' },
   { value: 'oxygen', label: 'Oxygen' },
@@ -39,4 +41,10 @@ export const bloodGroupsOptions = [
   { value: 'o-', label: 'O-' },
   { value: 'ab+', label: 'AB+' },
   { value: 'ab+', label: 'AB+' },
+];
+
+export const requiredKeys: (keyof Partial<DonationType>)[] = [
+  'donationCategory',
+  'donorBloodGroup',
+  'donorContactNumber',
 ];

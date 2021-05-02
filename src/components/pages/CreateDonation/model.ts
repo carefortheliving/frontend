@@ -17,6 +17,7 @@ import useFirestore from 'src/hooks/useFirestore';
 import useGeo from 'src/hooks/useGeo';
 import { useAppStore } from 'src/stores/appStore';
 import { DonationType } from 'src/types';
+import { requiredKeys } from './constants';
 
 export interface CreateDonationProps {
   isEdit?: boolean;
@@ -111,11 +112,6 @@ const useModel = (props: CreateDonationProps) => {
   };
 
   const validateFields = (data: DonationType) => {
-    const requiredKeys: (keyof Partial<DonationType>)[] = [
-      'donationCategory',
-      'donorBloodGroup',
-      'donorContactNumber',
-    ];
     const missingKey = requiredKeys.find((key) => !data?.[key]);
     if (missingKey) {
       snackbar.show('error', `Field "${missingKey}" must not be empty!`);
