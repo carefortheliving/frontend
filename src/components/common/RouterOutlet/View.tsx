@@ -6,7 +6,7 @@ import AppLoader from '../AppLoader/View';
 const Login = React.lazy(() => import('../../pages/Login/View'));
 const Dashboard = React.lazy(() => import('../../pages/Dashboard/View'));
 const CreateRequest = React.lazy(
-    () => import('../../pages/CreateDonation/View'),
+    () => import('../../pages/CreateRequest/View'),
 );
 const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
 const CreateDonation = React.lazy(
@@ -23,14 +23,14 @@ const RouterOutlet = (props) => {
       <Switch>
         <Route path="/" exact component={Dashboard} />
         <Route path="/login" component={Login} />
-        <Route path="/request/create" component={CreateRequest} />
+        <Route path="/request/create" exact component={CreateRequest} />
         <Route
           path="/request/edit/:docId"
           exact
           component={(props) => <CreateRequest isEdit={true} {...props} />}
         />
         <Route path="/request/view/:docId" exact component={ViewRequest} />
-        <Route path="/donation/create" component={CreateDonation} />
+        <Route path="/donation/create" exact component={CreateDonation} />
         <Route
           path="/donation/edit/:docId"
           exact
