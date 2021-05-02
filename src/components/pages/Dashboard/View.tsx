@@ -21,7 +21,9 @@ import HeaderCarousel from './HeaderCarousel';
 import LinkCard from './LinkCard';
 import useModel from './model';
 import RequestCard from './RequestCard';
+import DonationCard from './DonationCard';
 import RequestFilters from './RequestFilters';
+import DonationFilters from './DonationFilters';
 import { useStyles } from './styles';
 import useBreakpoint from 'src/hooks/useBreakpoint';
 import InfiniteGrid, { InfiniteGridCellProps } from 'src/components/common/InfiniteGrid/View';
@@ -32,7 +34,8 @@ const Dashboard = () => {
   const model = useModel();
   const isUpSm = useBreakpoint('sm');
   const {
-    handleCardClick,
+    handleRequestCardClick,
+    handleDonationCardClick,
     loading,
     isAdmin,
     email,
@@ -41,13 +44,14 @@ const Dashboard = () => {
     usefulLinks,
     loadLinks,
     requests,
+    donations,
   } = model;
 
-  const renderNoRequests = () => {
+  const renderNoData = () => {
     return (
       <Container style={{ marginTop: '20px' }}>
         <Alert severity="info">
-          <AlertTitle>No requests created yet</AlertTitle>
+          <AlertTitle>No {activeTabKey === 'donors' ? 'Donation' : 'Request'} created yet</AlertTitle>
           Click on the <strong>Create Request</strong> button to get started!
         </Alert>
       </Container>
@@ -65,8 +69,8 @@ const Dashboard = () => {
   const getRowHeight = () => {
     switch (activeTabKey) {
       case 'useful_links':
-      case 'donors':
         return 280;
+      case 'donors':
       case 'open_requests':
       case 'closed_requests':
       case 'my_requests':
@@ -79,7 +83,7 @@ const Dashboard = () => {
     switch (activeTabKey) {
       case 'useful_links':
       case 'donors':
-        return usefulLinks;
+        return donations;
       case 'open_requests':
       case 'closed_requests':
       case 'my_requests':
@@ -89,7 +93,7 @@ const Dashboard = () => {
     }
   };
 
-  const gridColumnCount = isUpSm ? (activeTabKey === 'open_requests' ? 3 : 4) : 1;
+  const gridColumnCount = isUpSm ? (activeTabKey === 'open_requests' || activeTabKey === 'donors' ? 3 : 4) : 1;
   const renderCell = (props: InfiniteGridCellProps) => {
     const { columnIndex, rowIndex, style } = props;
     const index = rowIndex * gridColumnCount + columnIndex;
@@ -99,18 +103,17 @@ const Dashboard = () => {
         switch (activeTabKey) {
           case 'useful_links':
           case 'donors':
-            return <LinkCard
-              prefillData={data || {
-                name: 'Loading more ...',
-              }}
-              onReloadRequested={loadLinks} />;
+            return <DonationCard
+              key={data.id}
+              data={data}
+              onClick={handleDonationCardClick} />;
           case 'open_requests':
           case 'closed_requests':
           case 'my_requests':
             return <RequestCard
               key={data.id}
               data={data}
-              onClick={handleCardClick} />;
+              onClick={handleRequestCardClick} />;
           default:
             return [];
         }
@@ -120,7 +123,7 @@ const Dashboard = () => {
 
   const renderContent = () => {
     return (
-      <Grid item md={activeTabKey === 'open_requests' ? 9 : 12}>
+      <Grid item md={activeTabKey === 'open_requests' || activeTabKey === 'donors' ? 9 : 12}>
         <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={4}>
             {loading ? (
@@ -145,7 +148,7 @@ const Dashboard = () => {
               gridHeight={600}
               isItemLoaded={(idx) => idx < 10}
               itemCount={getGridData()?.length}
-              rowHeight={getRowHeight()} /> : renderNoRequests())}
+              rowHeight={getRowHeight()} /> : renderNoData())}
           </Grid>
         </Container>
       </Grid>
@@ -166,6 +169,9 @@ const Dashboard = () => {
         <Grid container spacing={4}>
           {activeTabKey === 'open_requests' ?
             <RequestFilters /> :
+            null}
+          {activeTabKey === 'donors' ?
+            <DonationFilters /> :
             null}
           {renderContent()}
         </Grid>

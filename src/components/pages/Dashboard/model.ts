@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { firebaseAnalytics } from 'src/components/common/AuthProvider/View';
-import { getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
+import { getViewDonationRoute, getViewRequestRoute } from 'src/components/common/RouterOutlet/routerUtils';
 import { useAppStore } from 'src/stores/appStore';
 import useUrlKeys from './useUrlKeys';
 import { useDashboardStore } from 'src/stores/dashboardStore';
@@ -24,6 +24,10 @@ const useModel = () => {
   useEffect(() => {
     dashboard.loadRequests();
   }, [dashboard.paginationRequests.appliedFilters]);
+
+  useEffect(() => {
+    dashboard.loadDonations();
+  }, [dashboard.paginationDonations.appliedFilters]);
 
   useEffect(() => {
     switch (urlKeys.tab.key) {
@@ -59,12 +63,17 @@ const useModel = () => {
     }
   }, [urlKeys.tab.key]);
 
-  const handleCardClick = (docId: string) => {
+  const handleRequestCardClick = (docId: string) => {
     history.push(getViewRequestRoute(docId));
   };
 
+  const handleDonationCardClick = (docId: string) => {
+    history.push(getViewDonationRoute(docId));
+  };
+
   return {
-    handleCardClick,
+    handleRequestCardClick,
+    handleDonationCardClick,
     loading,
     isAdmin: app.userInfo?.isAdmin,
     email: app.userInfo?.email,
@@ -73,6 +82,7 @@ const useModel = () => {
     usefulLinks: dashboard.links,
     loadLinks: dashboard.loadLinks,
     requests: dashboard.requests,
+    donations: dashboard.donations,
   };
 };
 

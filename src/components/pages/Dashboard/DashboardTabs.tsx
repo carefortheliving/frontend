@@ -22,7 +22,7 @@ interface DashboardTabsProps {
 
 const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
   const { setTab, activeTabKey } = props;
-  const { requests, links } = useDashboardStore();
+  const { requests, donations, links } = useDashboardStore();
   const { userInfo } = useAppStore();
   const { email, isAdmin } = userInfo || {};
   return (
@@ -49,7 +49,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
           label="Donors"
           value={dashboardTabs.donors.key}
           icon={
-            <Badge badgeContent={activeTabKey === 'donors' ? 0 /* TODO: */ : 0} color="primary">
+            <Badge badgeContent={activeTabKey === 'donors' ? donations?.length : 0} color="primary">
               <FavoriteIcon />
             </Badge>
           } /> : null}

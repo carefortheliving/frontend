@@ -1,4 +1,4 @@
-import { DonationType, RequestType, UsefulLink } from 'src/types';
+import { DonationType, ExistingDonationType, ExistingRequestType, RequestType, UsefulLink } from 'src/types';
 import useFirebase from './useFirebase';
 import { getCurrentTime } from 'src/utils/commonUtils';
 import pickBy from 'lodash/pickBy';
@@ -71,7 +71,7 @@ const useFirestore = () => {
     const ret = requests.docs?.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as unknown as (RequestType & { id: string })[];
+    })) as unknown as (ExistingRequestType)[];
     const filtersCount = Object.keys(pickBy(unindexedFilters, identity)).length;
     filtersCount && ret.sort((a, b) => b.createdAt - a.createdAt);
     return ret;
@@ -147,7 +147,7 @@ const useFirestore = () => {
     const ret = requests.docs?.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as unknown as (RequestType & { id: string })[];
+    })) as unknown as (ExistingDonationType)[];
     const filtersCount = Object.keys(pickBy(unindexedFilters, identity)).length;
     filtersCount && ret.sort((a, b) => b.createdAt - a.createdAt);
     return ret;

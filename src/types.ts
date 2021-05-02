@@ -48,6 +48,7 @@ export interface DonationType {
 }
 
 export type ExistingRequestType = RequestType & { id: string };
+export type ExistingDonationType = DonationType & { id: string };
 
 export interface UsefulLink {
   name: string;
