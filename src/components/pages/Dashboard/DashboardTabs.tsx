@@ -46,14 +46,14 @@ const DashboardTabs: React.FC<DashboardTabsProps> = (props) => {
           }
         />
 
-        {isAdmin ? <Tab
+        <Tab
           label={dashboardTabs.donations.label}
           value={dashboardTabs.donations.key}
           icon={
             <Badge badgeContent={activeTab.key === dashboardTabs.donations.key ? donations?.length : 0} color="primary">
               <FavoriteIcon />
             </Badge>
-          } /> : null}
+          } />
 
         <Tab
           label={dashboardTabs.useful_links.label}
