@@ -6,7 +6,10 @@ import AppLoader from '../AppLoader/View';
 const Login = React.lazy(() => import('../../pages/Login/View'));
 const Dashboard = React.lazy(() => import('../../pages/Dashboard/View'));
 const CreateRequest = React.lazy(
-    () => import('../../pages/CreateRequest/View'),
+    () => import('../../pages/CreateDonation/View'),
+);
+const CreateDonation = React.lazy(
+    () => import('../../pages/CreateDonation/View'),
 );
 const ViewRequest = React.lazy(() => import('../../pages/ViewRequest/View'));
 const SayThanks = React.lazy(() => import('../../pages/SayThanks/View'));
@@ -24,6 +27,12 @@ const RouterOutlet = (props) => {
           path="/request/edit/:docId"
           exact
           component={(props) => <CreateRequest isEdit={true} {...props} />}
+        />
+        <Route path="/donation/create" component={CreateDonation} />
+        <Route
+          path="/donation/edit/:docId"
+          exact
+          component={(props) => <CreateDonation isEdit={true} {...props} />}
         />
         <Route path="/request/view/:docId" exact component={ViewRequest} />
         <Route path="/thank/:docId" exact component={SayThanks} />

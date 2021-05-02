@@ -152,7 +152,7 @@ const CreateRequest: React.FC<CreateRequestProps> = (props) => {
           <Select
             {...field}
             placeholder={renderSelectPlaceholder(
-                'Select Gender of the patient',
+                'Select Gender',
             )}
             options={gendersOptions}
           />

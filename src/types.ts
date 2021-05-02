@@ -25,6 +25,28 @@ export interface RequestType {
   updatedAt: number;
 }
 
+export interface DonationType {
+  donorEmail?: string;
+  donorName?: string;
+  donorBloodGroup?: { value: string, label: string };
+  donorAge?: string;
+  donorDistrict?: { value: string, label: string };
+  donorGender?: { value: string, label: string };
+  donorState?: { value: string, label: string };
+  donationCategory?: { value: string, label: string };
+  donationTitle: string;
+  donationDescription?: string;
+  donationStatus?: { value: string, label: string };
+  donorContactNumber: string;
+  createdAt: number;
+  updatedAt: number;
+  donorTravelWillingness?: { value: string, label: string };
+  covidRecoveryDate?: number;
+  antibodyTestStatus?: { value: string, label: string };
+  vaccinationStatus?: { value: string, label: string };
+  medicalComplication?: string;
+}
+
 export type ExistingRequestType = RequestType & { id: string };
 
 export interface UsefulLink {
